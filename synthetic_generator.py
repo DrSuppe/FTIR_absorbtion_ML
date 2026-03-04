@@ -22,6 +22,9 @@ import numpy as np
 # Project imports (work whether called as script or imported as module)
 # ---------------------------------------------------------------------------
 _PROJECT_ROOT = Path(__file__).resolve().parent
+import os
+os.environ["FTIR_PROJECT_ROOT"] = str(_PROJECT_ROOT)
+
 if str(_PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(_PROJECT_ROOT / "src"))
 

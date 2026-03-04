@@ -4,6 +4,10 @@ from __future__ import annotations
 
 import argparse
 import logging
+import os
+from pathlib import Path
+
+os.environ["FTIR_PROJECT_ROOT"] = str(Path(__file__).resolve().parent)
 
 from ftir_analysis.training import TrainConfig, train_from_manifest
 

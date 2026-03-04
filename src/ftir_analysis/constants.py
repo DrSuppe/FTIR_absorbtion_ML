@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import os
 from pathlib import Path
 
 # Spectral grid
@@ -45,7 +46,9 @@ METADATA_SUFFIX = ".meta.json"
 
 # Paths
 _module_dir = Path(__file__).resolve().parent
-if (_module_dir.parents[1] / "synthetic_generator.py").exists():
+if "FTIR_PROJECT_ROOT" in os.environ:
+    PROJECT_ROOT = Path(os.environ["FTIR_PROJECT_ROOT"])
+elif (_module_dir.parents[1] / "synthetic_generator.py").exists():
     PROJECT_ROOT = _module_dir.parents[1]
 elif Path.cwd().joinpath("synthetic_generator.py").exists():
     PROJECT_ROOT = Path.cwd()
