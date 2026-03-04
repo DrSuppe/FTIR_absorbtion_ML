@@ -44,7 +44,14 @@ LABEL_TRANSFORM = "log1p_ppmv"
 METADATA_SUFFIX = ".meta.json"
 
 # Paths
-PROJECT_ROOT = Path(__file__).resolve().parents[2]
+_module_dir = Path(__file__).resolve().parent
+if (_module_dir.parents[1] / "synthetic_generator.py").exists():
+    PROJECT_ROOT = _module_dir.parents[1]
+elif Path.cwd().joinpath("synthetic_generator.py").exists():
+    PROJECT_ROOT = Path.cwd()
+else:
+    PROJECT_ROOT = _module_dir.parents[1]
+
 REFERENCE_ROOT = PROJECT_ROOT / "data" / "reference"
 REPORTS_DIR = PROJECT_ROOT / "outputs" / "reports"
 CHECKPOINT_DIR = PROJECT_ROOT / "outputs" / "checkpoints"

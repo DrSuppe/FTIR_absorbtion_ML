@@ -30,6 +30,7 @@ from .constants import (
     DEFAULT_TARGET_SPECIES,
     MANIFEST_FILENAME,
     MODEL_VERSION,
+    PROJECT_ROOT,
     REFERENCE_ROOT,
     REPORTS_DIR,
     SYNTHETIC_DIR,
@@ -129,7 +130,7 @@ def _ensure_synthetic(cfg: TrainConfig) -> Path:
             regen = True
 
     if regen:
-        generator = Path(__file__).resolve().parents[2] / "synthetic_generator.py"
+        generator = PROJECT_ROOT / "synthetic_generator.py"
         cmd = [
             sys.executable, str(generator),
             "--n-samples", str(cfg.n_synthetic),
