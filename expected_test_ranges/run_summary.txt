@@ -1,0 +1,24 @@
+VIPER_M3 NOx map run summary
+============================================================
+timestamp: 2026-02-24T16:01:02
+mechanism: mechanisms/CEU-NH3.yaml
+Tin_K: 588.71
+Pin_Pa: 1114575.0
+Tflame_target_K: 1922.039
+grid: n_chi=131, n_eta=131
+phi bounds: [0.4, 0.7]
+phi solve: maxiter=12, tol_K=0.5
+use_pfr: False
+-
+fraction_solved: 1.0
+n_points_solved: 17161.0
+n_points_total: 17161.0
+nox_max: 0.00355996462359104
+nox_min: 0.0029627716077830716
+operable_fraction: 0.28430744129130003
+p_rms_limit: 0.095
+p_rms_warn_fraction: 0.8
+phi_max_solved: 0.6786393565669256
+phi_min_solved: 0.5608944294690305
+tad_mean: 1922.0469015280755
+warning_fraction: 0.06077734397762368

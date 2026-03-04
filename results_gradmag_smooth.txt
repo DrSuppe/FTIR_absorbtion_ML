@@ -1,0 +1,29 @@
+Hey, I hope you are ready for some cool stuff. I would like to build an ML tool that lets me feed it absorbtion spectra from an FTIR and that spits out the corresponding concentration. This can then be checked with HITRAN. 
+
+Here are some of the parameters for this task:
+The solver is designed for combustion products in air and reports concentrations in `ppmv` for:
+
+- `H2O`, `CO2`, `CO`, `NO`, `NO2`, `NH3`, `CH4`
+
+The implementation prioritizes physically meaningful despite potential sensor saturation sequential stability across time-series spectra, and full auditability of solver diagnostics.
+
+- Instrument: MKS 2030 FTIR
+- Nominal cell conditions:
+  - Pressure: `1 atm`
+  - Temperature: `191 C` (`464.15 K`)
+  - Optical path length: `5.11 m` (`511 cm`)
+- Input data:
+  - Measured spectra: `.spc`
+  - Calibration/reference spectra: `.lab`
+
+- Overlapping absorption lines between species
+- Saturation/clipping in strong bands
+- Potential species absence at some time steps
+- Need for temporal continuity in sequential spectra
+
+
+I think this can be really succesful since we can generate an arbitrary ammount of training data using HITRANS hapi API. 
+
+I have some actual mearued spectra with a knows concentration in th efolder name, some unknown example spectra and some information on the expected range of concentrations that we would want to work with (thse ranges might be rather off especiall on the NO and NO2 sides, their concntration might switch effectively)
+
+I have Ollama installed on this machien that we can use to provide a model. Or we build a custom model. Which one do you think is better? 

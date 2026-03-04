@@ -1,0 +1,259 @@
+"""Enhanced FTIR model architecture.
+
+Key changes vs v2:
+  - SpectralCNN: 5 ResBlocks (was 3), channels 32→64→128→256→256
+  - SelfAttention1D: 8 heads (was 4)
+  - GRU hidden dim: 512 (was 256)
+  - Second Transformer stage (2-layer, d=512, 4 heads) after GRU
+  - EMA hidden state buffer for stable inference
+  - Output head: 11 species (was 7)
+"""
+
+from __future__ import annotations
+
+import math
+from typing import Optional
+
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+
+
+# ---------------------------------------------------------------------------
+# Basic building blocks
+# ---------------------------------------------------------------------------
+
+class ResBlock1D(nn.Module):
+    """Pre-activation 1D residual block with optional stride for downsampling."""
+
+    def __init__(
+        self,
+        in_ch: int,
+        out_ch: int,
+        kernel_size: int = 7,
+        stride: int = 1,
+        dropout: float = 0.1,
+    ) -> None:
+        super().__init__()
+        pad = kernel_size // 2
+        self.norm1 = nn.BatchNorm1d(in_ch)
+        self.conv1 = nn.Conv1d(in_ch, out_ch, kernel_size, stride=stride, padding=pad, bias=False)
+        self.norm2 = nn.BatchNorm1d(out_ch)
+        self.conv2 = nn.Conv1d(out_ch, out_ch, kernel_size, padding=pad, bias=False)
+        self.drop = nn.Dropout(dropout)
+
+        self.skip: nn.Module
+        if in_ch != out_ch or stride != 1:
+            self.skip = nn.Conv1d(in_ch, out_ch, 1, stride=stride, bias=False)
+        else:
+            self.skip = nn.Identity()
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        h = self.conv1(F.relu(self.norm1(x)))
+        h = self.drop(self.conv2(F.relu(self.norm2(h))))
+        return h + self.skip(x)
+
+
+class SpectralCNN(nn.Module):
+    """5-block residual CNN backbone that maps (B, 1, NPTS) → (B, C, NPTS//16).
+
+    Channel progression: 1 → 32 → 64 → 128 → 256 → 256
+    Each block (except last) halves the temporal dimension via stride-2 conv.
+    """
+
+    def __init__(self, dropout: float = 0.1) -> None:
+        super().__init__()
+        self.stem = nn.Sequential(
+            nn.Conv1d(1, 32, kernel_size=15, padding=7, bias=False),
+            nn.BatchNorm1d(32),
+            nn.ReLU(inplace=True),
+        )
+        self.blocks = nn.Sequential(
+            ResBlock1D(32, 64,  stride=2, dropout=dropout),  # /2
+            ResBlock1D(64, 128, stride=2, dropout=dropout),  # /4
+            ResBlock1D(128, 256, stride=2, dropout=dropout), # /8
+            ResBlock1D(256, 256, stride=2, dropout=dropout), # /16
+            ResBlock1D(256, 256, stride=1, dropout=dropout), # same
+        )
+        self.out_channels = 256
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        return self.blocks(self.stem(x))  # (B, 256, T//16)
+
+
+# ---------------------------------------------------------------------------
+# Attention / Transformer
+# ---------------------------------------------------------------------------
+
+class SelfAttention1D(nn.Module):
+    """Multi-head self-attention over the temporal axis."""
+
+    def __init__(self, d_model: int, n_heads: int = 8, dropout: float = 0.1) -> None:
+        super().__init__()
+        assert d_model % n_heads == 0
+        self.attn = nn.MultiheadAttention(d_model, n_heads, dropout=dropout, batch_first=True)
+        self.norm = nn.LayerNorm(d_model)
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        # x: (B, T, C)
+        out, _ = self.attn(x, x, x)
+        return self.norm(x + out)
+
+
+class TransformerBlock(nn.Module):
+    """Single Transformer encoder layer with pre-norm."""
+
+    def __init__(self, d_model: int, n_heads: int, ffn_dim: int, dropout: float = 0.1) -> None:
+        super().__init__()
+        self.attn = nn.MultiheadAttention(d_model, n_heads, dropout=dropout, batch_first=True)
+        self.norm1 = nn.LayerNorm(d_model)
+        self.norm2 = nn.LayerNorm(d_model)
+        self.ffn = nn.Sequential(
+            nn.Linear(d_model, ffn_dim),
+            nn.GELU(),
+            nn.Dropout(dropout),
+            nn.Linear(ffn_dim, d_model),
+            nn.Dropout(dropout),
+        )
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        h = self.norm1(x)
+        out, _ = self.attn(h, h, h)
+        x = x + out
+        x = x + self.ffn(self.norm2(x))
+        return x
+
+
+# ---------------------------------------------------------------------------
+# Main model
+# ---------------------------------------------------------------------------
+
+class FTIRModel(nn.Module):
+    """FTIR ML Solver v3 — 11-species multi-gas concentration regressor.
+
+    Architecture:
+        Input  (B, NPTS)       raw absorbance spectrum
+        └── unsqueeze → (B, 1, NPTS)
+        ├── SpectralCNN         5 ResBlocks → (B, 256, T)
+        ├── SelfAttention1D     8 heads     → (B, T, 256)
+        ├── GRU                 hidden=512  → h: (1, B, 512)
+        ├── Transformer (x2)    d=512,4h    → (B, 512)
+        └── Linear head                    → (B, n_species)
+
+    Output in log1p(ppmv) space — invert with torch.expm1.
+    """
+
+    def __init__(
+        self,
+        n_species: int = 11,
+        dropout: float = 0.15,
+        ema_alpha: float = 0.1,
+    ) -> None:
+        super().__init__()
+        self.n_species = n_species
+        self.ema_alpha = ema_alpha
+
+        self.cnn = SpectralCNN(dropout=dropout)
+        cnn_ch = self.cnn.out_channels  # 256
+
+        # Project CNN output to GRU input
+        self.proj = nn.Linear(cnn_ch, 512)
+
+        # 8-head self-attention (sequence axis = temporal)
+        self.attn = SelfAttention1D(512, n_heads=8, dropout=dropout)
+
+        # Bidirectional GRU — hidden 512 per direction → 1024 concat
+        self.gru = nn.GRU(512, 512, num_layers=2, batch_first=True,
+                          bidirectional=True, dropout=dropout)
+
+        # Second-stage Transformer encoder (works on flattened GRU output)
+        # We do a global average pool first → single token then 2 Tx blocks
+        self.tx_norm = nn.LayerNorm(1024)
+        self.tx_blocks = nn.Sequential(
+            TransformerBlock(1024, n_heads=4, ffn_dim=2048, dropout=dropout),
+            TransformerBlock(1024, n_heads=4, ffn_dim=2048, dropout=dropout),
+        )
+
+        # Output head
+        self.head = nn.Sequential(
+            nn.LayerNorm(1024),
+            nn.Linear(1024, 256),
+            nn.GELU(),
+            nn.Dropout(dropout),
+            nn.Linear(256, n_species),
+        )
+
+        # EMA hidden state buffer (used during inference)
+        self._ema_h: Optional[torch.Tensor] = None
+
+        self._init_weights()
+
+    def _init_weights(self) -> None:
+        for m in self.modules():
+            if isinstance(m, nn.Linear):
+                nn.init.xavier_uniform_(m.weight)
+                if m.bias is not None:
+                    nn.init.zeros_(m.bias)
+            elif isinstance(m, nn.Conv1d):
+                nn.init.kaiming_normal_(m.weight, nonlinearity="relu")
+            elif isinstance(m, (nn.BatchNorm1d, nn.LayerNorm)):
+                nn.init.ones_(m.weight)
+                nn.init.zeros_(m.bias)
+
+    def reset_ema(self) -> None:
+        """Reset EMA hidden buffer (call at start of each new sample sequence)."""
+        self._ema_h = None
+
+    def forward(
+        self,
+        x: torch.Tensor,
+        use_ema: bool = False,
+    ) -> torch.Tensor:
+        """
+        Parameters
+        ----------
+        x : (B, NPTS) float32
+        use_ema : bool
+            If True, maintain an EMA hidden state across calls (inference only).
+
+        Returns
+        -------
+        out : (B, n_species) float32, log1p(ppmv)
+        """
+        # 1. CNN backbone
+        h = self.cnn(x.unsqueeze(1))      # (B, 256, T)
+        h = h.permute(0, 2, 1)            # (B, T, 256)
+        h = self.proj(h)                   # (B, T, 512)
+
+        # 2. Self-attention
+        h = self.attn(h)                   # (B, T, 512)
+
+        # 3. GRU
+        h, h_n = self.gru(h)              # h: (B, T, 1024), h_n: (4, B, 512)
+
+        # EMA on last hidden state (bidirectional → concat dirs for last layer)
+        if use_ema and not self.training:
+            last_h = torch.cat([h_n[-2], h_n[-1]], dim=-1)  # (B, 1024)
+            if self._ema_h is None:
+                self._ema_h = last_h.detach()
+            else:
+                self._ema_h = (
+                    self.ema_alpha * last_h.detach()
+                    + (1 - self.ema_alpha) * self._ema_h
+                )
+
+        # 4. Global average pool over temporal dim → single token
+        h_pool = h.mean(dim=1)             # (B, 1024)
+        h_pool = h_pool.unsqueeze(1)       # (B, 1, 1024) for Tx
+
+        # 5. Second-stage Transformer
+        h_pool = self.tx_norm(h_pool)
+        h_pool = self.tx_blocks(h_pool)    # (B, 1, 1024)
+        h_pool = h_pool.squeeze(1)         # (B, 1024)
+
+        # 6. Output head
+        return self.head(h_pool)           # (B, n_species)
+
+
+def count_parameters(model: nn.Module) -> int:
+    return sum(p.numel() for p in model.parameters() if p.requires_grad)
