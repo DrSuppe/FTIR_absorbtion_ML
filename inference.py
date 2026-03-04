@@ -21,7 +21,7 @@ from ftir_analysis.inference_runtime import make_inference_config, run_inference
 def _build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Run FTIR inference over spectra folder")
     parser.add_argument("--data-dir", type=Path, default=PROJECT_ROOT / "example_data")
-    parser.add_argument("--checkpoint", type=Path, default=PROJECT_ROOT / "checkpoints" / "ftir_solver_best.pth")
+    parser.add_argument("--checkpoint", type=Path, default=PROJECT_ROOT / "outputs" / "checkpoints" / "ftir_solver_best.pth")
     parser.add_argument("--output", type=Path, default=None)
     return parser
 

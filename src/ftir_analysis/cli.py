@@ -108,7 +108,7 @@ def main(argv: list[str] | None = None) -> int:
 
     if args.command == "evaluate":
         report = evaluate_manifest(args.manifest, checkpoint_path=args.checkpoint, report_prefix=args.report_prefix)
-        print(f"Evaluation report written: reports/{args.report_prefix}_report.json")
+        print(f"Evaluation report written: outputs/reports/{args.report_prefix}_report.json")
         if report.get("model_test"):
             print("Model test MAE:", report["model_test"]["mae"])
         if report.get("baseline_test"):

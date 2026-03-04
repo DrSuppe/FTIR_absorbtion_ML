@@ -125,7 +125,9 @@ def load_state_dict_or_raise(model: torch.nn.Module, checkpoint_path: str | Path
     """Load checkpoint weights with explicit architecture compatibility error."""
     ckpt = Path(checkpoint_path)
     try:
-        state = torch.load(ckpt, map_location=map_location)
+        state = torch.load(ckpt, map_location=map_location, weights_only=False)
+        if "model_state_dict" in state:
+            state = state["model_state_dict"]
         model.load_state_dict(state)
     except RuntimeError as exc:
         raise CheckpointMetadataError(

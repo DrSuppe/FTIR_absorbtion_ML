@@ -1,0 +1,557 @@
+filepath,species,concentration_ppm,path_length_m,temperature_c
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Ammonia [NH3] [7664-41-7]\Ammonia 191C Spectra\Ammonia (  299.5ppm, 5.11m, 190C).lab",NH3,0.0002995,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Ammonia [NH3] [7664-41-7]\Ammonia 191C Spectra\Ammonia (  599.0ppm, 5.11m, 190C).lab",NH3,0.000599,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Ammonia [NH3] [7664-41-7]\Ammonia 191C Spectra\Ammonia (  898.5ppm, 5.11m, 190C).lab",NH3,0.0008985,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Ammonia [NH3] [7664-41-7]\Ammonia 191C Spectra\Ammonia ( 1198.0ppm, 5.11m, 190C).lab",NH3,0.001198,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Ammonia [NH3] [7664-41-7]\Ammonia 191C Spectra\Ammonia ( 1497.5ppm, 5.11m, 190C).lab",NH3,0.0014975,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Ammonia [NH3] [7664-41-7]\Ammonia 191C Spectra\Ammonia ( 1797.0ppm, 5.11m, 190C).lab",NH3,0.001797,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Ammonia [NH3] [7664-41-7]\Ammonia 191C Spectra\Ammonia ( 2096.5ppm, 5.11m, 190C).lab",NH3,0.0020965,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Ammonia [NH3] [7664-41-7]\Ammonia 191C Spectra\Ammonia ( 2396.0ppm, 5.11m, 190C).lab",NH3,0.002396,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Ammonia [NH3] [7664-41-7]\Ammonia 191C Spectra\Ammonia ( 2695.5ppm, 5.11m, 190C).lab",NH3,0.0026955,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Ammonia [NH3] [7664-41-7]\Ammonia 191C Spectra\Ammonia ( 2995.0ppm, 5.11m, 190C).lab",NH3,0.002995,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Ammonia [NH3] [7664-41-7]\Ammonia 191C Spectra\NH3 (116.5 ppm, 5.11m, 191C).LAB",NH3,0.0001165,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Ammonia [NH3] [7664-41-7]\Ammonia 191C Spectra\NH3 (12.73 ppm, 0.95 atm, 5.11m, 191C).lab",NH3,1.27E-05,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Ammonia [NH3] [7664-41-7]\Ammonia 191C Spectra\NH3 (139.8 ppm, 5.11m, 191C).LAB",NH3,0.0001398,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Ammonia [NH3] [7664-41-7]\Ammonia 191C Spectra\NH3 (15.5 ppm, 0.95 atm, 5.11m, 191C).lab",NH3,1.55E-05,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Ammonia [NH3] [7664-41-7]\Ammonia 191C Spectra\NH3 (16.3 ppm, 5.11m, 191C).LAB",NH3,1.63E-05,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Ammonia [NH3] [7664-41-7]\Ammonia 191C Spectra\NH3 (163.1 ppm, 5.11m, 191C).LAB",NH3,0.0001631,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Ammonia [NH3] [7664-41-7]\Ammonia 191C Spectra\NH3 (18.32 ppm, 0.95 atm, 5.11m, 191C).lab",NH3,1.83E-05,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Ammonia [NH3] [7664-41-7]\Ammonia 191C Spectra\NH3 (186.4 ppm, 5.11m, 191C).LAB",NH3,0.0001864,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Ammonia [NH3] [7664-41-7]\Ammonia 191C Spectra\NH3 (209.8 ppm, 5.11m, 191C).LAB",NH3,0.0002098,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Ammonia [NH3] [7664-41-7]\Ammonia 191C Spectra\NH3 (21.1 ppm, 0.95 atm, 5.11m, 191C).lab",NH3,2.11E-05,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Ammonia [NH3] [7664-41-7]\Ammonia 191C Spectra\NH3 (23.3 ppm, 5.11m, 191C).LAB",NH3,2.33E-05,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Ammonia [NH3] [7664-41-7]\Ammonia 191C Spectra\NH3 (232.9 ppm, 5.11m, 191C).LAB",NH3,0.0002329,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Ammonia [NH3] [7664-41-7]\Ammonia 191C Spectra\NH3 (46.6 ppm, 5.11m, 191C).LAB",NH3,4.66E-05,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Ammonia [NH3] [7664-41-7]\Ammonia 191C Spectra\NH3 (69.9 ppm, 5.11m, 191C).LAB",NH3,6.99E-05,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Ammonia [NH3] [7664-41-7]\Ammonia 191C Spectra\NH3 (93.2 ppm, 5.11m, 191C).LAB",NH3,9.32E-05,511,191
+x:\EMISSIONS\FTIR_ML\reference_spectra\Ammonia [NH3] [7664-41-7]\NH3 (300) (3000) 191C Spectra\NH3 (10.65 ppm 191 c 0.5cm-1 MNB) 0.25mm bc -640 -ice.lab,NH3,1.07E-05,511,191
+x:\EMISSIONS\FTIR_ML\reference_spectra\Ammonia [NH3] [7664-41-7]\NH3 (300) (3000) 191C Spectra\NH3 (100.05 ppm (2942 cyl) 191 c 0.5cm-1 MNB) 0.25mm bc -ice.lab,NH3,0.00010005,511,191
+x:\EMISSIONS\FTIR_ML\reference_spectra\Ammonia [NH3] [7664-41-7]\NH3 (300) (3000) 191C Spectra\NH3 (120.20 ppm 191 c 0.5cm-1 MNB) 0.25mm bc -ice.lab,NH3,0.0001202,511,191
+x:\EMISSIONS\FTIR_ML\reference_spectra\Ammonia [NH3] [7664-41-7]\NH3 (300) (3000) 191C Spectra\NH3 (1200.54 ppm 191 c 0.5cm-1 MNB) 0.25mm bc -ice.lab,NH3,0.00120054,511,191
+x:\EMISSIONS\FTIR_ML\reference_spectra\Ammonia [NH3] [7664-41-7]\NH3 (300) (3000) 191C Spectra\NH3 (129.33 ppm 191 c 0.5cm-1 MNB) 0.25mm bc -ice.lab,NH3,0.00012933,511,191
+x:\EMISSIONS\FTIR_ML\reference_spectra\Ammonia [NH3] [7664-41-7]\NH3 (300) (3000) 191C Spectra\NH3 (139.98 ppm 191 c 0.5cm-1 MNB) 0.25mm bc -ice.lab,NH3,0.00013998,511,191
+x:\EMISSIONS\FTIR_ML\reference_spectra\Ammonia [NH3] [7664-41-7]\NH3 (300) (3000) 191C Spectra\NH3 (150.63 ppm 191 c 0.5cm-1 MNB) 0.25mm bc -ice.lab,NH3,0.00015063,511,191
+x:\EMISSIONS\FTIR_ML\reference_spectra\Ammonia [NH3] [7664-41-7]\NH3 (300) (3000) 191C Spectra\NH3 (1500.68 ppm 191 c 0.5cm-1 MNB) 0.25mm bc -ice.lab,NH3,0.00150068,511,191
+x:\EMISSIONS\FTIR_ML\reference_spectra\Ammonia [NH3] [7664-41-7]\NH3 (300) (3000) 191C Spectra\NH3 (159.76 ppm 191 c 0.5cm-1 MNB) 0.25mm bc -ice.lab,NH3,0.00015976,511,191
+x:\EMISSIONS\FTIR_ML\reference_spectra\Ammonia [NH3] [7664-41-7]\NH3 (300) (3000) 191C Spectra\NH3 (180.30 ppm 191 c 0.5cm-1 MNB) 0.25mm bc -ice.lab,NH3,0.0001803,511,191
+x:\EMISSIONS\FTIR_ML\reference_spectra\Ammonia [NH3] [7664-41-7]\NH3 (300) (3000) 191C Spectra\NH3 (1800.81 ppm 191 c 0.5cm-1 MNB) 0.25mm bc -ice.lab,NH3,0.00180081,511,191
+x:\EMISSIONS\FTIR_ML\reference_spectra\Ammonia [NH3] [7664-41-7]\NH3 (300) (3000) 191C Spectra\NH3 (19.78 ppm 191 c 0.5cm-1 MNB) 0.25mm bc -640 -ice.lab,NH3,1.98E-05,511,191
+x:\EMISSIONS\FTIR_ML\reference_spectra\Ammonia [NH3] [7664-41-7]\NH3 (300) (3000) 191C Spectra\NH3 (200.09 ppm (2942 cyl) 200.09 ppm 191 c 0.5cm-1 MNB) 0.25mm bc -ice.lab,NH3,0.00020009,511,191
+x:\EMISSIONS\FTIR_ML\reference_spectra\Ammonia [NH3] [7664-41-7]\NH3 (300) (3000) 191C Spectra\NH3 (2099.47 ppm 191 c 0.5cm-1 MNB) 0.25mm bc -ice.lab,NH3,0.00209947,511,191
+x:\EMISSIONS\FTIR_ML\reference_spectra\Ammonia [NH3] [7664-41-7]\NH3 (300) (3000) 191C Spectra\NH3 (210.73 ppm 191 c 0.5cm-1 MNB) 0.25mm bc -ice.lab,NH3,0.00021073,511,191
+x:\EMISSIONS\FTIR_ML\reference_spectra\Ammonia [NH3] [7664-41-7]\NH3 (300) (3000) 191C Spectra\NH3 (239.64 ppm 191 c 0.5cm-1 MNB) 0.25mm bc -ice.lab,NH3,0.00023964,511,191
+x:\EMISSIONS\FTIR_ML\reference_spectra\Ammonia [NH3] [7664-41-7]\NH3 (300) (3000) 191C Spectra\NH3 (2401.08 ppm 191 c 0.5cm-1 MNB) 0.25mm bc -ice.lab,NH3,0.00240108,511,191
+x:\EMISSIONS\FTIR_ML\reference_spectra\Ammonia [NH3] [7664-41-7]\NH3 (300) (3000) 191C Spectra\NH3 (2699.74 ppm 191 c 0.5cm-1 MNB) 0.25mm bc -ice.lab,NH3,0.00269974,511,191
+x:\EMISSIONS\FTIR_ML\reference_spectra\Ammonia [NH3] [7664-41-7]\NH3 (300) (3000) 191C Spectra\NH3 (270.07 ppm 191 c 0.5cm-1 MNB) 0.25mm bc -ice.lab,NH3,0.00027007,511,191
+x:\EMISSIONS\FTIR_ML\reference_spectra\Ammonia [NH3] [7664-41-7]\NH3 (300) (3000) 191C Spectra\NH3 (2942.50 ppm 191 c 0.5cm-1 MNB) 0.25mm - 1 bc.lab,NH3,0.0029425,511,191
+x:\EMISSIONS\FTIR_ML\reference_spectra\Ammonia [NH3] [7664-41-7]\NH3 (300) (3000) 191C Spectra\NH3 (30.43 ppm 191 c 0.5cm-1 MNB) 0.25mm bc -640 -ice.lab,NH3,3.04E-05,511,191
+x:\EMISSIONS\FTIR_ML\reference_spectra\Ammonia [NH3] [7664-41-7]\NH3 (300) (3000) 191C Spectra\NH3 (300.14 ppm (2942 cyl) 191 c 0.5cm-1 MNB) 0.25mm bc -ice.lab,NH3,0.00030014,511,191
+x:\EMISSIONS\FTIR_ML\reference_spectra\Ammonia [NH3] [7664-41-7]\NH3 (300) (3000) 191C Spectra\NH3 (39.56 ppm 191 c 0.5cm-1 MNB) 0.25mm bc -640 -ice.lab,NH3,3.96E-05,511,191
+x:\EMISSIONS\FTIR_ML\reference_spectra\Ammonia [NH3] [7664-41-7]\NH3 (300) (3000) 191C Spectra\NH3 (400.18 ppm 191 c 0.5cm-1 MNB) 0.25mm bc -ice.lab,NH3,0.00040018,511,191
+x:\EMISSIONS\FTIR_ML\reference_spectra\Ammonia [NH3] [7664-41-7]\NH3 (300) (3000) 191C Spectra\NH3 (50.21 ppm 191 c 0.5cm-1 MNB) 0.25mm bc -640 -ice.lab,NH3,5.02E-05,511,191
+x:\EMISSIONS\FTIR_ML\reference_spectra\Ammonia [NH3] [7664-41-7]\NH3 (300) (3000) 191C Spectra\NH3 (502.0 ppm cyl 191 c 0.5cm-1 MNB) 0.25mm bc.lab,NH3,0.000502,511,191
+x:\EMISSIONS\FTIR_ML\reference_spectra\Ammonia [NH3] [7664-41-7]\NH3 (300) (3000) 191C Spectra\NH3 (60.86 ppm 191 c 0.5cm-1 MNB) 0.25mm bc -640 -ice.lab,NH3,6.09E-05,511,191
+x:\EMISSIONS\FTIR_ML\reference_spectra\Ammonia [NH3] [7664-41-7]\NH3 (300) (3000) 191C Spectra\NH3 (600.27 ppm 191 c 0.5cm-1 MNB) 0.25mm bc -ice.lab,NH3,0.00060027,511,191
+x:\EMISSIONS\FTIR_ML\reference_spectra\Ammonia [NH3] [7664-41-7]\NH3 (300) (3000) 191C Spectra\NH3 (69.99 ppm 191 c 0.5cm-1 MNB) 0.25mm bc -640 -ice.lab,NH3,7.00E-05,511,191
+x:\EMISSIONS\FTIR_ML\reference_spectra\Ammonia [NH3] [7664-41-7]\NH3 (300) (3000) 191C Spectra\NH3 (700.32 ppm 191 c 0.5cm-1 MNB) 0.25mm bc -ice.lab,NH3,0.00070032,511,191
+x:\EMISSIONS\FTIR_ML\reference_spectra\Ammonia [NH3] [7664-41-7]\NH3 (300) (3000) 191C Spectra\NH3 (79.88 ppm 191 c 0.5cm-1 MNB) 0.25mm bc -640 -ice.lab,NH3,7.99E-05,511,191
+x:\EMISSIONS\FTIR_ML\reference_spectra\Ammonia [NH3] [7664-41-7]\NH3 (300) (3000) 191C Spectra\NH3 (800.36 ppm 191 c 0.5cm-1 MNB) 0.25mm bc -ice.lab,NH3,0.00080036,511,191
+x:\EMISSIONS\FTIR_ML\reference_spectra\Ammonia [NH3] [7664-41-7]\NH3 (300) (3000) 191C Spectra\NH3 (90.53 ppm 191 c 0.5cm-1 MNB) 0.25mm bc -640 -ice.lab,NH3,9.05E-05,511,191
+x:\EMISSIONS\FTIR_ML\reference_spectra\Ammonia [NH3] [7664-41-7]\NH3 (300) (3000) 191C Spectra\NH3 (900.41 ppm 191 c 0.5cm-1 MNB) 0.25mm bc -ice.lab,NH3,0.00090041,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\B-99, 99% Biodiesel\B-99 191c Spectra\B-99 (   20.00ppm, 5.11m, 190C).lab",Biodiesel,2.00E-05,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\B-99, 99% Biodiesel\B-99 191c Spectra\B-99 (  100.00ppm, 5.11m, 190C).lab",Biodiesel,1.00E-04,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\B-99, 99% Biodiesel\B-99 191c Spectra\B-99 (  200.00ppm, 5.11m, 190C).lab",Biodiesel,0.0002,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\B-99, 99% Biodiesel\B-99 191c Spectra\B-99 (  500.00ppm, 5.11m, 190C).lab",Biodiesel,0.0005,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Dioxide [CO2]  [124-38-9]\CO2 low% (4) 191C Spectra\CO2 C (0.33592% adj, 5.11m, 191C).lab",CO2,0.0033592,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Dioxide [CO2]  [124-38-9]\CO2 low% (4) 191C Spectra\CO2 C (0.49816% adj, 5.11m, 191C).lab",CO2,0.0049816,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Dioxide [CO2]  [124-38-9]\CO2 low% (4) 191C Spectra\CO2 C (0.83512% adj, 5.11m, 191C).lab",CO2,0.0083512,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Dioxide [CO2]  [124-38-9]\CO2 low% (4) 191C Spectra\CO2 C (1.25528% adj, 5.11m, 191C).lab",CO2,0.0125528,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Dioxide [CO2]  [124-38-9]\CO2 low% (4) 191C Spectra\CO2 C (1.66920% adj, 5.11m, 191C).lab",CO2,0.016692,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Dioxide [CO2]  [124-38-9]\CO2 low% (4) 191C Spectra\CO2 C (2.10184% adj, 5.11m, 191C).lab",CO2,0.0210184,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Dioxide [CO2]  [124-38-9]\CO2 low% (4) 191C Spectra\CO2 C (2.50536% adj, 5.11m, 191C).lab",CO2,0.0250536,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Dioxide [CO2]  [124-38-9]\CO2 low% (4) 191C Spectra\CO2 C (2.92656% adj, 5.11m, 191C).lab",CO2,0.0292656,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Dioxide [CO2]  [124-38-9]\CO2 low% (4) 191C Spectra\CO2 C (3.35192% adj, 5.11m, 191C).lab",CO2,0.0335192,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Dioxide [CO2]  [124-38-9]\CO2 low% (4) 191C Spectra\CO2 C (3.77104% adj, 5.11m, 191C).lab",CO2,0.0377104,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Dioxide [CO2]  [124-38-9]\CO2 low% (4) 191C Spectra\CO2 C (4.18184% adj, 5.11m, 191C).lab",CO2,0.0418184,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Dioxide [CO2]  [124-38-9]\CO2 low% (4) 191C Spectra\CO2 C (5.87804% adj, 5.11m, 191C).lab",CO2,0.0587804,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Dioxide [CO2]  [124-38-9]\CO2 low% (4) 191C Spectra\orig\CO2 C (0.323%, 5.11m, 191C).lab",CO2,0.00323,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Dioxide [CO2]  [124-38-9]\CO2 low% (4) 191C Spectra\orig\CO2 C (0.479%, 5.11m, 191C).lab",CO2,0.00479,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Dioxide [CO2]  [124-38-9]\CO2 low% (4) 191C Spectra\orig\CO2 C (0.803%, 5.11m, 191C).lab",CO2,0.00803,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Dioxide [CO2]  [124-38-9]\CO2 low% (4) 191C Spectra\orig\CO2 C (1.207%, 5.11m, 191C).lab",CO2,0.01207,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Dioxide [CO2]  [124-38-9]\CO2 low% (4) 191C Spectra\orig\CO2 C (1.605%, 5.11m, 191C).lab",CO2,0.01605,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Dioxide [CO2]  [124-38-9]\CO2 low% (4) 191C Spectra\orig\CO2 C (2.021%, 5.11m, 191C).lab",CO2,0.02021,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Dioxide [CO2]  [124-38-9]\CO2 low% (4) 191C Spectra\orig\CO2 C (2.409%, 5.11m, 191C).lab",CO2,0.02409,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Dioxide [CO2]  [124-38-9]\CO2 low% (4) 191C Spectra\orig\CO2 C (2.814%, 5.11m, 191C).lab",CO2,0.02814,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Dioxide [CO2]  [124-38-9]\CO2 low% (4) 191C Spectra\orig\CO2 C (3.223%, 5.11m, 191C).lab",CO2,0.03223,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Dioxide [CO2]  [124-38-9]\CO2 low% (4) 191C Spectra\orig\CO2 C (3.626%, 5.11m, 191C).lab",CO2,0.03626,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Dioxide [CO2]  [124-38-9]\CO2 low% (4) 191C Spectra\orig\CO2 C (4.021%, 5.11m, 191C).lab",CO2,0.04021,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Dioxide [CO2]  [124-38-9]\CO2 low% (4) 191C Spectra\orig\CO2 C (5.651%, 5.11m, 191C).lab",CO2,0.05651,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Dioxide [CO2]  [124-38-9]\CO2% (40) 191C Spectra\Carbon Dioxide (24.24%, 5.11m, 191c).lab",CO2,0.2424,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Dioxide [CO2]  [124-38-9]\CO2% (40) 191C Spectra\Carbon Dioxide (27.80%,5.11m, 191c).lab",CO2,0.278,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Dioxide [CO2]  [124-38-9]\CO2% (40) 191C Spectra\Carbon Dioxide (31.50%, 5.11m, 191c).lab",CO2,0.315,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Dioxide [CO2]  [124-38-9]\CO2% (40) 191C Spectra\Carbon Dioxide (31.97%, 5.11m, 191c).lab",CO2,0.3197,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Dioxide [CO2]  [124-38-9]\CO2% (40) 191C Spectra\Carbon Dioxide (34.85%, 5.11m, 191c).lab",CO2,0.3485,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Dioxide [CO2]  [124-38-9]\CO2% (40) 191C Spectra\Carbon Dioxide (37.88%, 5.11m, 191c).lab",CO2,0.3788,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Dioxide [CO2]  [124-38-9]\CO2% (40) 191C Spectra\Carbon Dioxide (38.27%, 5.11m, 191c).lab",CO2,0.3827,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Dioxide [CO2]  [124-38-9]\CO2% (40) 191C Spectra\Carbon Dioxide (40.65%, 5.11m, 191c).lab",CO2,0.4065,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Dioxide [CO2]  [124-38-9]\CO2% (40) 191C Spectra\CO2% (   0.4%, 5.11m, 190C).lab",CO2,0.004,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Dioxide [CO2]  [124-38-9]\CO2% (40) 191C Spectra\CO2% (   0.8%, 5.11m, 190C).lab",CO2,0.008,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Dioxide [CO2]  [124-38-9]\CO2% (40) 191C Spectra\CO2% (   1.2%, 5.11m, 190C).lab",CO2,0.012,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Dioxide [CO2]  [124-38-9]\CO2% (40) 191C Spectra\CO2% (   1.6%, 5.11m, 190C).lab",CO2,0.016,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Dioxide [CO2]  [124-38-9]\CO2% (40) 191C Spectra\CO2% (   2.0%, 5.11m, 190C).lab",CO2,0.02,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Dioxide [CO2]  [124-38-9]\CO2% (40) 191C Spectra\CO2% (   2.8%, 5.11m, 190C).lab",CO2,0.028,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Dioxide [CO2]  [124-38-9]\CO2% (40) 191C Spectra\CO2% (   4.6%, 5.11m, 190C).lab",CO2,0.046,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Dioxide [CO2]  [124-38-9]\CO2% (40) 191C Spectra\CO2% (   5.6%, 5.11m, 190C).lab",CO2,0.056,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Dioxide [CO2]  [124-38-9]\CO2% (40) 191C Spectra\CO2% (   8.4%, 5.11m, 190C).lab",CO2,0.084,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Dioxide [CO2]  [124-38-9]\CO2% (40) 191C Spectra\CO2% (   9.2%, 5.11m, 190C).lab",CO2,0.092,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Dioxide [CO2]  [124-38-9]\CO2% (40) 191C Spectra\CO2% (  11.1%, 5.11m, 190C).lab",CO2,0.111,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Dioxide [CO2]  [124-38-9]\CO2% (40) 191C Spectra\CO2% (  13.9%, 5.11m, 190C).lab",CO2,0.139,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Dioxide [CO2]  [124-38-9]\CO2% (40) 191C Spectra\CO2% (  18.4%, 5.11m, 190C).lab",CO2,0.184,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Dioxide [CO2]  [124-38-9]\CO2% (40) 191C Spectra\CO2% (  23.0%, 5.11m, 190C).lab",CO2,0.23,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Dioxide [CO2]  [124-38-9]\CO2% 191c Spectra\CO2% (   0.4%, 5.11m, 190C).lab",CO2,0.004,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Dioxide [CO2]  [124-38-9]\CO2% 191c Spectra\CO2% (   0.8%, 5.11m, 190C).lab",CO2,0.008,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Dioxide [CO2]  [124-38-9]\CO2% 191c Spectra\CO2% (   1.2%, 5.11m, 190C).lab",CO2,0.012,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Dioxide [CO2]  [124-38-9]\CO2% 191c Spectra\CO2% (   1.6%, 5.11m, 190C).lab",CO2,0.016,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Dioxide [CO2]  [124-38-9]\CO2% 191c Spectra\CO2% (   2.0%, 5.11m, 190C).lab",CO2,0.02,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Dioxide [CO2]  [124-38-9]\CO2% 191c Spectra\CO2% (   2.8%, 5.11M, 190C) BC.LAB",CO2,0.028,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Dioxide [CO2]  [124-38-9]\CO2% 191c Spectra\CO2% (   4.6%, 5.11M, 190C) BC.LAB",CO2,0.046,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Dioxide [CO2]  [124-38-9]\CO2% 191c Spectra\CO2% (   5.6%, 5.11M, 190C) BC.LAB",CO2,0.056,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Dioxide [CO2]  [124-38-9]\CO2% 191c Spectra\CO2% (   8.4%, 5.11M, 190C) BC.LAB",CO2,0.084,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Dioxide [CO2]  [124-38-9]\CO2% 191c Spectra\CO2% (   9.2%, 5.11M, 190C) BC.LAB",CO2,0.092,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Dioxide [CO2]  [124-38-9]\CO2% 191c Spectra\CO2% (  11.1%, 5.11M, 190C) BC.LAB",CO2,0.111,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Dioxide [CO2]  [124-38-9]\CO2% 191c Spectra\CO2% (  13.9%, 5.11M, 190C) BC.LAB",CO2,0.139,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Dioxide [CO2]  [124-38-9]\CO2% 191c Spectra\CO2% (  18.4%, 5.11M, 190C) BC.LAB",CO2,0.184,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Dioxide [CO2]  [124-38-9]\CO2% 191c Spectra\CO2% (  23.0%, 5.11M, 190C) BC.LAB",CO2,0.23,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Dioxide [CO2]  [124-38-9]\CO2% 191c Spectra\Orig\CO2% (   2.8%, 5.11m, 190C).lab",CO2,0.028,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Dioxide [CO2]  [124-38-9]\CO2% 191c Spectra\Orig\CO2% (   4.6%, 5.11m, 190C).lab",CO2,0.046,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Dioxide [CO2]  [124-38-9]\CO2% 191c Spectra\Orig\CO2% (   5.6%, 5.11m, 190C).lab",CO2,0.084,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Dioxide [CO2]  [124-38-9]\CO2% 191c Spectra\Orig\CO2% (   8.4%, 5.11m, 190C).lab",CO2,0.084,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Dioxide [CO2]  [124-38-9]\CO2% 191c Spectra\Orig\CO2% (   9.2%, 5.11m, 190C).lab",CO2,0.092,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Dioxide [CO2]  [124-38-9]\CO2% 191c Spectra\Orig\CO2% (  11.1%, 5.11m, 190C).lab",CO2,0.111,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Dioxide [CO2]  [124-38-9]\CO2% 191c Spectra\Orig\CO2% (  13.9%, 5.11m, 190C).lab",CO2,0.139,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Dioxide [CO2]  [124-38-9]\CO2% 191c Spectra\Orig\CO2% (  18.4%, 5.11m, 190C).lab",CO2,0.184,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Dioxide [CO2]  [124-38-9]\CO2% 191c Spectra\Orig\CO2% (  23.0%, 5.11m, 190C).lab",CO2,0.23,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Monoxide [CO]  [630-08-0]\CO ppm 191c Spectra\CO (114ppm, 5.11m, 191C) bc.lab",CO,0.000114,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Monoxide [CO]  [630-08-0]\CO ppm 191c Spectra\CO (133ppm, 5.11m, 191C) bc.lab",CO,0.000133,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Monoxide [CO]  [630-08-0]\CO ppm 191c Spectra\CO (1425ppm, 5.11m, 191C) bc.lab",CO,0.001425,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Monoxide [CO]  [630-08-0]\CO ppm 191c Spectra\CO (152ppm, 5.11m, 191C) bc.lab",CO,0.000152,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Monoxide [CO]  [630-08-0]\CO ppm 191c Spectra\CO (171ppm, 5.11m, 191C) bc.lab",CO,0.000171,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Monoxide [CO]  [630-08-0]\CO ppm 191c Spectra\CO (1900ppm, 5.11m, 191C) bc.lab",CO,0.0019,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Monoxide [CO]  [630-08-0]\CO ppm 191c Spectra\CO (190ppm, 5.11m, 191C) bc.lab",CO,0.00019,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Monoxide [CO]  [630-08-0]\CO ppm 191c Spectra\CO (19ppm, 5.11m, 191C) bc.lab",CO,1.90E-05,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Monoxide [CO]  [630-08-0]\CO ppm 191c Spectra\CO (228ppm, 5.11m, 191C) bc.lab",CO,0.000228,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Monoxide [CO]  [630-08-0]\CO ppm 191c Spectra\CO (2375ppm, 5.11m, 191C) bc.lab",CO,0.002375,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Monoxide [CO]  [630-08-0]\CO ppm 191c Spectra\CO (266ppm, 5.11m, 191C) bc.lab",CO,0.000266,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Monoxide [CO]  [630-08-0]\CO ppm 191c Spectra\CO (2850ppm, 5.11m, 191C) bc.lab",CO,0.00285,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Monoxide [CO]  [630-08-0]\CO ppm 191c Spectra\CO (3325ppm, 5.11m, 191C) bc.lab",CO,0.003325,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Monoxide [CO]  [630-08-0]\CO ppm 191c Spectra\CO (343ppm, 5.11m, 191C) bc.lab",CO,0.000343,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Monoxide [CO]  [630-08-0]\CO ppm 191c Spectra\CO (381ppm, 5.11m, 191C) bc.lab",CO,0.000381,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Monoxide [CO]  [630-08-0]\CO ppm 191c Spectra\CO (38ppm, 5.11m, 191C) bc.lab",CO,3.80E-05,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Monoxide [CO]  [630-08-0]\CO ppm 191c Spectra\CO (419ppm, 5.11m, 191C) bc.lab",CO,0.000419,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Monoxide [CO]  [630-08-0]\CO ppm 191c Spectra\CO (4275ppm, 5.11m, 191C) bc.lab",CO,0.004275,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Monoxide [CO]  [630-08-0]\CO ppm 191c Spectra\CO (457ppm, 5.11m, 191C) bc.lab",CO,0.000457,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Monoxide [CO]  [630-08-0]\CO ppm 191c Spectra\CO (4750ppm, 5.11m, 191C) bc.lab",CO,0.00475,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Monoxide [CO]  [630-08-0]\CO ppm 191c Spectra\CO (495ppm, 5.11m, 191C) bc.lab",CO,0.000495,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Monoxide [CO]  [630-08-0]\CO ppm 191c Spectra\CO (533ppm, 5.11m, 191C) bc.lab",CO,0.000533,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Monoxide [CO]  [630-08-0]\CO ppm 191c Spectra\CO (5700ppm, 5.11m, 191C) bc.lab",CO,0.0057,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Monoxide [CO]  [630-08-0]\CO ppm 191c Spectra\CO (571ppm, 5.11m, 191C) bc.lab",CO,0.000571,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Monoxide [CO]  [630-08-0]\CO ppm 191c Spectra\CO (57ppm, 5.11m, 191C) bc.lab",CO,5.70E-05,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Monoxide [CO]  [630-08-0]\CO ppm 191c Spectra\CO (6650ppm, 5.11m, 191C) bc.lab",CO,0.00665,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Monoxide [CO]  [630-08-0]\CO ppm 191c Spectra\CO (7600ppm, 5.11m, 191C) bc.lab",CO,0.0076,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Monoxide [CO]  [630-08-0]\CO ppm 191c Spectra\CO (76ppm, 5.11m, 191C) bc.lab",CO,7.60E-05,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Monoxide [CO]  [630-08-0]\CO ppm 191c Spectra\CO (8550 ppm, 5.11m, 191C) bc.lab",CO,0.00855,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Monoxide [CO]  [630-08-0]\CO ppm 191c Spectra\CO (9500ppm, 5.11m, 191C) bc.lab",CO,0.0095,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Monoxide [CO]  [630-08-0]\CO ppm 191c Spectra\CO (950ppm, 5.11m, 191C) bc.lab",CO,0.00095,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Monoxide [CO]  [630-08-0]\CO ppm 191c Spectra\CO (95ppm, 5.11m, 191C) bc.lab",CO,9.50E-05,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Monoxide [CO]  [630-08-0]\CO ppm 191c Spectra\CO% ( 1 %, 5.11M, 0.5 CM-1, 191C, MNB) bc.lab",CO,0.01,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Monoxide [CO]  [630-08-0]\CO ppm 191c Spectra\CO% ( 1.5 %, 5.11M, 0.5 CM-1, 191C, MNB) bc.lab",CO,0.015,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Monoxide [CO]  [630-08-0]\CO ppm 191c Spectra\CO% ( 10 %, 5.11M, 0.5 CM-1, 191C, MNB) bc.lab",CO,0.1,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Monoxide [CO]  [630-08-0]\CO ppm 191c Spectra\CO% ( 2 %, 5.11M, 0.5 CM-1, 191C, MNB) bc.lab",CO,0.02,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Monoxide [CO]  [630-08-0]\CO ppm 191c Spectra\CO% ( 2.5 %, 5.11M, 0.5 CM-1, 191C, MNB) bc.lab",CO,0.025,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Monoxide [CO]  [630-08-0]\CO ppm 191c Spectra\CO% ( 3 %, 5.11M, 0.5 CM-1, 191C, MNB) bc.lab",CO,0.03,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Monoxide [CO]  [630-08-0]\CO ppm 191c Spectra\CO% ( 3.5 %, 5.11M, 0.5 CM-1, 191C, MNB) bc.lab",CO,0.035,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Monoxide [CO]  [630-08-0]\CO ppm 191c Spectra\CO% ( 4 %, 5.11M, 0.5 CM-1, 191C, MNB) bc.lab",CO,0.04,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Monoxide [CO]  [630-08-0]\CO ppm 191c Spectra\CO% ( 4.5 %, 5.11M, 0.5 CM-1, 191C, MNB) bc.lab",CO,0.045,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Monoxide [CO]  [630-08-0]\CO ppm 191c Spectra\CO% ( 5 %, 5.11M, 0.5 CM-1, 191C, MNB) bc.lab",CO,0.05,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Monoxide [CO]  [630-08-0]\CO ppm 191c Spectra\CO% ( 6 %, 5.11M, 0.5 CM-1, 191C, MNB) bc.lab",CO,0.06,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Monoxide [CO]  [630-08-0]\CO ppm 191c Spectra\CO% ( 7 %, 5.11M, 0.5 CM-1, 191C, MNB) bc.lab",CO,0.07,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Monoxide [CO]  [630-08-0]\CO ppm 191c Spectra\CO% ( 8 %, 5.11M, 0.5 CM-1, 191C, MNB) bc.lab",CO,0.08,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Monoxide [CO]  [630-08-0]\CO ppm 191c Spectra\CO% ( 9 %, 5.11M, 0.5 CM-1, 191C, MNB) bc.lab",CO,0.09,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Monoxide [CO]  [630-08-0]\CO% 191c Spectra\CO (0.0114%, 5.11m, 191C) bc.lab",CO,0.000114,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Monoxide [CO]  [630-08-0]\CO% 191c Spectra\CO (0.0133%, 5.11m, 191C) bc.lab",CO,0.000133,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Monoxide [CO]  [630-08-0]\CO% 191c Spectra\CO (0.0152%, 5.11m, 191C) bc.lab",CO,0.000152,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Monoxide [CO]  [630-08-0]\CO% 191c Spectra\CO (0.0171%, 5.11m, 191C) bc.lab",CO,0.000171,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Monoxide [CO]  [630-08-0]\CO% 191c Spectra\CO (0.0190%, 5.11m, 191C) bc.lab",CO,0.00019,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Monoxide [CO]  [630-08-0]\CO% 191c Spectra\CO (0.0228%, 5.11m, 191C) bc.lab",CO,0.000228,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Monoxide [CO]  [630-08-0]\CO% 191c Spectra\CO (0.0266%, 5.11m, 191C) bc.lab",CO,0.000266,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Monoxide [CO]  [630-08-0]\CO% 191c Spectra\CO (0.0343%, 5.11m, 191C) bc.lab",CO,0.000343,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Monoxide [CO]  [630-08-0]\CO% 191c Spectra\CO (0.0381%, 5.11m, 191C) bc.lab",CO,0.000381,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Monoxide [CO]  [630-08-0]\CO% 191c Spectra\CO (0.0419%, 5.11m, 191C) bc.lab",CO,0.000419,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Monoxide [CO]  [630-08-0]\CO% 191c Spectra\CO (0.0457%, 5.11m, 191C) bc.lab",CO,0.000457,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Monoxide [CO]  [630-08-0]\CO% 191c Spectra\CO (0.0475%, 5.11m, 191C) bc.lab",CO,0.000475,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Monoxide [CO]  [630-08-0]\CO% 191c Spectra\CO (0.0495%, 5.11m, 191C) bc.lab",CO,0.000495,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Monoxide [CO]  [630-08-0]\CO% 191c Spectra\CO (0.0533%, 5.11m, 191C) bc.lab",CO,0.000533,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Monoxide [CO]  [630-08-0]\CO% 191c Spectra\CO (0.0571%, 5.11m, 191C) bc.lab",CO,0.000571,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Monoxide [CO]  [630-08-0]\CO% 191c Spectra\CO (0.0950%, 5.11m, 191C) bc.lab",CO,0.00095,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Monoxide [CO]  [630-08-0]\CO% 191c Spectra\CO (0.1425%, 5.11m, 191C) bc.lab",CO,0.001425,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Monoxide [CO]  [630-08-0]\CO% 191c Spectra\CO (0.1900%, 5.11m, 191C) bc.lab",CO,0.0019,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Monoxide [CO]  [630-08-0]\CO% 191c Spectra\CO (0.2375%, 5.11m, 191C) bc.lab",CO,0.002375,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Monoxide [CO]  [630-08-0]\CO% 191c Spectra\CO (0.2850%, 5.11m, 191C) bc.lab",CO,0.00285,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Monoxide [CO]  [630-08-0]\CO% 191c Spectra\CO (0.3325%, 5.11m, 191C) bc.lab",CO,0.003325,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Monoxide [CO]  [630-08-0]\CO% 191c Spectra\CO (0.4275%, 5.11m, 191C) bc.lab",CO,0.004275,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Monoxide [CO]  [630-08-0]\CO% 191c Spectra\CO (0.4750%, 5.11m, 191C) bc.lab",CO,0.00475,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Monoxide [CO]  [630-08-0]\CO% 191c Spectra\CO (0.5700%, 5.11m, 191C) bc.lab",CO,0.0057,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Monoxide [CO]  [630-08-0]\CO% 191c Spectra\CO (0.6650%, 5.11m, 191C) bc.lab",CO,0.00665,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Monoxide [CO]  [630-08-0]\CO% 191c Spectra\CO (0.7600%, 5.11m, 191C) bc.lab",CO,0.0076,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Monoxide [CO]  [630-08-0]\CO% 191c Spectra\CO (0.8550%, 5.11m, 191C) bc.lab",CO,0.00855,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Monoxide [CO]  [630-08-0]\CO% 191c Spectra\CO (0.9500%, 5.11m, 191C) bc.lab",CO,0.0095,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Monoxide [CO]  [630-08-0]\CO% 191c Spectra\CO% ( 0.5 %, 5.11M, 0.5 CM-1, 191C, MNB) bc.lab",CO,0.005,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Monoxide [CO]  [630-08-0]\CO% 191c Spectra\CO% ( 1 %, 5.11M, 0.5 CM-1, 191C, MNB) bc.lab",CO,0.01,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Monoxide [CO]  [630-08-0]\CO% 191c Spectra\CO% ( 1.5 %, 5.11M, 0.5 CM-1, 191C, MNB) bc.lab",CO,0.015,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Monoxide [CO]  [630-08-0]\CO% 191c Spectra\CO% ( 10 %, 5.11M, 0.5 CM-1, 191C, MNB) bc.lab",CO,0.1,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Monoxide [CO]  [630-08-0]\CO% 191c Spectra\CO% ( 2 %, 5.11M, 0.5 CM-1, 191C, MNB) bc.lab",CO,0.02,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Monoxide [CO]  [630-08-0]\CO% 191c Spectra\CO% ( 2.5 %, 5.11M, 0.5 CM-1, 191C, MNB) bc.lab",CO,0.025,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Monoxide [CO]  [630-08-0]\CO% 191c Spectra\CO% ( 3 %, 5.11M, 0.5 CM-1, 191C, MNB) bc.lab",CO,0.03,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Monoxide [CO]  [630-08-0]\CO% 191c Spectra\CO% ( 3.5 %, 5.11M, 0.5 CM-1, 191C, MNB) bc.lab",CO,0.035,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Monoxide [CO]  [630-08-0]\CO% 191c Spectra\CO% ( 4 %, 5.11M, 0.5 CM-1, 191C, MNB) bc.lab",CO,0.04,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Monoxide [CO]  [630-08-0]\CO% 191c Spectra\CO% ( 4.5 %, 5.11M, 0.5 CM-1, 191C, MNB) bc.lab",CO,0.045,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Monoxide [CO]  [630-08-0]\CO% 191c Spectra\CO% ( 5 %, 5.11M, 0.5 CM-1, 191C, MNB) bc.lab",CO,0.05,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Monoxide [CO]  [630-08-0]\CO% 191c Spectra\CO% ( 6 %, 5.11M, 0.5 CM-1, 191C, MNB) bc.lab",CO,0.06,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Monoxide [CO]  [630-08-0]\CO% 191c Spectra\CO% ( 7 %, 5.11M, 0.5 CM-1, 191C, MNB) bc.lab",CO,0.07,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Monoxide [CO]  [630-08-0]\CO% 191c Spectra\CO% ( 8 %, 5.11M, 0.5 CM-1, 191C, MNB) bc.lab",CO,0.08,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Carbon Monoxide [CO]  [630-08-0]\CO% 191c Spectra\CO% ( 9 %, 5.11M, 0.5 CM-1, 191C, MNB) bc.lab",CO,0.09,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Diesel\Diesel 191C Spectra\Diesel (  29.0ppm, 5.11m, 191C).lab",Diesel,2.90E-05,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Diesel\Diesel 191C Spectra\Diesel ( 140.0ppm, 5.11m, 191C).lab",Diesel,0.00014,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Diesel\Diesel 191C Spectra\Diesel ( 208.0ppm, 5.11m, 191C).lab",Diesel,0.000208,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Diesel\Diesel 191C Spectra\Diesel ( 212.0ppm, 5.11m, 191C).lab",Diesel,0.000212,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Diesel\Diesel 191C Spectra\Diesel ( 270.0ppm, 5.11m, 191C).lab",Diesel,0.00027,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Diesel\Diesel 191C Spectra\Diesel ( 424.0ppm, 5.11m, 191C).lab",Diesel,0.000424,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Diesel\Diesel 191C Spectra\Diesel ( 477.0ppm, 5.11m, 191C).lab",Diesel,0.000477,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Diesel\Diesel 191C Spectra\Diesel ( 655.0ppm, 5.11m, 191C).lab",Diesel,0.000655,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Diesel\Diesel 191C Spectra\Diesel ( 683.0ppm, 5.11m, 191C).lab",Diesel,0.000683,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Diesel\Diesel 191C Spectra\Diesel (1313.0ppm, 5.11m, 191C).lab",Diesel,0.001313,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Diesel\Diesel 191C Spectra\Diesel (2650.0ppm, 5.11m, 191C).lab",Diesel,0.00265,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Diesel\Diesel 191C Spectra\Diesel (4500.0ppm, 5.11m, 191C).lab",Diesel,0.0045,511,191
+x:\EMISSIONS\FTIR_ML\reference_spectra\Ethane [C2H6] [74-84-0]\Ethane 191C Spectra\Ethane (100.31 ppm 191c 0.5cm-1 MNB) 0.25mm abs bc.lab,C2H6,0.00010031,511,191
+x:\EMISSIONS\FTIR_ML\reference_spectra\Ethane [C2H6] [74-84-0]\Ethane 191C Spectra\Ethane (1000 ppm 191c 0.5cm-1 MNB) 0.25mm abs bc.lab,C2H6,0.001,511,191
+x:\EMISSIONS\FTIR_ML\reference_spectra\Ethane [C2H6] [74-84-0]\Ethane 191C Spectra\Ethane (150.74 ppm 191c 0.5cm-1 MNB) 0.25mm abs bc.lab,C2H6,0.00015074,511,191
+x:\EMISSIONS\FTIR_ML\reference_spectra\Ethane [C2H6] [74-84-0]\Ethane 191C Spectra\Ethane (200 ppm 191c 0.5cm-1 MNB) 0.25mm abs bc.lab,C2H6,0.0002,511,191
+x:\EMISSIONS\FTIR_ML\reference_spectra\Ethane [C2H6] [74-84-0]\Ethane 191C Spectra\Ethane (250.94 ppm 191c 0.5cm-1 MNB) 0.25mm abs bc.lab,C2H6,0.00025094,511,191
+x:\EMISSIONS\FTIR_ML\reference_spectra\Ethane [C2H6] [74-84-0]\Ethane 191C Spectra\Ethane (300.7 ppm 191c 0.5cm-1 MNB) 0.25mm abs bc.lab,C2H6,0.0003007,511,191
+x:\EMISSIONS\FTIR_ML\reference_spectra\Ethane [C2H6] [74-84-0]\Ethane 191C Spectra\Ethane (350.65 ppm 191c 0.5cm-1 MNB) 0.25mm abs bc.lab,C2H6,0.00035065,511,191
+x:\EMISSIONS\FTIR_ML\reference_spectra\Ethane [C2H6] [74-84-0]\Ethane 191C Spectra\Ethane (400.48 ppm 191c 0.5cm-1 MNB) 0.25mm abs bc.lab,C2H6,0.00040048,511,191
+x:\EMISSIONS\FTIR_ML\reference_spectra\Ethane [C2H6] [74-84-0]\Ethane 191C Spectra\Ethane (450.55 ppm 191c 0.5cm-1 MNB) 0.25mm abs bc.lab,C2H6,0.00045055,511,191
+x:\EMISSIONS\FTIR_ML\reference_spectra\Ethane [C2H6] [74-84-0]\Ethane 191C Spectra\Ethane (500 ppm 191c 0.5cm-1 MNB) 0.25mm abs bc.lab,C2H6,0.0005,511,191
+x:\EMISSIONS\FTIR_ML\reference_spectra\Ethane [C2H6] [74-84-0]\Ethane 191C Spectra\Ethane (550.56 ppm 191c 0.5cm-1 MNB) 0.25mm abs bc.lab,C2H6,0.00055056,511,191
+x:\EMISSIONS\FTIR_ML\reference_spectra\Ethane [C2H6] [74-84-0]\Ethane 191C Spectra\Ethane (600 ppm 191c 0.5cm-1 MNB) 0.25mm abs bc.lab,C2H6,0.0006,511,191
+x:\EMISSIONS\FTIR_ML\reference_spectra\Ethane [C2H6] [74-84-0]\Ethane 191C Spectra\Ethane (650.35 ppm 191c 0.5cm-1 MNB) 0.25mm abs bc.lab,C2H6,0.00065035,511,191
+x:\EMISSIONS\FTIR_ML\reference_spectra\Ethane [C2H6] [74-84-0]\Ethane 191C Spectra\Ethane (700.6 ppm 191c 0.5cm-1 MNB) 0.25mm abs bc.lab,C2H6,0.0007006,511,191
+x:\EMISSIONS\FTIR_ML\reference_spectra\Ethane [C2H6] [74-84-0]\Ethane 191C Spectra\Ethane (750 ppm 191c 0.5cm-1 MNB) 0.25mm abs bc.lab,C2H6,0.00075,511,191
+x:\EMISSIONS\FTIR_ML\reference_spectra\Ethane [C2H6] [74-84-0]\Ethane 191C Spectra\Ethane (800 ppm 191c 0.5cm-1 MNB) 0.25mm abs bc.lab,C2H6,0.0008,511,191
+x:\EMISSIONS\FTIR_ML\reference_spectra\Ethane [C2H6] [74-84-0]\Ethane 191C Spectra\Ethane (850 ppm 191c 0.5cm-1 MNB) 0.25mm abs bc.lab,C2H6,0.00085,511,191
+x:\EMISSIONS\FTIR_ML\reference_spectra\Ethane [C2H6] [74-84-0]\Ethane 191C Spectra\Ethane (900 ppm 191c 0.5cm-1 MNB) 0.25mm abs bc.lab,C2H6,0.0009,511,191
+x:\EMISSIONS\FTIR_ML\reference_spectra\Ethane [C2H6] [74-84-0]\Ethane 191C Spectra\Ethane (950 ppm 191c 0.5cm-1 MNB) 0.25mm abs bc.lab,C2H6,0.00095,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Ethanol [C2H6O] [64-17-5]\Ethanol % 191C Spectra\Ethanol (0.02%, 5.11m, 191C).lab",C2H6O,0.0002,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Ethanol [C2H6O] [64-17-5]\Ethanol % 191C Spectra\Ethanol (0.05%, 5.11m, 191C).lab",C2H6O,0.0005,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Ethanol [C2H6O] [64-17-5]\Ethanol % 191C Spectra\Ethanol (0.1%, 5.11m, 191C).lab",C2H6O,0.001,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Ethanol [C2H6O] [64-17-5]\Ethanol % 191C Spectra\Ethanol (0.2%, 5.11m, 191C).lab",C2H6O,0.002,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Ethanol [C2H6O] [64-17-5]\Ethanol % 191C Spectra\Ethanol (0.5%, 5.11m, 191C).lab",C2H6O,0.005,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Ethanol [C2H6O] [64-17-5]\Ethanol % 191C Spectra\Ethanol (1.0%, 5.11m, 191C).lab",C2H6O,0.01,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Ethanol [C2H6O] [64-17-5]\Ethanol 191C Spectra\Ethanol (10000ppm, 5.11m, 191C).lab",C2H6O,0.01,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Ethanol [C2H6O] [64-17-5]\Ethanol 191C Spectra\Ethanol (1000ppm, 5.11m, 191C).lab",C2H6O,0.001,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Ethanol [C2H6O] [64-17-5]\Ethanol 191C Spectra\Ethanol (100ppm, 5.11m, 191C).lab",C2H6O,1.00E-04,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Ethanol [C2H6O] [64-17-5]\Ethanol 191C Spectra\Ethanol (2000ppm, 5.11m, 191C).lab",C2H6O,0.002,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Ethanol [C2H6O] [64-17-5]\Ethanol 191C Spectra\Ethanol (200ppm, 5.11m, 191C).lab",C2H6O,0.0002,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Ethanol [C2H6O] [64-17-5]\Ethanol 191C Spectra\Ethanol (5000ppm, 5.11m, 191C).lab",C2H6O,0.005,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Ethanol [C2H6O] [64-17-5]\Ethanol 191C Spectra\Ethanol (500ppm, 5.11m, 191C).lab",C2H6O,0.0005,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Ethylene [C2H4]  [74-85-1]\Ethylene 191c Spectra\Ethylene (   9.74ppm, 5.11m, 190C).lab",C2H4,9.74E-06,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Ethylene [C2H4]  [74-85-1]\Ethylene 191c Spectra\Ethylene (  19.49ppm, 5.11m, 190C).lab",C2H4,1.95E-05,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Ethylene [C2H4]  [74-85-1]\Ethylene 191c Spectra\Ethylene (  29.23ppm, 5.11m, 190C).lab",C2H4,2.92E-05,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Ethylene [C2H4]  [74-85-1]\Ethylene 191c Spectra\Ethylene (  300.00ppm, 5.11m, 190C).lab",C2H4,0.0003,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Ethylene [C2H4]  [74-85-1]\Ethylene 191c Spectra\Ethylene (  38.98ppm, 5.11m, 190C).lab",C2H4,3.90E-05,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Ethylene [C2H4]  [74-85-1]\Ethylene 191c Spectra\Ethylene (  48.72ppm, 5.11m, 190C).lab",C2H4,4.87E-05,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Ethylene [C2H4]  [74-85-1]\Ethylene 191c Spectra\Ethylene (  58.46ppm, 5.11m, 190C).lab",C2H4,5.85E-05,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Ethylene [C2H4]  [74-85-1]\Ethylene 191c Spectra\Ethylene (  600.00ppm, 5.11m, 190C).lab",C2H4,0.0006,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Ethylene [C2H4]  [74-85-1]\Ethylene 191c Spectra\Ethylene (  68.21ppm, 5.11m, 190C).lab",C2H4,6.82E-05,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Ethylene [C2H4]  [74-85-1]\Ethylene 191c Spectra\Ethylene (  77.95ppm, 5.11m, 190C).lab",C2H4,7.80E-05,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Ethylene [C2H4]  [74-85-1]\Ethylene 191c Spectra\Ethylene (  87.70ppm, 5.11m, 190C).lab",C2H4,8.77E-05,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Ethylene [C2H4]  [74-85-1]\Ethylene 191c Spectra\Ethylene (  900.00ppm, 5.11m, 190C).lab",C2H4,0.0009,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Ethylene [C2H4]  [74-85-1]\Ethylene 191c Spectra\Ethylene (  97.44ppm, 5.11m, 190C).lab",C2H4,9.74E-05,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Ethylene [C2H4]  [74-85-1]\Ethylene 191c Spectra\Ethylene ( 1200.00ppm, 5.11m, 190C).lab",C2H4,0.0012,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Ethylene [C2H4]  [74-85-1]\Ethylene 191c Spectra\Ethylene ( 1500.00ppm, 5.11m, 190C).lab",C2H4,0.0015,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Ethylene [C2H4]  [74-85-1]\Ethylene 191c Spectra\Ethylene ( 1800.00ppm, 5.11m, 190C).lab",C2H4,0.0018,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Ethylene [C2H4]  [74-85-1]\Ethylene 191c Spectra\Ethylene ( 2100.00ppm, 5.11m, 190C).lab",C2H4,0.0021,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Ethylene [C2H4]  [74-85-1]\Ethylene 191c Spectra\Ethylene ( 2400.00ppm, 5.11m, 190C).lab",C2H4,0.0024,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Ethylene [C2H4]  [74-85-1]\Ethylene 191c Spectra\Ethylene ( 2700.00ppm, 5.11m, 190C).lab",C2H4,0.0027,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Ethylene [C2H4]  [74-85-1]\Ethylene 191c Spectra\Ethylene ( 3000.00ppm, 5.11m, 190C).lab",C2H4,0.003,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Hydrogen Cyanide [HCN]  [74-90-8]\HCN 191c [R3] Spectra\HCN (  29.76ppm, 5.11m, 191C) bc.lab",HCN,2.98E-05,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Hydrogen Cyanide [HCN]  [74-90-8]\HCN 191c [R3] Spectra\HCN (  39.68ppm, 5.11m, 191C) bc.lab",HCN,3.97E-05,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Hydrogen Cyanide [HCN]  [74-90-8]\HCN 191c [R3] Spectra\HCN (  49.60ppm, 5.11m, 191C) bc.lab",HCN,4.96E-05,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Hydrogen Cyanide [HCN]  [74-90-8]\HCN 191c [R3] Spectra\HCN (  59.52ppm, 5.11m, 191C) bc.lab",HCN,5.95E-05,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Hydrogen Cyanide [HCN]  [74-90-8]\HCN 191c [R3] Spectra\HCN (  69.44ppm, 5.11m, 191C) bc.lab",HCN,6.94E-05,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Hydrogen Cyanide [HCN]  [74-90-8]\HCN 191c [R3] Spectra\HCN (  79.36ppm, 5.11m, 191C) bc.lab",HCN,7.94E-05,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Hydrogen Cyanide [HCN]  [74-90-8]\HCN 191c [R3] Spectra\HCN (  89.28ppm, 5.11m, 191C) bc.lab",HCN,8.93E-05,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Hydrogen Cyanide [HCN]  [74-90-8]\HCN 191c [R3] Spectra\HCN (  99.20ppm, 5.11m, 191C) bc.lab",HCN,9.92E-05,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Hydrogen Cyanide [HCN]  [74-90-8]\HCN 191c [R3] Spectra\HCN (12.1ppm, 0.95 atm, 5.11m, 191C).lab",HCN,1.21E-05,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Hydrogen Cyanide [HCN]  [74-90-8]\HCN 191c [R3] Spectra\HCN (16.0ppm, 0.95 atm, 5.11m, 191C).lab",HCN,1.60E-05,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Hydrogen Cyanide [HCN]  [74-90-8]\HCN 191c [R3] Spectra\HCN (20.0ppm, 0.95 atm, 5.11m, 191C).lab",HCN,2.00E-05,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Isocyanic Acid [HNCO] [75-13-8]\Isocyanic acid 191C Spectra\HNCO (134ppm, 5.11m, 190C).LAB",HNCO,0.000134,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Isocyanic Acid [HNCO] [75-13-8]\Isocyanic acid 191C Spectra\HNCO (14.2ppm, 5.11m, 190C).lab",HNCO,1.42E-05,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Isocyanic Acid [HNCO] [75-13-8]\Isocyanic acid 191C Spectra\HNCO (199ppm, 5.11m, 190C).lab",HNCO,0.000199,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Isocyanic Acid [HNCO] [75-13-8]\Isocyanic acid 191C Spectra\HNCO (235ppm, 5.11m, 190C).lab",HNCO,0.000235,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Isocyanic Acid [HNCO] [75-13-8]\Isocyanic acid 191C Spectra\HNCO (24.6ppm, 5.11m, 190C).LAB",HNCO,2.46E-05,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Isocyanic Acid [HNCO] [75-13-8]\Isocyanic acid 191C Spectra\HNCO (277ppm, 5.11m, 190C).LAB",HNCO,0.000277,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Isocyanic Acid [HNCO] [75-13-8]\Isocyanic acid 191C Spectra\HNCO (346ppm, 5.11m, 190C).lab",HNCO,0.000346,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Isocyanic Acid [HNCO] [75-13-8]\Isocyanic acid 191C Spectra\HNCO (394ppm, 5.11m, 190C).LAB",HNCO,0.000394,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Isocyanic Acid [HNCO] [75-13-8]\Isocyanic acid 191C Spectra\HNCO (52ppm, 5.11m, 190C).LAB",HNCO,5.20E-05,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Isocyanic Acid [HNCO] [75-13-8]\Isocyanic acid 191C Spectra\HNCO (66.9ppm, 5.11ppm, 190C).lab",HNCO,6.69E-05,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Isocyanic Acid [HNCO] [75-13-8]\Isocyanic acid 191C Spectra\HNCO (68.8ppm, 5.11ppm, 190C).lab",HNCO,6.88E-05,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Isocyanic Acid [HNCO] [75-13-8]\Isocyanic acid 191C Spectra\HNCO (78ppm, 5.11m, 190C).lab",HNCO,7.80E-05,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Isocyanic Acid [HNCO] [75-13-8]\Isocyanic acid 191C Spectra\Urea (~89 ppm corr, 5.11m, 191C).lab",HNCO,8.90E-05,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Methane [CH4]  [74-82-8]\CH4 (3000, 20000, 10%) 191C Spectra\BKG 2014-08-18-9486-10%CH4.LAB",CH4,0.1,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Methane [CH4]  [74-82-8]\CH4 (3000, 20000, 10%) 191C Spectra\CH4 in %\CH4 (  0.2%, 5.11m, 190C).lab",CH4,0.002,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Methane [CH4]  [74-82-8]\CH4 (3000, 20000, 10%) 191C Spectra\CH4 in %\CH4 (  0.4%, 5.11m, 190C).lab",CH4,0.004,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Methane [CH4]  [74-82-8]\CH4 (3000, 20000, 10%) 191C Spectra\CH4 in %\CH4 (  0.6%, 5.11m, 190C).lab",CH4,0.006,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Methane [CH4]  [74-82-8]\CH4 (3000, 20000, 10%) 191C Spectra\CH4 in %\CH4 (  0.8%, 5.11m, 190C).lab",CH4,0.008,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Methane [CH4]  [74-82-8]\CH4 (3000, 20000, 10%) 191C Spectra\CH4 in %\CH4 (0.002425%, 5.11m, 191C).lab",CH4,2.43E-05,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Methane [CH4]  [74-82-8]\CH4 (3000, 20000, 10%) 191C Spectra\CH4 in %\CH4 (0.003395%, 5.11m, 191C).lab",CH4,3.40E-05,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Methane [CH4]  [74-82-8]\CH4 (3000, 20000, 10%) 191C Spectra\CH4 in %\CH4 (0.004365%, 5.11m, 191C).lab",CH4,4.37E-05,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Methane [CH4]  [74-82-8]\CH4 (3000, 20000, 10%) 191C Spectra\CH4 in %\CH4 (0.005335%, 5.11m, 191C).lab",CH4,5.34E-05,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Methane [CH4]  [74-82-8]\CH4 (3000, 20000, 10%) 191C Spectra\CH4 in %\CH4 (0.00679%, 5.11m, 191C).lab",CH4,6.79E-05,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Methane [CH4]  [74-82-8]\CH4 (3000, 20000, 10%) 191C Spectra\CH4 in %\CH4 (0.00776%, 5.11m, 191C).lab",CH4,7.76E-05,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Methane [CH4]  [74-82-8]\CH4 (3000, 20000, 10%) 191C Spectra\CH4 in %\CH4 (0.00873%, 5.11m, 191C).lab",CH4,8.73E-05,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Methane [CH4]  [74-82-8]\CH4 (3000, 20000, 10%) 191C Spectra\CH4 in %\CH4 (0.0097%, 5.11m, 191C).lab",CH4,9.70E-05,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Methane [CH4]  [74-82-8]\CH4 (3000, 20000, 10%) 191C Spectra\CH4 in %\CH4 (0.01164%, 5.11m, 191C).lab",CH4,0.0001164,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Methane [CH4]  [74-82-8]\CH4 (3000, 20000, 10%) 191C Spectra\CH4 in %\CH4 (0.01358%, 5.11m, 191C).lab",CH4,0.0001358,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Methane [CH4]  [74-82-8]\CH4 (3000, 20000, 10%) 191C Spectra\CH4 in %\CH4 (0.01552%, 5.11m, 191C).lab",CH4,0.0001552,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Methane [CH4]  [74-82-8]\CH4 (3000, 20000, 10%) 191C Spectra\CH4 in %\CH4 (0.01746%, 5.11m, 191C).lab",CH4,0.0001746,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Methane [CH4]  [74-82-8]\CH4 (3000, 20000, 10%) 191C Spectra\CH4 in %\CH4 (0.0194%, 5.11m, 191C).lab",CH4,0.000194,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Methane [CH4]  [74-82-8]\CH4 (3000, 20000, 10%) 191C Spectra\CH4 in %\CH4 (0.02134%, 5.11m, 191C).lab",CH4,0.0002134,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Methane [CH4]  [74-82-8]\CH4 (3000, 20000, 10%) 191C Spectra\CH4 in %\CH4 (0.02328%, 5.11m, 191C).lab",CH4,0.0002328,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Methane [CH4]  [74-82-8]\CH4 (3000, 20000, 10%) 191C Spectra\CH4 in %\CH4 (0.02522, 5.11m, 191C).lab",CH4,0.0002522,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Methane [CH4]  [74-82-8]\CH4 (3000, 20000, 10%) 191C Spectra\CH4 in %\CH4 (0.02716, 5.11m, 191C).lab",CH4,0.0002716,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Methane [CH4]  [74-82-8]\CH4 (3000, 20000, 10%) 191C Spectra\CH4 in %\CH4 (0.029003%, 5.11m, 191C).lab",CH4,0.00029003,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Methane [CH4]  [74-82-8]\CH4 (3000, 20000, 10%) 191C Spectra\CH4 in %\CH4 (0.03395%, 5.11m, 191C).lab",CH4,0.0003395,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Methane [CH4]  [74-82-8]\CH4 (3000, 20000, 10%) 191C Spectra\CH4 in %\CH4 (0.04365%, 5.11m, 191C).lab",CH4,0.0004365,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Methane [CH4]  [74-82-8]\CH4 (3000, 20000, 10%) 191C Spectra\CH4 in %\CH4 (0.0582%, 5.11m, 191C).lab",CH4,0.000582,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Methane [CH4]  [74-82-8]\CH4 (3000, 20000, 10%) 191C Spectra\CH4 in %\CH4 (0.0679%, 5.11m, 191C).lab",CH4,0.000679,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Methane [CH4]  [74-82-8]\CH4 (3000, 20000, 10%) 191C Spectra\CH4 in %\CH4 (0.0776%, 5.11m, 191C).lab",CH4,0.000776,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Methane [CH4]  [74-82-8]\CH4 (3000, 20000, 10%) 191C Spectra\CH4 in %\CH4 (0.0873%, 5.11m, 191C).lab",CH4,0.000873,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Methane [CH4]  [74-82-8]\CH4 (3000, 20000, 10%) 191C Spectra\CH4 in %\CH4 (0.0970%, 5.11m, 191C).lab",CH4,0.00097,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Methane [CH4]  [74-82-8]\CH4 (3000, 20000, 10%) 191C Spectra\CH4 in %\CH4 (0.1164%, 5.11m, 191C).lab",CH4,0.001164,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Methane [CH4]  [74-82-8]\CH4 (3000, 20000, 10%) 191C Spectra\CH4 in %\CH4 (0.1940%, 5.11m, 191C).lab",CH4,0.00194,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Methane [CH4]  [74-82-8]\CH4 (3000, 20000, 10%) 191C Spectra\CH4 in %\CH4 (0.2134%, 5.11m, 191C).lab",CH4,0.002134,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Methane [CH4]  [74-82-8]\CH4 (3000, 20000, 10%) 191C Spectra\CH4 in %\CH4 (0.2328%, 5.11m, 191C).lab",CH4,0.002328,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Methane [CH4]  [74-82-8]\CH4 (3000, 20000, 10%) 191C Spectra\CH4 in %\CH4 (0.2522%, 5.11m, 191C).lab",CH4,0.002522,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Methane [CH4]  [74-82-8]\CH4 (3000, 20000, 10%) 191C Spectra\CH4 in %\CH4 (0.2716%, 5.11m, 191C).lab",CH4,0.002716,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Methane [CH4]  [74-82-8]\CH4 (3000, 20000, 10%) 191C Spectra\CH4 in %\CH4 (0.29003%, 5.11m, 191C).lab",CH4,0.0029003,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Methane [CH4]  [74-82-8]\CH4 (3000, 20000, 10%) 191C Spectra\CH4 in %\CH4% ( 1.084 % adj, 5.11M, 0.5CM-1, 191C, MNB).lab",CH4,0.1084,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Methane [CH4]  [74-82-8]\CH4 (3000, 20000, 10%) 191C Spectra\CH4 in %\CH4% ( 10 %, 5.11M, 0.5CM-1, 191C, MNB).lab",CH4,0.1,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Methane [CH4]  [74-82-8]\CH4 (3000, 20000, 10%) 191C Spectra\CH4 in %\CH4% ( 2.065 % adj, 5.11M, 0.5CM-1, 191C, MNB).lab",CH4,0.02065,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Methane [CH4]  [74-82-8]\CH4 (3000, 20000, 10%) 191C Spectra\CH4 in %\CH4% ( 3 %, 5.11M, 0.5CM-1, 191C, MNB).lab",CH4,0.03,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Methane [CH4]  [74-82-8]\CH4 (3000, 20000, 10%) 191C Spectra\CH4 in %\CH4% ( 4 %, 5.11M, 0.5CM-1, 191C, MNB).lab",CH4,0.04,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Methane [CH4]  [74-82-8]\CH4 (3000, 20000, 10%) 191C Spectra\CH4 in %\CH4% ( 5 %, 5.11M, 0.5CM-1, 191C, MNB).lab",CH4,0.05,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Methane [CH4]  [74-82-8]\CH4 (3000, 20000, 10%) 191C Spectra\CH4 in %\CH4% ( 6 %, 5.11M, 0.5CM-1, 191C, MNB).lab",CH4,0.06,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Methane [CH4]  [74-82-8]\CH4 (3000, 20000, 10%) 191C Spectra\CH4 in %\CH4% ( 7 %, 5.11M, 0.5CM-1, 191C, MNB).lab",CH4,0.07,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Methane [CH4]  [74-82-8]\CH4 (3000, 20000, 10%) 191C Spectra\CH4 in %\CH4% ( 8 %, 5.11M, 0.5CM-1, 191C, MNB).lab",CH4,0.08,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Methane [CH4]  [74-82-8]\CH4 (3000, 20000, 10%) 191C Spectra\CH4 in %\CH4% ( 9 %, 5.11M, 0.5CM-1, 191C, MNB).lab",CH4,0.09,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Methane [CH4]  [74-82-8]\CH4 (3000, 20000, 10%) 191C Spectra\CH4 in ppm\CH4 (  2000.00ppm, 5.11m, 190C).lab",CH4,0.002,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Methane [CH4]  [74-82-8]\CH4 (3000, 20000, 10%) 191C Spectra\CH4 in ppm\CH4 (  4000.00ppm, 5.11m, 190C).lab",CH4,0.004,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Methane [CH4]  [74-82-8]\CH4 (3000, 20000, 10%) 191C Spectra\CH4 in ppm\CH4 (  6000.00ppm, 5.11m, 190C).lab",CH4,0.006,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Methane [CH4]  [74-82-8]\CH4 (3000, 20000, 10%) 191C Spectra\CH4 in ppm\CH4 (  8000.00ppm, 5.11m, 190C).lab",CH4,0.008,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Methane [CH4]  [74-82-8]\CH4 (3000, 20000, 10%) 191C Spectra\CH4 in ppm\CH4 ( 10000.00ppm, 5.11m, 190C).lab",CH4,0.01,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Methane [CH4]  [74-82-8]\CH4 (3000, 20000, 10%) 191C Spectra\CH4 in ppm\CH4 ( 12000.00ppm, 5.11m, 190C).lab",CH4,0.012,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Methane [CH4]  [74-82-8]\CH4 (3000, 20000, 10%) 191C Spectra\CH4 in ppm\CH4 ( 14000.00ppm, 5.11m, 190C).lab",CH4,0.014,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Methane [CH4]  [74-82-8]\CH4 (3000, 20000, 10%) 191C Spectra\CH4 in ppm\CH4 ( 16000.00ppm, 5.11m, 190C).lab",CH4,0.016,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Methane [CH4]  [74-82-8]\CH4 (3000, 20000, 10%) 191C Spectra\CH4 in ppm\CH4 ( 18000.00ppm, 5.11m, 190C).lab",CH4,0.018,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Methane [CH4]  [74-82-8]\CH4 (3000, 20000, 10%) 191C Spectra\CH4 in ppm\CH4 ( 20000.00ppm, 5.11m, 190C).lab",CH4,0.02,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Methane [CH4]  [74-82-8]\CH4 (3000, 20000, 10%) 191C Spectra\CH4 in ppm\CH4 (116.4 ppm, 5.11m, 191C).lab",CH4,0.0001164,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Methane [CH4]  [74-82-8]\CH4 (3000, 20000, 10%) 191C Spectra\CH4 in ppm\CH4 (1164 ppm, 5.11m, 191C).lab",CH4,0.001164,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Methane [CH4]  [74-82-8]\CH4 (3000, 20000, 10%) 191C Spectra\CH4 in ppm\CH4 (135.8 ppm, 5.11m, 191C).lab",CH4,0.0001358,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Methane [CH4]  [74-82-8]\CH4 (3000, 20000, 10%) 191C Spectra\CH4 in ppm\CH4 (1358 ppm, 5.11m, 191C).lab",CH4,0.001358,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Methane [CH4]  [74-82-8]\CH4 (3000, 20000, 10%) 191C Spectra\CH4 in ppm\CH4 (14.55 ppm, 5.11m, 191C).lab",CH4,1.46E-05,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Methane [CH4]  [74-82-8]\CH4 (3000, 20000, 10%) 191C Spectra\CH4 in ppm\CH4 (155.2 ppm, 5.11m, 191C).lab",CH4,0.0001552,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Methane [CH4]  [74-82-8]\CH4 (3000, 20000, 10%) 191C Spectra\CH4 in ppm\CH4 (1552 ppm, 5.11m, 191C).lab",CH4,0.001552,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Methane [CH4]  [74-82-8]\CH4 (3000, 20000, 10%) 191C Spectra\CH4 in ppm\CH4 (174.6 ppm, 5.11m, 191C).lab",CH4,0.0001746,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Methane [CH4]  [74-82-8]\CH4 (3000, 20000, 10%) 191C Spectra\CH4 in ppm\CH4 (1746 ppm, 5.11m, 191C).lab",CH4,0.001746,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Methane [CH4]  [74-82-8]\CH4 (3000, 20000, 10%) 191C Spectra\CH4 in ppm\CH4 (194 ppm, 5.11m, 191C).lab",CH4,0.000194,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Methane [CH4]  [74-82-8]\CH4 (3000, 20000, 10%) 191C Spectra\CH4 in ppm\CH4 (1940 ppm, 5.11m, 191C).lab",CH4,0.00194,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Methane [CH4]  [74-82-8]\CH4 (3000, 20000, 10%) 191C Spectra\CH4 in ppm\CH4 (213.4 ppm, 5.11m, 191C).lab",CH4,0.0002134,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Methane [CH4]  [74-82-8]\CH4 (3000, 20000, 10%) 191C Spectra\CH4 in ppm\CH4 (2134 ppm, 5.11m, 191C).lab",CH4,0.002134,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Methane [CH4]  [74-82-8]\CH4 (3000, 20000, 10%) 191C Spectra\CH4 in ppm\CH4 (218.25 ppm, 5.11m, 191C).lab",CH4,0.00021825,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Methane [CH4]  [74-82-8]\CH4 (3000, 20000, 10%) 191C Spectra\CH4 in ppm\CH4 (2182.5 ppm, 5.11m, 191C).lab",CH4,0.0021825,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Methane [CH4]  [74-82-8]\CH4 (3000, 20000, 10%) 191C Spectra\CH4 in ppm\CH4 (232.8 ppm, 5.11m, 191C).lab",CH4,0.0002328,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Methane [CH4]  [74-82-8]\CH4 (3000, 20000, 10%) 191C Spectra\CH4 in ppm\CH4 (2328 ppm, 5.11m, 191C).lab",CH4,0.002328,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Methane [CH4]  [74-82-8]\CH4 (3000, 20000, 10%) 191C Spectra\CH4 in ppm\CH4 (24.25 ppm, 5.11m, 191C).lab",CH4,2.43E-05,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Methane [CH4]  [74-82-8]\CH4 (3000, 20000, 10%) 191C Spectra\CH4 in ppm\CH4 (242.5 ppm, 5.11m, 191C).lab",CH4,0.0002425,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Methane [CH4]  [74-82-8]\CH4 (3000, 20000, 10%) 191C Spectra\CH4 in ppm\CH4 (252.2 ppm, 5.11m, 191C).lab",CH4,0.0002522,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Methane [CH4]  [74-82-8]\CH4 (3000, 20000, 10%) 191C Spectra\CH4 in ppm\CH4 (2522 ppm, 5.11m, 191C).lab",CH4,0.002522,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Methane [CH4]  [74-82-8]\CH4 (3000, 20000, 10%) 191C Spectra\CH4 in ppm\CH4 (271.6 ppm, 5.11m, 191C).lab",CH4,0.0002716,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Methane [CH4]  [74-82-8]\CH4 (3000, 20000, 10%) 191C Spectra\CH4 in ppm\CH4 (2716 ppm, 5.11m, 191C).lab",CH4,0.002716,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Methane [CH4]  [74-82-8]\CH4 (3000, 20000, 10%) 191C Spectra\CH4 in ppm\CH4 (290.03 ppm, 5.11m, 191C).lab",CH4,0.00029003,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Methane [CH4]  [74-82-8]\CH4 (3000, 20000, 10%) 191C Spectra\CH4 in ppm\CH4 (2900.3 ppm, 5.11m, 191C).lab",CH4,0.0029003,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Methane [CH4]  [74-82-8]\CH4 (3000, 20000, 10%) 191C Spectra\CH4 in ppm\CH4 (33.95 ppm, 5.11m, 191C).lab",CH4,3.40E-05,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Methane [CH4]  [74-82-8]\CH4 (3000, 20000, 10%) 191C Spectra\CH4 in ppm\CH4 (339.5 ppm, 5.11m, 191C).lab",CH4,0.0003395,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Methane [CH4]  [74-82-8]\CH4 (3000, 20000, 10%) 191C Spectra\CH4 in ppm\CH4 (43.65 ppm, 5.11m, 191C).lab",CH4,4.37E-05,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Methane [CH4]  [74-82-8]\CH4 (3000, 20000, 10%) 191C Spectra\CH4 in ppm\CH4 (436.5 ppm, 5.11m, 191C).lab",CH4,0.0004365,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Methane [CH4]  [74-82-8]\CH4 (3000, 20000, 10%) 191C Spectra\CH4 in ppm\CH4 (53.35 ppm, 5.11m, 191C).lab",CH4,5.33E-05,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Methane [CH4]  [74-82-8]\CH4 (3000, 20000, 10%) 191C Spectra\CH4 in ppm\CH4 (58.2 ppm, 5.11m, 191C).lab",CH4,5.82E-05,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Methane [CH4]  [74-82-8]\CH4 (3000, 20000, 10%) 191C Spectra\CH4 in ppm\CH4 (582 ppm, 5.11m, 191C).lab",CH4,0.000582,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Methane [CH4]  [74-82-8]\CH4 (3000, 20000, 10%) 191C Spectra\CH4 in ppm\CH4 (63.05 ppm, 5.11m, 191C).lab",CH4,6.30E-05,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Methane [CH4]  [74-82-8]\CH4 (3000, 20000, 10%) 191C Spectra\CH4 in ppm\CH4 (67.9 ppm, 5.11m, 191C).lab",CH4,6.79E-05,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Methane [CH4]  [74-82-8]\CH4 (3000, 20000, 10%) 191C Spectra\CH4 in ppm\CH4 (67.9b ppm, 5.11m, 191C).lab",CH4,6.79E-05,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Methane [CH4]  [74-82-8]\CH4 (3000, 20000, 10%) 191C Spectra\CH4 in ppm\CH4 (679 ppm, 5.11m, 191C).lab",CH4,0.000679,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Methane [CH4]  [74-82-8]\CH4 (3000, 20000, 10%) 191C Spectra\CH4 in ppm\CH4 (77.6 ppm, 5.11m, 191C).lab",CH4,7.76E-05,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Methane [CH4]  [74-82-8]\CH4 (3000, 20000, 10%) 191C Spectra\CH4 in ppm\CH4 (776 ppm, 5.11m, 191C).lab",CH4,0.000776,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Methane [CH4]  [74-82-8]\CH4 (3000, 20000, 10%) 191C Spectra\CH4 in ppm\CH4 (87.3 ppm, 5.11m, 191C).lab",CH4,8.73E-05,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Methane [CH4]  [74-82-8]\CH4 (3000, 20000, 10%) 191C Spectra\CH4 in ppm\CH4 (873 ppm, 5.11m, 191C).lab",CH4,0.000873,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Methane [CH4]  [74-82-8]\CH4 (3000, 20000, 10%) 191C Spectra\CH4 in ppm\CH4 (97 ppm, 5.11m, 191C).lab",CH4,9.70E-05,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Methane [CH4]  [74-82-8]\CH4 (3000, 20000, 10%) 191C Spectra\CH4 in ppm\CH4 (970 ppm, 5.11m, 191C).lab",CH4,0.00097,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Methane [CH4]  [74-82-8]\CH4 (3000, 20000, 10%) 191C Spectra\CH4 in ppm\CH4% ( 100000 ppm, 5.11M, 0.5CM-1, 191C, MNB).lab",CH4,1.00E-01,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Methane [CH4]  [74-82-8]\CH4 (3000, 20000, 10%) 191C Spectra\CH4 in ppm\CH4% ( 10840 ppm adj, 5.11M, 0.5CM-1, 191C, MNB).lab",CH4,1.08E-02,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Methane [CH4]  [74-82-8]\CH4 (3000, 20000, 10%) 191C Spectra\CH4 in ppm\CH4% ( 20650 ppm adj, 5.11M, 0.5CM-1, 191C, MNB).lab",CH4,2.07E-02,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Methane [CH4]  [74-82-8]\CH4 (3000, 20000, 10%) 191C Spectra\CH4 in ppm\CH4% ( 30000 ppm, 5.11M, 0.5CM-1, 191C, MNB).lab",CH4,3.00E-02,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Methane [CH4]  [74-82-8]\CH4 (3000, 20000, 10%) 191C Spectra\CH4 in ppm\CH4% ( 40000 ppm, 5.11M, 0.5CM-1, 191C, MNB).lab",CH4,4.00E-02,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Methane [CH4]  [74-82-8]\CH4 (3000, 20000, 10%) 191C Spectra\CH4 in ppm\CH4% ( 50000 ppm, 5.11M, 0.5CM-1, 191C, MNB).lab",CH4,5.00E-02,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Methane [CH4]  [74-82-8]\CH4 (3000, 20000, 10%) 191C Spectra\CH4 in ppm\CH4% ( 60000 ppm, 5.11M, 0.5CM-1, 191C, MNB).lab",CH4,6.00E-02,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Methane [CH4]  [74-82-8]\CH4 (3000, 20000, 10%) 191C Spectra\CH4 in ppm\CH4% ( 70000 ppm, 5.11M, 0.5CM-1, 191C, MNB).lab",CH4,7.00E-02,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Methane [CH4]  [74-82-8]\CH4 (3000, 20000, 10%) 191C Spectra\CH4 in ppm\CH4% ( 80000 ppm, 5.11M, 0.5CM-1, 191C, MNB).lab",CH4,8.00E-02,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Methane [CH4]  [74-82-8]\CH4 (3000, 20000, 10%) 191C Spectra\CH4 in ppm\CH4% ( 90000 ppm, 5.11M, 0.5CM-1, 191C, MNB).lab",CH4,9.00E-02,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Nitric Acid [HNO3] [7697-37-2]\HNO3 191C spectra\HNO3 (~~700 ppm, 5.11m, 191C).LAB",HNO3,0.0007,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Nitric Oxide [NO]  [10102-43-9]\Nitric Oxide 191c Spectra\NO (  18.6ppm adj, 5.11m, 190C).lab",NO,1.86E-05,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Nitric Oxide [NO]  [10102-43-9]\Nitric Oxide 191c Spectra\NO (  37.6ppm adj, 5.11m, 190C).lab",NO,3.76E-05,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Nitric Oxide [NO]  [10102-43-9]\Nitric Oxide 191c Spectra\NO (  56.7ppm adj, 5.11m, 190C).lab",NO,5.67E-05,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Nitric Oxide [NO]  [10102-43-9]\Nitric Oxide 191c Spectra\NO (  76ppm adj, 5.11m, 190C).lab",NO,7.60E-05,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Nitric Oxide [NO]  [10102-43-9]\Nitric Oxide 191c Spectra\NO (  95.2ppm adj, 5.11m, 190C).lab",NO,9.52E-05,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Nitric Oxide [NO]  [10102-43-9]\Nitric Oxide 191c Spectra\NO ( 189.2ppm adj, 5.11m, 190C).lab",NO,0.0001892,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Nitric Oxide [NO]  [10102-43-9]\Nitric Oxide 191c Spectra\NO ( 284.9ppm adj, 5.11m, 190C).lab",NO,0.0002849,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Nitric Oxide [NO]  [10102-43-9]\Nitric Oxide 191c Spectra\NO ( 380ppm adj, 5.11m, 190C).lab",NO,0.00038,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Nitric Oxide [NO]  [10102-43-9]\Nitric Oxide 191c Spectra\NO (1081.5ppm adj, 5.11m, 191C).lab",NO,0.0010815,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Nitric Oxide [NO]  [10102-43-9]\Nitric Oxide 191c Spectra\NO (1356ppm adj, 5.11m, 191C).lab",NO,0.001356,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Nitric Oxide [NO]  [10102-43-9]\Nitric Oxide 191c Spectra\NO (1629ppm adj, 5.11m, 191C).lab",NO,0.001629,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Nitric Oxide [NO]  [10102-43-9]\Nitric Oxide 191c Spectra\NO (1911.1ppm adj, 5.11m, 191C).lab",NO,0.0019111,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Nitric Oxide [NO]  [10102-43-9]\Nitric Oxide 191c Spectra\NO (2208.1ppm adj, 5.11m, 191C).lab",NO,0.0022081,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Nitric Oxide [NO]  [10102-43-9]\Nitric Oxide 191c Spectra\NO (2491.5ppm adj, 5.11m, 191C).lab",NO,0.0024915,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Nitric Oxide [NO]  [10102-43-9]\Nitric Oxide 191c Spectra\NO (268.5ppm adj, 5.11m, 191C).lab",NO,0.0002685,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Nitric Oxide [NO]  [10102-43-9]\Nitric Oxide 191c Spectra\NO (2795ppm, 5.11m, 191C).lab",NO,0.002795,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Nitric Oxide [NO]  [10102-43-9]\Nitric Oxide 191c Spectra\NO (537ppm adj, 5.11m, 191C).lab",NO,0.000537,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Nitric Oxide [NO]  [10102-43-9]\Nitric Oxide 191c Spectra\NO (808.7ppm adj, 5.11m, 191C).lab",NO,0.0008087,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Nitric Oxide [NO]  [10102-43-9]\Nitric Oxide high 191c Spectra\Nitric Oxide High (  1020.00ppm, 5.11m, 190C).lab",NO,0.00102,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Nitric Oxide [NO]  [10102-43-9]\Nitric Oxide high 191c Spectra\Nitric Oxide High (  2040.00ppm, 5.11m, 190C).lab",NO,0.00204,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Nitric Oxide [NO]  [10102-43-9]\Nitric Oxide high 191c Spectra\Nitric Oxide High (  3060.00ppm, 5.11m, 190C).lab",NO,0.00306,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Nitric Oxide [NO]  [10102-43-9]\Nitric Oxide high 191c Spectra\Nitric Oxide High (  4080.00ppm, 5.11m, 190C).lab",NO,0.00408,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Nitric Oxide [NO]  [10102-43-9]\Nitric Oxide high 191c Spectra\Nitric Oxide High (  5100.00ppm, 5.11m, 190C).lab",NO,0.0051,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Nitric Oxide [NO]  [10102-43-9]\Nitric Oxide high 191c Spectra\Nitric Oxide High (  6120.00ppm, 5.11m, 190C).lab",NO,0.00612,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Nitric Oxide [NO]  [10102-43-9]\Nitric Oxide high 191c Spectra\Nitric Oxide High (  7140.00ppm, 5.11m, 190C).lab",NO,0.00714,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Nitric Oxide [NO]  [10102-43-9]\Nitric Oxide high 191c Spectra\Nitric Oxide High (  8160.00ppm, 5.11m, 190C).lab",NO,0.00816,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Nitric Oxide [NO]  [10102-43-9]\Nitric Oxide high 191c Spectra\Nitric Oxide High (  9180.00ppm, 5.11m, 190C).lab",NO,0.00918,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Nitric Oxide [NO]  [10102-43-9]\Nitric Oxide high 191c Spectra\Nitric Oxide High ( 10200.00ppm, 5.11m, 190C).lab",NO,0.0102,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Nitric Oxide [NO]  [10102-43-9]\Nitric Oxide high 191c Spectra\NO (  18.6ppm adj, 5.11m, 190C).lab",NO,1.86E-05,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Nitric Oxide [NO]  [10102-43-9]\Nitric Oxide high 191c Spectra\NO (  37.6ppm adj, 5.11m, 190C).lab",NO,3.76E-05,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Nitric Oxide [NO]  [10102-43-9]\Nitric Oxide high 191c Spectra\NO (  56.7ppm adj, 5.11m, 190C).lab",NO,5.67E-05,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Nitric Oxide [NO]  [10102-43-9]\Nitric Oxide high 191c Spectra\NO (  76ppm adj, 5.11m, 190C).lab",NO,7.60E-05,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Nitric Oxide [NO]  [10102-43-9]\Nitric Oxide high 191c Spectra\NO (  95.2ppm adj, 5.11m, 190C).lab",NO,9.52E-05,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Nitric Oxide [NO]  [10102-43-9]\Nitric Oxide high 191c Spectra\NO ( 189.2ppm adj, 5.11m, 190C).lab",NO,0.0001892,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Nitric Oxide [NO]  [10102-43-9]\Nitric Oxide high 191c Spectra\NO ( 284.9ppm adj, 5.11m, 190C).lab",NO,0.0002849,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Nitric Oxide [NO]  [10102-43-9]\Nitric Oxide high 191c Spectra\NO ( 380ppm adj, 5.11m, 190C).lab",NO,0.00038,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Nitric Oxide [NO]  [10102-43-9]\Nitric Oxide high 191c Spectra\NO (1081.5ppm adj, 5.11m, 191C).lab",NO,0.0010815,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Nitric Oxide [NO]  [10102-43-9]\Nitric Oxide high 191c Spectra\NO (1356ppm adj, 5.11m, 191C).lab",NO,0.001356,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Nitric Oxide [NO]  [10102-43-9]\Nitric Oxide high 191c Spectra\NO (1629ppm adj, 5.11m, 191C).lab",NO,0.001629,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Nitric Oxide [NO]  [10102-43-9]\Nitric Oxide high 191c Spectra\NO (1911.1ppm adj, 5.11m, 191C).lab",NO,0.0019111,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Nitric Oxide [NO]  [10102-43-9]\Nitric Oxide high 191c Spectra\NO (2208.1ppm adj, 5.11m, 191C).lab",NO,0.0022081,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Nitric Oxide [NO]  [10102-43-9]\Nitric Oxide high 191c Spectra\NO (2491.5ppm adj, 5.11m, 191C).lab",NO,0.0024915,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Nitric Oxide [NO]  [10102-43-9]\Nitric Oxide high 191c Spectra\NO (268.5ppm adj, 5.11m, 191C).lab",NO,0.0002685,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Nitric Oxide [NO]  [10102-43-9]\Nitric Oxide high 191c Spectra\NO (2795ppm, 5.11m, 191C).lab",NO,0.002795,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Nitric Oxide [NO]  [10102-43-9]\Nitric Oxide high 191c Spectra\NO (537ppm adj, 5.11m, 191C).lab",NO,0.000537,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Nitric Oxide [NO]  [10102-43-9]\Nitric Oxide high 191c Spectra\NO (808.7ppm adj, 5.11m, 191C).lab",NO,0.0008087,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Nitrogen Dioxide [NO2]  [10102-44-0]\Nitrogen Dioxide 191C Spectra\NO2 ( 102.06PPM, 5.11M, 191C) -HNO3 -CH4 BC.LAB",NO2,0.00010206,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Nitrogen Dioxide [NO2]  [10102-44-0]\Nitrogen Dioxide 191C Spectra\NO2 ( 1041PPM ADJ, 5.11M, 191C) -HNO3 -CH4 BC.LAB",NO2,0.001041,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Nitrogen Dioxide [NO2]  [10102-44-0]\Nitrogen Dioxide 191C Spectra\NO2 ( 111.94PPM, 5.11M, 191C) -HNO3 -CH4 BC.LAB",NO2,0.00011194,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Nitrogen Dioxide [NO2]  [10102-44-0]\Nitrogen Dioxide 191C Spectra\NO2 ( 1238PPM ADJ, 5.11M, 191C) -HNO3 -CH4 BC.LAB",NO2,0.001238,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Nitrogen Dioxide [NO2]  [10102-44-0]\Nitrogen Dioxide 191C Spectra\NO2 ( 124.56PPM, 5.11M, 191C) -HNO3 -CH4 BC.LAB",NO2,0.00012456,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Nitrogen Dioxide [NO2]  [10102-44-0]\Nitrogen Dioxide 191C Spectra\NO2 ( 134.71PPM, 5.11M, 191C) -HNO3 -CH4 BC.LAB",NO2,0.00013471,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Nitrogen Dioxide [NO2]  [10102-44-0]\Nitrogen Dioxide 191C Spectra\NO2 ( 1431.66PPM, 5.11M, 191C) -HNO3 -CH4 BC.LAB",NO2,0.00143166,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Nitrogen Dioxide [NO2]  [10102-44-0]\Nitrogen Dioxide 191C Spectra\NO2 ( 145.04PPM, 5.11M, 191C) -HNO3 -CH4 BC.LAB",NO2,0.00014504,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Nitrogen Dioxide [NO2]  [10102-44-0]\Nitrogen Dioxide 191C Spectra\NO2 ( 154.47PPM, 5.11M, 191C) -HNO3 -CH4 BC.LAB",NO2,0.00015447,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Nitrogen Dioxide [NO2]  [10102-44-0]\Nitrogen Dioxide 191C Spectra\NO2 ( 1625.52PPM, 5.11M, 191C) -HNO3 -CH4 BC.LAB",NO2,0.00162552,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Nitrogen Dioxide [NO2]  [10102-44-0]\Nitrogen Dioxide 191C Spectra\NO2 ( 1819.81PPM, 5.11M, 191C) -HNO3 -CH4 BC.LAB",NO2,0.00181981,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Nitrogen Dioxide [NO2]  [10102-44-0]\Nitrogen Dioxide 191C Spectra\NO2 ( 21.84PPM, 5.11M, 191C) -HNO3 -CH4 BC.LAB",NO2,2.18E-05,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Nitrogen Dioxide [NO2]  [10102-44-0]\Nitrogen Dioxide 191C Spectra\NO2 ( 218.11PPM, 5.11M, 191C) -HNO3 -CH4 BC.LAB",NO2,0.00021811,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Nitrogen Dioxide [NO2]  [10102-44-0]\Nitrogen Dioxide 191C Spectra\NO2 ( 32.69PPM, 5.11M, 191C) -HNO3 -CH4 BC.LAB",NO2,3.27E-05,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Nitrogen Dioxide [NO2]  [10102-44-0]\Nitrogen Dioxide 191C Spectra\NO2 ( 326.67PPM, 5.11M, 191C) -HNO3 -CH4 BC.LAB",NO2,0.00032667,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Nitrogen Dioxide [NO2]  [10102-44-0]\Nitrogen Dioxide 191C Spectra\NO2 ( 429PPM ADJ, 5.11M, 191C) -HNO3 -CH4 BC.LAB",NO2,0.000429,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Nitrogen Dioxide [NO2]  [10102-44-0]\Nitrogen Dioxide 191C Spectra\NO2 ( 43.16PPM, 5.11M, 191C) -HNO3 -CH4 BC.LAB",NO2,4.32E-05,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Nitrogen Dioxide [NO2]  [10102-44-0]\Nitrogen Dioxide 191C Spectra\NO2 ( 532PPM ADJ, 5.11M, 191C) -HNO3 -CH4 BC.LAB",NO2,0.000532,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Nitrogen Dioxide [NO2]  [10102-44-0]\Nitrogen Dioxide 191C Spectra\NO2 ( 60.86PPM, 5.11M, 191C) -HNO3 -CH4 BC.LAB",NO2,6.09E-05,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Nitrogen Dioxide [NO2]  [10102-44-0]\Nitrogen Dioxide 191C Spectra\NO2 ( 634PPM ADJ, 5.11M, 191C) -HNO3 -CH4 BC.LAB",NO2,0.000634,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Nitrogen Dioxide [NO2]  [10102-44-0]\Nitrogen Dioxide 191C Spectra\NO2 ( 70.84PPM, 5.11M, 191C) -HNO3 -CH4 BC.LAB",NO2,7.08E-05,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Nitrogen Dioxide [NO2]  [10102-44-0]\Nitrogen Dioxide 191C Spectra\NO2 ( 82.03PPM, 5.11M, 191C) -HNO3 -CH4 BC.LAB",NO2,8.20E-05,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Nitrogen Dioxide [NO2]  [10102-44-0]\Nitrogen Dioxide 191C Spectra\NO2 ( 841PPM ADJ, 5.11M, 191C) -HNO3 -CH4 BC.LAB",NO2,0.000841,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Nitrogen Dioxide [NO2]  [10102-44-0]\Nitrogen Dioxide 191C Spectra\NO2 ( 92.25PPM, 5.11M, 191C) -HNO3 -CH4 BC.LAB",NO2,9.22E-05,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Nitrous Oxide [N2O]  [10024-97-2]\N2O (300) and (1040) 191C Spectra\N2O C (103p8 ppm, 5.11m, 191C) bc.lab",N2O,8.00E-06,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Nitrous Oxide [N2O]  [10024-97-2]\N2O (300) and (1040) 191C Spectra\N2O C (1040 ppm, 5.11m, 191C) bc.lab",N2O,0.00104,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Nitrous Oxide [N2O]  [10024-97-2]\N2O (300) and (1040) 191C Spectra\N2O C (207p8 ppm, 5.11m, 191C) bc.lab",N2O,8.00E-06,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Nitrous Oxide [N2O]  [10024-97-2]\N2O (300) and (1040) 191C Spectra\N2O C (310 ppm, 5.11m, 191C) bc.lab",N2O,0.00031,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Nitrous Oxide [N2O]  [10024-97-2]\N2O (300) and (1040) 191C Spectra\N2O C (39p7 ppm, 5.11m, 191C)) bc.lab",N2O,7.00E-06,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Nitrous Oxide [N2O]  [10024-97-2]\N2O (300) and (1040) 191C Spectra\N2O C (417p6 ppm, 5.11m, 191C) bc.lab",N2O,6.00E-06,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Nitrous Oxide [N2O]  [10024-97-2]\N2O (300) and (1040) 191C Spectra\N2O C (522 ppm, 5.11m, 191C) bc.lab",N2O,0.000522,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Nitrous Oxide [N2O]  [10024-97-2]\N2O (300) and (1040) 191C Spectra\N2O C (622.3 ppm, 5.11m, 191C) bc.lab",N2O,0.0006223,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Nitrous Oxide [N2O]  [10024-97-2]\N2O (300) and (1040) 191C Spectra\N2O C (64.1 ppm, 5.11m, 191C) bc.lab",N2O,6.41E-05,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Nitrous Oxide [N2O]  [10024-97-2]\N2O (300) and (1040) 191C Spectra\N2O C (725p6 ppm, 5.11m, 191C) bc.lab",N2O,6.00E-06,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Nitrous Oxide [N2O]  [10024-97-2]\N2O (300) and (1040) 191C Spectra\N2O C (832p1 ppm, 5.11m, 191C) bc.lab",N2O,1.00E-06,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Nitrous Oxide [N2O]  [10024-97-2]\N2O (300) and (1040) 191C Spectra\N2O C (939p7 ppm, 5.11m, 191C) bc.lab",N2O,7.00E-06,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Nitrous Oxide [N2O]  [10024-97-2]\Nitrous Oxide (100,200,300) 191C Spectra\N2O (10.815 ppm corr, 191C, 0.5cm-1, MNB) 0.25mm bc -ice.lab",N2O,1.08E-05,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Nitrous Oxide [N2O]  [10024-97-2]\Nitrous Oxide (100,200,300) 191C Spectra\N2O (103.515 ppm corr, 191C, 0.5cm-1, MNB) 0.25mm bc -ice.lab",N2O,0.000103515,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Nitrous Oxide [N2O]  [10024-97-2]\Nitrous Oxide (100,200,300) 191C Spectra\N2O (113.558 ppm corr, 191C, 0.5cm-1, MNB) 0.25mm bc -ice.lab",N2O,0.000113558,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Nitrous Oxide [N2O]  [10024-97-2]\Nitrous Oxide (100,200,300) 191C Spectra\N2O (123.600 ppm corr, 191C, 0.5cm-1, MNB) 0.25mm bc -ice.lab",N2O,0.0001236,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Nitrous Oxide [N2O]  [10024-97-2]\Nitrous Oxide (100,200,300) 191C Spectra\N2O (133.643 ppm corr, 191C, 0.5cm-1, MNB) 0.25mm bc -ice.lab",N2O,0.000133643,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Nitrous Oxide [N2O]  [10024-97-2]\Nitrous Oxide (100,200,300) 191C Spectra\N2O (144.458 ppm corr, 191C, 0.5cm-1, MNB) 0.25mm bc -ice.lab",N2O,0.000144458,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Nitrous Oxide [N2O]  [10024-97-2]\Nitrous Oxide (100,200,300) 191C Spectra\N2O (154.500 ppm corr, 191C, 0.5cm-1, MNB) 0.25mm bc -ice.lab",N2O,0.0001545,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Nitrous Oxide [N2O]  [10024-97-2]\Nitrous Oxide (100,200,300) 191C Spectra\N2O (163.770 ppm corr, 191C, 0.5cm-1, MNB) 0.25mm bc -ice.lab",N2O,0.00016377,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Nitrous Oxide [N2O]  [10024-97-2]\Nitrous Oxide (100,200,300) 191C Spectra\N2O (174.585 ppm corr, 191C, 0.5cm-1, MNB) 0.25mm bc -ice.lab",N2O,0.000174585,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Nitrous Oxide [N2O]  [10024-97-2]\Nitrous Oxide (100,200,300) 191C Spectra\N2O (185.400 ppm corr, 191C, 0.5cm-1, MNB) 0.25mm bc -ice.lab",N2O,0.0001854,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Nitrous Oxide [N2O]  [10024-97-2]\Nitrous Oxide (100,200,300) 191C Spectra\N2O (196.215 ppm corr, 191C, 0.5cm-1, MNB) 0.25mm bc -ice.lab",N2O,0.000196215,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Nitrous Oxide [N2O]  [10024-97-2]\Nitrous Oxide (100,200,300) 191C Spectra\N2O (20.858 ppm corr, 191C, 0.5cm-1, MNB) 0.25mm bc -ice.lab",N2O,2.09E-05,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Nitrous Oxide [N2O]  [10024-97-2]\Nitrous Oxide (100,200,300) 191C Spectra\N2O (206.258 ppm corr, 191C, 0.5cm-1, MNB) 0.25mm bc -ice.lab",N2O,0.000206258,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Nitrous Oxide [N2O]  [10024-97-2]\Nitrous Oxide (100,200,300) 191C Spectra\N2O (216.300 ppm corr, 191C, 0.5cm-1, MNB) 0.25mm bc -ice.lab",N2O,0.0002163,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Nitrous Oxide [N2O]  [10024-97-2]\Nitrous Oxide (100,200,300) 191C Spectra\N2O (227.115 ppm corr, 191C, 0.5cm-1, MNB) 0.25mm bc -ice.lab",N2O,0.000227115,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Nitrous Oxide [N2O]  [10024-97-2]\Nitrous Oxide (100,200,300) 191C Spectra\N2O (237.158 ppm corr, 191C, 0.5cm-1, MNB) 0.25mm bc -ice.lab",N2O,0.000237158,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Nitrous Oxide [N2O]  [10024-97-2]\Nitrous Oxide (100,200,300) 191C Spectra\N2O (247.200 ppm corr, 191C, 0.5cm-1, MNB) 0.25mm bc -ice.lab",N2O,0.0002472,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Nitrous Oxide [N2O]  [10024-97-2]\Nitrous Oxide (100,200,300) 191C Spectra\N2O (256.470 ppm corr, 191C, 0.5cm-1, MNB) 0.25mm bc -ice.lab",N2O,0.00025647,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Nitrous Oxide [N2O]  [10024-97-2]\Nitrous Oxide (100,200,300) 191C Spectra\N2O (267.903 ppm corr, 191C, 0.5cm-1, MNB) 0.25mm bc -ice.lab",N2O,0.000267903,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Nitrous Oxide [N2O]  [10024-97-2]\Nitrous Oxide (100,200,300) 191C Spectra\N2O (278.100 ppm corr, 191C, 0.5cm-1, MNB) 0.25mm bc -ice.lab",N2O,0.0002781,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Nitrous Oxide [N2O]  [10024-97-2]\Nitrous Oxide (100,200,300) 191C Spectra\N2O (288.915 ppm corr, 191C, 0.5cm-1, MNB) 0.25mm bc -ice.lab",N2O,0.000288915,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Nitrous Oxide [N2O]  [10024-97-2]\Nitrous Oxide (100,200,300) 191C Spectra\N2O (298.958 ppm corr, 191C, 0.5cm-1, MNB) 0.25mm bc -ice.lab",N2O,0.000298958,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Nitrous Oxide [N2O]  [10024-97-2]\Nitrous Oxide (100,200,300) 191C Spectra\N2O (30.900 ppm corr, 191C, 0.5cm-1, MNB) 0.25mm bc -ice.lab",N2O,3.09E-05,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Nitrous Oxide [N2O]  [10024-97-2]\Nitrous Oxide (100,200,300) 191C Spectra\N2O (309.000 ppm corr, 191C, 0.5cm-1, MNB) 0.25mm bc.lab",N2O,0.000309,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Nitrous Oxide [N2O]  [10024-97-2]\Nitrous Oxide (100,200,300) 191C Spectra\N2O (40.170 ppm corr, 191C, 0.5cm-1, MNB) 0.25mm bc -ice.lab",N2O,4.02E-05,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Nitrous Oxide [N2O]  [10024-97-2]\Nitrous Oxide (100,200,300) 191C Spectra\N2O (51.758 ppm corr, 191C, 0.5cm-1, MNB) 0.25mm bc -ice.lab",N2O,5.18E-05,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Nitrous Oxide [N2O]  [10024-97-2]\Nitrous Oxide (100,200,300) 191C Spectra\N2O (62.573 ppm corr, 191C, 0.5cm-1, MNB) 0.25mm bc -ice.lab",N2O,6.26E-05,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Nitrous Oxide [N2O]  [10024-97-2]\Nitrous Oxide (100,200,300) 191C Spectra\N2O (72.615 ppm corr, 191C, 0.5cm-1, MNB) 0.25mm bc -ice.lab",N2O,7.26E-05,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Nitrous Oxide [N2O]  [10024-97-2]\Nitrous Oxide (100,200,300) 191C Spectra\N2O (81.885 ppm corr, 191C, 0.5cm-1, MNB) 0.25mm bc -ice.lab",N2O,8.19E-05,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Nitrous Oxide [N2O]  [10024-97-2]\Nitrous Oxide (100,200,300) 191C Spectra\N2O (92.700 ppm corr, 191C, 0.5cm-1, MNB) 0.25mm bc -ice.lab",N2O,9.27E-05,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Nitrous Oxide [N2O]  [10024-97-2]\Nitrous Oxide (100,200,300) 191C Spectra\N2O High (  200.20ppm, 5.11m, 190C).lab",N2O,0.0002002,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Nitrous Oxide [N2O]  [10024-97-2]\Nitrous Oxide (100,200,300) 191C Spectra\N2O High (  400.40ppm, 5.11m, 190C).lab",N2O,0.0004004,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Nitrous Oxide [N2O]  [10024-97-2]\Nitrous Oxide (100,200,300) 191C Spectra\N2O High (  600.60ppm, 5.11m, 190C).lab",N2O,0.0006006,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Nitrous Oxide [N2O]  [10024-97-2]\Nitrous Oxide (100,200,300) 191C Spectra\N2O High (  800.80ppm, 5.11m, 190C).lab",N2O,0.0008008,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Nitrous Oxide [N2O]  [10024-97-2]\Nitrous Oxide (100,200,300) 191C Spectra\N2O High ( 1001.00ppm, 5.11m, 190C).lab",N2O,0.001001,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Nitrous Oxide [N2O]  [10024-97-2]\Nitrous Oxide (100,200,300) 191C Spectra\N2O High ( 1201.20ppm, 5.11m, 190C).lab",N2O,0.0012012,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Nitrous Oxide [N2O]  [10024-97-2]\Nitrous Oxide (100,200,300) 191C Spectra\N2O High ( 1401.40ppm, 5.11m, 190C).lab",N2O,0.0014014,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Nitrous Oxide [N2O]  [10024-97-2]\Nitrous Oxide (100,200,300) 191C Spectra\N2O High ( 1601.60ppm, 5.11m, 190C).lab",N2O,0.0016016,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Nitrous Oxide [N2O]  [10024-97-2]\Nitrous Oxide (100,200,300) 191C Spectra\N2O High ( 1801.80ppm, 5.11m, 190C).lab",N2O,0.0018018,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Nitrous Oxide [N2O]  [10024-97-2]\Nitrous Oxide (100,200,300) 191C Spectra\N2O High ( 2002.00ppm, 5.11m, 190C).lab",N2O,0.002002,511,190
+"x:\EMISSIONS\FTIR_ML\reference_spectra\NOxP (HNO2)\NOxP 191C Spectra\NOxP (20.74ppm 5.11m, 191C).lab",Unknown,2.07E-05,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Sulfuric Acid [H2SO4] [7664-93-9]\Sulfuric Acid 150C Spectra\H2SO4 (~55.3 ppm, 5.60 m, 150C).lab",H2SO4,5.53E-05,560,150
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Urea [CH4N2O] [57-13-6]\Urea 191C Spectra\Urea (~89 ppm corr, 5.11m, 191C).lab",CH4N2O,8.90E-05,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Water [H2O] [7732-18-5]\H2O% (40) 191C Spectra\H2O high (26% adj, 5.11m, 191C).lab",H2O,0.26,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Water [H2O] [7732-18-5]\H2O% (40) 191C Spectra\H2O high (29.5% adj, 5.11m, 191C).lab",H2O,0.295,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Water [H2O] [7732-18-5]\H2O% (40) 191C Spectra\H2O high (33.5% adj, 5.11m, 191C).lab",H2O,0.335,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Water [H2O] [7732-18-5]\H2O% (40) 191C Spectra\H2O high (38% adj, 5.11m, 191C).lab",H2O,0.38,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Water [H2O] [7732-18-5]\H2O% (40) 191C Spectra\Water (11.87%, 5.11m, 191C).lab",H2O,0.1187,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Water [H2O] [7732-18-5]\H2O% (40) 191C Spectra\Water (14.99%, 5.11m, 191C).lab",H2O,0.1499,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Water [H2O] [7732-18-5]\H2O% (40) 191C Spectra\Water (17.87%, 5.11m, 191C).lab",H2O,0.1787,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Water [H2O] [7732-18-5]\H2O% (40) 191C Spectra\Water (2.03%, 5.11m, 191c).lab",H2O,0.0203,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Water [H2O] [7732-18-5]\H2O% (40) 191C Spectra\Water (20.57%, 5.11m, 191C).lab",H2O,0.2057,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Water [H2O] [7732-18-5]\H2O% (40) 191C Spectra\Water (3.98%, 5.11m, 191C).lab",H2O,0.0398,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Water [H2O] [7732-18-5]\H2O% (40) 191C Spectra\Water (6.76%, 5.11m, 191C).lab",H2O,0.0676,511,191
+"x:\EMISSIONS\FTIR_ML\reference_spectra\Water [H2O] [7732-18-5]\H2O% (40) 191C Spectra\Water (9.39%, 5.11m, 191C).lab",H2O,0.0939,511,191

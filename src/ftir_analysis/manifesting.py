@@ -1,6 +1,6 @@
 """Manifest creation from SPC reference spectra.
 
-Scans reference_spectra/spc_files/*.spc directly — no .lab files are used.
+Scans data/reference/spc_files/*.spc directly — no .lab files are used.
 Parses species, concentration, temperature from the SPC filename.
 """
 
@@ -249,7 +249,7 @@ def build_manifest(
     primary_threshold: int = PRIMARY_CLASS_THRESHOLD,
     spc_dir: str = "spc_files",
 ) -> pd.DataFrame:
-    """Build manifest_v1.csv by scanning reference_spectra/spc_files/*.spc.
+    """Build manifest_v1.csv by scanning data/reference/spc_files/*.spc.
 
     No .lab files, no lab_index.csv — SPC filenames are the sole metadata source.
     """

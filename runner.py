@@ -3,9 +3,9 @@
 Examples:
   python3 runner.py build-manifest
   python3 runner.py audit-manifest
-  python3 runner.py train --manifest reference_spectra/manifest_v1.csv
+  python3 runner.py train --manifest data/reference/manifest_v1.csv
   python3 runner.py infer --data-dir example_data
-  python3 runner.py evaluate --manifest reference_spectra/manifest_v1.csv
+  python3 runner.py evaluate --manifest data/reference/manifest_v1.csv
 """
 
 from __future__ import annotations

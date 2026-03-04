@@ -49,10 +49,14 @@ def run_inference(cfg: InferenceConfig) -> Path:
     metadata = load_metadata(checkpoint_path, strict=True)
     validate_metadata(metadata)
 
-    target_species = list(metadata.get("target_species", DEFAULT_TARGET_SPECIES))
+    # The model was trained with the target species from metadata.
+    if "target_species" in metadata:
+        target_species = metadata["target_species"]
+    else:
+        target_species = DEFAULT_TARGET_SPECIES
 
     device = resolve_device()
-    model = FTIRModel(out_features=len(target_species)).to(device)
+    model = FTIRModel(n_species=len(target_species)).to(device)
 
     load_state_dict_or_raise(model, checkpoint_path, map_location=device)
     model.eval()
@@ -76,9 +80,9 @@ def run_inference(cfg: InferenceConfig) -> Path:
                     f"Unexpected input length for {path}: {y_grid.shape[0]} (expected {GRID_NPTS})"
                 )
 
-            tensor_input = torch.tensor(y_grid, dtype=torch.float32, device=device).view(1, 1, 1, -1)
-            preds, hidden_state = model(tensor_input, hidden_state)
-            ppmv = labels_from_log(preds.squeeze(0).squeeze(0)).cpu().numpy()
+            tensor_input = torch.tensor(y_grid, dtype=torch.float32, device=device).view(1, -1)
+            preds = model(tensor_input)
+            ppmv = labels_from_log(preds.squeeze(0)).cpu().numpy()
 
             row = {"File": path.name}
             for i, species in enumerate(target_species):

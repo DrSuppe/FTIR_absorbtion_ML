@@ -7,7 +7,7 @@ from ftir_analysis.spectra import GRID_NPTS, load_on_grid, parse_mks_spc
 
 
 def test_spc_parse_and_grid_interpolation() -> None:
-    spc = sorted((PROJECT_ROOT / "example_data").glob("*.spc"))[0]
+    spc = sorted((PROJECT_ROOT / "archive" / "example_data").glob("*.spc"))[0]
     x, y = parse_mks_spc(spc)
 
     assert len(x) > 1000

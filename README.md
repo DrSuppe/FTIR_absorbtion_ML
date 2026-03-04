@@ -23,7 +23,7 @@ pip install -e .
 
 ### Generate synthetic data
 ```bash
-python synthetic_generator.py --n-samples 10000
+python3 synthetic_generator.py --n-samples 50000 --out data/synthetic/spectra.npz (local, Apple Silicon)
 ```
 
 ### Train (local, Apple Silicon)
@@ -80,22 +80,19 @@ See [**Colab Guide**](#running-on-google-colab) below.
 ## Project Structure
 
 ```
-├── src/ftir_analysis/
-│   ├── constants.py        # Grid params, species lists, paths
-│   ├── manifesting.py      # SPC-only manifest builder
-│   ├── spectra.py          # SPC/CSV loader, grid interpolation
-│   ├── datasets.py         # Dataset classes (synthetic + reference)
-│   ├── modeling.py         # FTIRModel v3 architecture
-│   ├── training.py         # Training loop, LR schedule, MAE plots
-│   └── utils.py            # Device detection, label transforms
-├── synthetic_generator.py  # Beer-Lambert combination engine
-├── train.py               # CLI entrypoint
-├── inference.py           # Inference on a single .spc file
-├── colab_train.ipynb      # Google Colab notebook
-├── reference_spectra/
-│   ├── spc_files/         # 557 reference .spc files
-│   └── manifest_v1.csv    # Auto-generated species index
-└── checkpoints/           # Saved model weights
+FTIR_absorbtion_ML/
+├── data/
+│   ├── reference/         # Your raw .spc files and manifest_v1.csv
+│   └── synthetic/         # Generated training data (.npz)
+├── outputs/
+│   ├── checkpoints/       # Saved PyTorch models
+│   └── reports/           # Training plots, MAE per species, etc.
+├── src/
+│   └── ftir_analysis/     # Core package
+├── train.py
+├── inference.py
+├── synthetic_generator.py
+└── runner.py              # CLI entrypoint
 ```
 
 ## Running on Google Colab
@@ -107,11 +104,11 @@ See [**Colab Guide**](#running-on-google-colab) below.
 3. **Switch to GPU**: Runtime → Change runtime type → GPU → T4 → Save
 4. **Run the first cell** — it clones the repo and installs dependencies (~30 sec)
 5. **Upload reference spectra** (if not in the repo):
-   - Zip `reference_spectra/spc_files/` and `reference_spectra/manifest_v1.csv` locally
+   - Zip `data/reference/spc_files/` and `data/reference/manifest_v1.csv` locally
    - In Colab: uncomment the `files.upload()` cell and upload the zip
-   - Then run: `!unzip -q /content/uploaded.zip -d /content/ftir/reference_spectra/`
+   - Then run: `!unzip -q /content/uploaded.zip -d /content/ftir/data/reference/`
 6. **Run the training cell** — choose Quick (~10 min) or Full (~2 hrs)
-7. **Download your checkpoint**: run the last cell to download `checkpoints/best_model.pt`
+7. **Download your checkpoint**: run `python3 inference.py --data-dir archive --checkpoint outputs/checkpoints/ftir_solver_best.pth`
 
 ### Tips
 - Free Colab gives ~4–6 hrs per session on T4. Save your checkpoint before it expires.

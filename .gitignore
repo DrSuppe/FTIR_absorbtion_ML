@@ -14,21 +14,19 @@ venv/
 env/
 
 # Generated / large data — do NOT commit
-synthetic_data/
-checkpoints/*.pt
-checkpoints/*.pth
+data/synthetic/
+outputs/checkpoints/*.pt
+outputs/checkpoints/*.pth
+outputs/reports/*.png
 *.meta.json
 
 # Reference spectra (binary, large) — commit only the manifest
-reference_spectra/spc_files/
-reference_spectra/*.csv
+data/reference/spc_files/
+data/reference/*.csv
 
 # Example data (binary)
-example_data/*.spc
-example_data/*.lab
-
-# Reports / outputs
-reports/*.png
+archive/*.spc
+archive/*.lab
 
 # IDE
 .idea/

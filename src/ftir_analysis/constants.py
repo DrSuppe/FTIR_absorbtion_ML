@@ -45,7 +45,7 @@ METADATA_SUFFIX = ".meta.json"
 
 # Paths
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
-REFERENCE_ROOT = PROJECT_ROOT / "reference_spectra"
-REPORTS_DIR = PROJECT_ROOT / "reports"
-CHECKPOINT_DIR = PROJECT_ROOT / "checkpoints"
-SYNTHETIC_DIR = PROJECT_ROOT / "synthetic_data"
+REFERENCE_ROOT = PROJECT_ROOT / "data" / "reference"
+REPORTS_DIR = PROJECT_ROOT / "outputs" / "reports"
+CHECKPOINT_DIR = PROJECT_ROOT / "outputs" / "checkpoints"
+SYNTHETIC_DIR = PROJECT_ROOT / "data" / "synthetic"

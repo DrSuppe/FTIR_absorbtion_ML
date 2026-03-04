@@ -6,7 +6,7 @@ real .spc reference spectra (absorbance additivity holds exactly).
 Usage
 -----
     python synthetic_generator.py --n-samples 10000 --seed 42
-    python synthetic_generator.py --n-samples 50000 --out synthetic_data/spectra.npz
+    python synthetic_generator.py --n-samples 50000 --out data/synthetic/spectra.npz
 """
 
 from __future__ import annotations
@@ -390,7 +390,7 @@ def _cli() -> None:
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--out", type=str, default=None, help="Output .npz path")
     parser.add_argument(
-        "--reference-root", type=str, default=str(REFERENCE_ROOT), help="Path to reference_spectra/"
+        "--reference-root", type=str, default=str(REFERENCE_ROOT), help="Path to data/reference/"
     )
     parser.add_argument("--quiet", action="store_true")
     args = parser.parse_args()
