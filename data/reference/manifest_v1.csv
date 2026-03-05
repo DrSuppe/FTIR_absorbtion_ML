@@ -1,0 +1,2 @@
+sample_id,source_path,source_format,species,concentration_ppmv,temperature_c,path_length_cm,is_sparse_class,split,quality_flags
+413d789374ba8a0424ea33c4da95251d3ae23006,/Users/timkayser/Documents/ProgrammSupport/PyCharm/FTIR_ML_fitting/data/reference/spc_files/CO2 (1000 ppm).spc,spc,CO2,1000.0,191.0,511.0,True,staging,

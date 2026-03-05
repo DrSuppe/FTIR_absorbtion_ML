@@ -21,11 +21,9 @@ outputs/reports/*.png
 *.meta.json
 
 # Reference spectra (binary, large) — commit only the manifest
-data/reference/spc_files/
-data/reference/*.csv
+# allow spc_files and reference csv files to be pushed.
 
 # Example data (binary)
-archive/*.spc
 archive/*.lab
 
 # IDE
