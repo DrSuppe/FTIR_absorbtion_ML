@@ -63,7 +63,7 @@ class ArraySpectrumDataset(Dataset):
         assert y.shape[1] == len(TARGET_SPECIES), (
             f"Label dim {y.shape[1]} != {len(TARGET_SPECIES)} target species"
         )
-        self.X = torch.from_numpy(X.astype(np.float32))
+        self.X = X  # Keep as native numpy float16 array to save RAM
         if log_transform:
             self.y = torch.log1p(torch.from_numpy(y.astype(np.float32)).clamp(min=0.0))
         else:
@@ -73,7 +73,8 @@ class ArraySpectrumDataset(Dataset):
         return len(self.X)
 
     def __getitem__(self, idx: int):
-        return self.X[idx], self.y[idx]
+        # Cast to float32 tensor only upon batch loading to minimize peak memory
+        return torch.tensor(self.X[idx], dtype=torch.float32), self.y[idx]
 
 
 def load_synthetic_aux_arrays(
@@ -91,7 +92,7 @@ def load_synthetic_aux_arrays(
         log.warning("Synthetic data not found at %s", npz_path)
         return None
     data = np.load(npz_path, allow_pickle=False)
-    X = data["X"].astype(np.float32)
+    X = data["X"]  # Don't .astype(np.float32) here! Keep it float16
     y = data["y"].astype(np.float32)
     # Validate label dimension
     if y.shape[1] != len(TARGET_SPECIES):

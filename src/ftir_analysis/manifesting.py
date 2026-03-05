@@ -247,9 +247,9 @@ def build_manifest(
     output_path: Path | None = None,
     seed: int = 42,
     primary_threshold: int = PRIMARY_CLASS_THRESHOLD,
-    spc_dir: str = "spc_files",
+    spc_dir: str = "reference_spectra/spc_files",
 ) -> pd.DataFrame:
-    """Build manifest_v1.csv by scanning data/reference/spc_files/*.spc.
+    """Build manifest_v1.csv by scanning data/reference/reference_spectra/spc_files/*.spc.
 
     No .lab files, no lab_index.csv — SPC filenames are the sole metadata source.
     """

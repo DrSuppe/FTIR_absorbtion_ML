@@ -357,10 +357,13 @@ def generate(
     lib = SPCLibrary(manifest, train_only=False)  # use all for generation
 
     rng = np.random.default_rng(seed)
-    X_list: list[np.ndarray] = []
-    y_list: list[np.ndarray] = []
+    # Pre-allocate array to avoid doubling RAM during np.stack
+    # Use float16 which is sufficient for absorbance precision and halves memory
+    X = np.zeros((n_samples, GRID_NPTS), dtype=np.float16)
+    y = np.zeros((n_samples, len(TARGET_SPECIES)), dtype=np.float32)
 
     log_interval = max(1, n_samples // 20)
+    successful = 0
     failures = 0
 
     for i in range(n_samples):
@@ -368,15 +371,17 @@ def generate(
         if result is None:
             failures += 1
             continue
-        x_i, y_i = result
-        X_list.append(x_i)
-        y_list.append(y_i)
+        
+        X[successful] = result[0].astype(np.float16)
+        y[successful] = result[1]
+        successful += 1
+        
         if verbose and (i + 1) % log_interval == 0:
             log.info("  Generated %d / %d  (failures: %d)", i + 1, n_samples, failures)
 
-    X = np.stack(X_list, axis=0)
-    y = np.stack(y_list, axis=0)
-    log.info("Generation complete: X=%s  y=%s", X.shape, y.shape)
+    X = X[:successful]
+    y = y[:successful]
+    log.info("Generation complete: X=%s (float16)  y=%s", X.shape, y.shape)
 
     if out_path is None:
         out_path = Path(SYNTHETIC_DIR) / "spectra.npz"
