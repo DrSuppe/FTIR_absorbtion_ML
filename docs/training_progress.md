@@ -68,3 +68,41 @@
 - Next iteration should target data/target distribution handling:
   - concentration range capping for extreme tails, or
   - stratified synthetic sampling by concentration bins.
+
+## 2026-03-09 — Synthetic Data V2 Implementation
+
+### Goal
+- Implement curriculum synthetic sampling to improve concentration-space coverage while avoiding early over-emphasis on extreme tails.
+
+### Implemented
+- Added `curriculum_v2` sampler to `synthetic_generator.py`:
+  - stage-1 realistic prior sampling
+  - stage-2 LHS coverage in log-concentration space
+  - strong major-species bias (`H2O, CO2, CO, NO, NO2, NH3`)
+  - active-species constraints (`min_active_species`/`max_active_species`)
+  - stage-1 concentration cap policy (`p90`/`p95`/`max`)
+  - generator diagnostics (presence rates, quantiles, concentration-bin occupancy)
+- Added new CLI options:
+  - `--sampling-mode {default,curriculum_v2}`
+  - `--curriculum-stage1-frac`
+  - `--major-species`
+  - `--stage1-cap-policy {p90,p95,max}`
+  - `--lhs-frac`
+  - `--min-active-species` / `--max-active-species`
+  - `--diagnostics-json`
+- Updated notebook A/B setup:
+  - Run A: `default` generator + Run-A training recipe
+  - Run B: `curriculum_v2` generator + same Run-A training recipe
+  - both runs now write per-run generator diagnostics JSON.
+
+### Added Tests
+- `tests/test_synthetic_generator_curriculum.py`
+  - stage-1 `p90` cap enforcement
+  - curriculum diagnostics health checks:
+    - major species presence floor
+    - stage-2 high-bin coverage
+    - zero stage-1 cap violations
+
+### Status
+- Implementation complete and committed.
+- Next action: run Colab A/B with the new generator and compare to zero-baseline gate (`val_log_mae_mean < 1.676`).
