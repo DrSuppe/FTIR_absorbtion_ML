@@ -270,13 +270,15 @@ def _eval_epoch(
     loader: DataLoader,
     criterion: nn.Module,
     device: torch.device,
-) -> tuple[float, np.ndarray]:
-    """Returns (mean_loss, per_species_mae_ppmv)."""
+) -> tuple[float, np.ndarray, np.ndarray, dict[str, float]]:
+    """Returns (mean_huber_loss, per_species_mae_ppmv, per_species_mae_log, raw_stats)."""
     model.eval()
     total_loss = 0.0
     n_batches = 0
     all_pred: list[np.ndarray] = []
     all_true: list[np.ndarray] = []
+    all_pred_log: list[np.ndarray] = []
+    all_true_log: list[np.ndarray] = []
 
     for X_batch, y_batch in loader:
         X_batch = X_batch.to(device)
@@ -286,15 +288,29 @@ def _eval_epoch(
         total_loss += loss.item()
         n_batches += 1
 
-        # Back-transform to ppmv for MAE
+        # Keep raw log-space inputs for log-MAE and stats
+        all_pred_log.append(pred.cpu().numpy())
+        all_true_log.append(y_batch.cpu().numpy())
+
+        # Back-transform to ppmv for physical MAE
         all_pred.append(labels_from_log(pred).cpu().numpy())
         all_true.append(labels_from_log(y_batch).cpu().numpy())
 
-    pred_arr = np.concatenate(all_pred, axis=0)   # (N, 11)
-    true_arr = np.concatenate(all_true, axis=0)   # (N, 11)
-    per_species_mae = np.abs(pred_arr - true_arr).mean(axis=0)  # (11,)
+    pred_arr = np.concatenate(all_pred, axis=0)       # (N, 11) ppmv
+    true_arr = np.concatenate(all_true, axis=0)       # (N, 11) ppmv
+    pred_log_arr = np.concatenate(all_pred_log, axis=0) # (N, 11) log1p(ppmv)
+    true_log_arr = np.concatenate(all_true_log, axis=0) # (N, 11) log1p(ppmv)
 
-    return total_loss / max(n_batches, 1), per_species_mae
+    per_species_mae = np.abs(pred_arr - true_arr).mean(axis=0)          # (11,) ppmv
+    per_species_log_mae = np.abs(pred_log_arr - true_log_arr).mean(axis=0) # (11,) log
+
+    raw_stats = {
+        "min": float(pred_log_arr.min()),
+        "max": float(pred_log_arr.max()),
+        "mean": float(pred_log_arr.mean()),
+    }
+
+    return total_loss / max(n_batches, 1), per_species_mae, per_species_log_mae, raw_stats
 
 
 def _save_mae_plot(mae: np.ndarray, epoch: int, reports_dir: Path) -> None:
@@ -387,14 +403,14 @@ def train_from_manifest(cfg: TrainConfig | None = None) -> FTIRModel:
     best_val_loss = float("inf")
     best_ckpt = checkpoint_dir / "best_model.pt"
     
-    scaler = torch.cuda.amp.GradScaler(enabled=(device.type == "cuda"))
+    scaler = torch.amp.GradScaler(device_type="cuda", enabled=(device.type == "cuda"))
 
     # ---- Training loop ----
     for epoch in range(1, cfg.epochs + 1):
         train_loss = _train_epoch(
             model, train_loader, optimizer, scheduler, criterion, device, cfg, scaler
         )
-        val_loss, mae = _eval_epoch(model, val_loader, criterion, device)
+        val_loss, mae, log_mae, raw_stats = _eval_epoch(model, val_loader, criterion, device)
 
         if epoch % cfg.log_every_n_epochs == 0 or epoch == cfg.epochs:
             current_lr = optimizer.param_groups[0]["lr"]
@@ -406,6 +422,15 @@ def train_from_manifest(cfg: TrainConfig | None = None) -> FTIRModel:
                 "MAE (ppmv): %s",
                 "  ".join(f"{s}={v:.1f}" for s, v in zip(TARGET_SPECIES, mae)),
             )
+            log.info(
+                "MAE (log):  %s",
+                "  ".join(f"{s}={v:.2f}" for s, v in zip(TARGET_SPECIES, log_mae)),
+            )
+            if epoch % (cfg.log_every_n_epochs * 2) == 0 or epoch == 1:
+                log.info(
+                    "Raw Pred Stats -> min: %.3f, max: %.3f, mean: %.3f",
+                    raw_stats["min"], raw_stats["max"], raw_stats["mean"],
+                )
             _save_mae_plot(mae, epoch, reports_dir)
 
         # Checkpoint best model
