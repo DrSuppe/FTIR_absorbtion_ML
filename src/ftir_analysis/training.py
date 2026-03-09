@@ -403,7 +403,7 @@ def train_from_manifest(cfg: TrainConfig | None = None) -> FTIRModel:
     best_val_loss = float("inf")
     best_ckpt = checkpoint_dir / "best_model.pt"
     
-    scaler = torch.amp.GradScaler(device_type="cuda", enabled=(device.type == "cuda"))
+    scaler = torch.amp.GradScaler("cuda", enabled=(device.type == "cuda"))
 
     # ---- Training loop ----
     for epoch in range(1, cfg.epochs + 1):
