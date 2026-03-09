@@ -73,8 +73,14 @@ class SPCLibrary:
 
         ok, skip = 0, 0
         for _, row in df.iterrows():
-            p = Path(row["source_path"])
+            raw_p = Path(row["source_path"])
+            if raw_p.is_absolute():
+                p = raw_p
+            else:
+                p = REFERENCE_ROOT / raw_p
+
             if not p.exists():
+                log.warning("Spectrum file not found: %s (resolved to %s)", row["source_path"], p)
                 skip += 1
                 continue
             try:

@@ -247,7 +247,7 @@ def build_manifest(
     output_path: Path | None = None,
     seed: int = 42,
     primary_threshold: int = PRIMARY_CLASS_THRESHOLD,
-    spc_dir: str = "reference_spectra/spc_files",
+    spc_dir: str = "spc_files",
 ) -> pd.DataFrame:
     """Build manifest_v1.csv by scanning data/reference/reference_spectra/spc_files/*.spc.
 
@@ -279,7 +279,7 @@ def build_manifest(
         rows.append(
             {
                 "sample_id": sample_id,
-                "source_path": str(spc_path.resolve()),
+                "source_path": str(spc_path.relative_to(reference_root)),
                 "source_format": "spc",
                 "species": species,
                 "concentration_ppmv": conc_ppmv,

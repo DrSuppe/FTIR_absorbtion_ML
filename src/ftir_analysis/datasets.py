@@ -16,7 +16,7 @@ import pandas as pd
 import torch
 from torch.utils.data import Dataset
 
-from .constants import DEFAULT_TARGET_SPECIES
+from .constants import DEFAULT_TARGET_SPECIES, REFERENCE_ROOT
 from .spectra import SpectrumLoadError, interpolate_to_grid, load_spectrum
 
 log = logging.getLogger(__name__)
@@ -150,8 +150,10 @@ class ReferenceSpectraDataset(Dataset):
     def _load_all(self) -> None:
         ok, skip = 0, 0
         for _, row in self._records.iterrows():
+            raw_p = Path(row["source_path"])
+            p = raw_p if raw_p.is_absolute() else REFERENCE_ROOT / raw_p
             try:
-                x_raw, y_raw = load_spectrum(row["source_path"])
+                x_raw, y_raw = load_spectrum(p)
                 arr = interpolate_to_grid(x_raw, y_raw)
             except (SpectrumLoadError, Exception) as e:
                 log.debug("Skip %s: %s", row["source_path"], e)
