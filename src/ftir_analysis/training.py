@@ -146,7 +146,7 @@ def _ensure_synthetic(cfg: TrainConfig) -> Path:
 
 
 def _build_datasets(cfg: TrainConfig):
-    """Return (train_dataset, val_dataset, n_reference_train)."""
+    """Return (train_ds, val_ds, n_ref_train, synth_val_ds, ref_val_ds)."""
     # ---- Synthetic data ----
     npz_path = _ensure_synthetic(cfg)
     loaded = load_synthetic_aux_arrays(npz_path)
@@ -172,6 +172,7 @@ def _build_datasets(cfg: TrainConfig):
         else Path(REFERENCE_ROOT) / MANIFEST_FILENAME
     )
     n_ref_train = 0
+    ref_val: ReferenceSpectraDataset | None = None
     if manifest_path.exists():
         manifest = pd.read_csv(manifest_path)
         ref_train = ReferenceSpectraDataset(manifest, splits=("train", "val"))
@@ -194,7 +195,7 @@ def _build_datasets(cfg: TrainConfig):
         val_ds = synth_val
         n_ref_train = 0
 
-    return train_ds, val_ds, n_ref_train
+    return train_ds, val_ds, n_ref_train, synth_val, ref_val
 
 
 def _build_dataloader(
@@ -367,6 +368,15 @@ def _save_mae_plot(mae: np.ndarray, epoch: int, reports_dir: Path) -> None:
         log.warning("matplotlib not installed — skipping MAE plot.")
 
 
+def _zero_baseline_log_mae(loader: DataLoader) -> np.ndarray:
+    """Per-species log-MAE for constant zero prediction on a loader."""
+    all_true_log: list[np.ndarray] = []
+    for _, y_batch in loader:
+        all_true_log.append(y_batch.numpy())
+    true_log_arr = np.concatenate(all_true_log, axis=0)
+    return np.abs(true_log_arr).mean(axis=0)
+
+
 # ---------------------------------------------------------------------------
 # Public entrypoint
 # ---------------------------------------------------------------------------
@@ -381,7 +391,7 @@ def train_from_manifest(cfg: TrainConfig | None = None) -> FTIRModel:
     log.info("Training on device: %s", device)
 
     # ---- Datasets ----
-    train_ds, val_ds, n_ref_train = _build_datasets(cfg)
+    train_ds, val_ds, n_ref_train, synth_val_ds, ref_val_ds = _build_datasets(cfg)
     n_synth_train = len(train_ds) - n_ref_train
 
     log.info(
@@ -397,7 +407,14 @@ def train_from_manifest(cfg: TrainConfig | None = None) -> FTIRModel:
         n_reference=n_ref_train,
         reference_weight=cfg.reference_weight,
     )
-    val_loader = DataLoader(val_ds, batch_size=cfg.batch_size * 2, shuffle=False, num_workers=0)
+    val_batch_size = cfg.batch_size * 2
+    val_loader = DataLoader(val_ds, batch_size=val_batch_size, shuffle=False, num_workers=0)
+    synth_val_loader = DataLoader(synth_val_ds, batch_size=val_batch_size, shuffle=False, num_workers=0)
+    ref_val_loader = (
+        DataLoader(ref_val_ds, batch_size=val_batch_size, shuffle=False, num_workers=0)
+        if ref_val_ds is not None and len(ref_val_ds) > 0
+        else None
+    )
 
     # ---- Model ----
     model = FTIRModel(n_species=cfg.n_species, dropout=cfg.dropout).to(device)
@@ -438,7 +455,30 @@ def train_from_manifest(cfg: TrainConfig | None = None) -> FTIRModel:
     reports_dir = Path(cfg.reports_dir or REPORTS_DIR)
     reports_dir.mkdir(parents=True, exist_ok=True)
 
-    best_val_loss = float("inf")
+    # Baseline diagnostics (zero predictor in log space).
+    zero_baseline_log_mae_all = _zero_baseline_log_mae(val_loader)
+    zero_baseline_log_mae_synth = _zero_baseline_log_mae(synth_val_loader)
+    zero_baseline_log_mae_ref = (
+        _zero_baseline_log_mae(ref_val_loader) if ref_val_loader is not None else None
+    )
+
+    zero_baseline_mean_all = float(zero_baseline_log_mae_all.mean())
+    zero_baseline_mean_synth = float(zero_baseline_log_mae_synth.mean())
+    zero_baseline_mean_ref = (
+        float(zero_baseline_log_mae_ref.mean()) if zero_baseline_log_mae_ref is not None else None
+    )
+
+    ref_baseline_txt = (
+        f"{zero_baseline_mean_ref:.3f}" if zero_baseline_mean_ref is not None else "n/a"
+    )
+    log.info(
+        "Zero baseline mean log-MAE: all=%.3f  synth=%.3f  ref=%s",
+        zero_baseline_mean_all,
+        zero_baseline_mean_synth,
+        ref_baseline_txt,
+    )
+
+    best_val_log_mae_mean = float("inf")
     best_ckpt = checkpoint_dir / "best_model.pt"
     
     scaler = torch.amp.GradScaler("cuda", enabled=(device.type == "cuda"))
@@ -449,13 +489,46 @@ def train_from_manifest(cfg: TrainConfig | None = None) -> FTIRModel:
             model, train_loader, optimizer, scheduler, criterion, device, cfg, scaler
         )
         val_loss, mae, log_mae, raw_stats = _eval_epoch(model, val_loader, criterion, device)
+        _, _, synth_log_mae, _ = _eval_epoch(model, synth_val_loader, criterion, device)
+        ref_log_mae = None
+        if ref_val_loader is not None:
+            _, _, ref_log_mae, _ = _eval_epoch(model, ref_val_loader, criterion, device)
+
+        val_log_mae_mean = float(log_mae.mean())
+        synth_log_mae_mean = float(synth_log_mae.mean())
+        ref_log_mae_mean = float(ref_log_mae.mean()) if ref_log_mae is not None else None
+
+        delta_vs_zero_all = zero_baseline_mean_all - val_log_mae_mean
+        delta_vs_zero_synth = zero_baseline_mean_synth - synth_log_mae_mean
+        delta_vs_zero_ref = (
+            (zero_baseline_mean_ref - ref_log_mae_mean)
+            if ref_log_mae_mean is not None and zero_baseline_mean_ref is not None
+            else None
+        )
+        species_beating_zero = int((log_mae < zero_baseline_log_mae_all).sum())
+
+        ref_split_txt = (
+            f"{ref_log_mae_mean:.3f} (Δvs0={delta_vs_zero_ref:+.3f})"
+            if ref_log_mae_mean is not None and delta_vs_zero_ref is not None
+            else "n/a"
+        )
+        current_lr = optimizer.param_groups[0]["lr"]
+        log.info(
+            "Epoch %3d/%d  train=%.4f  val_weighted=%.4f  val_log_mean=%.4f  lr=%.2e",
+            epoch, cfg.epochs, train_loss, val_loss, val_log_mae_mean, current_lr,
+        )
+        log.info(
+            "Val log-MAE split: all=%.3f (Δvs0=%+.3f, beat=%d/%d)  synth=%.3f (Δvs0=%+.3f)  ref=%s",
+            val_log_mae_mean,
+            delta_vs_zero_all,
+            species_beating_zero,
+            len(TARGET_SPECIES),
+            synth_log_mae_mean,
+            delta_vs_zero_synth,
+            ref_split_txt,
+        )
 
         if epoch % cfg.log_every_n_epochs == 0 or epoch == cfg.epochs:
-            current_lr = optimizer.param_groups[0]["lr"]
-            log.info(
-                "Epoch %3d/%d  train=%.4f  val=%.4f  lr=%.2e",
-                epoch, cfg.epochs, train_loss, val_loss, current_lr,
-            )
             log.info(
                 "MAE (ppmv): %s",
                 "  ".join(f"{s}={v:.1f}" for s, v in zip(TARGET_SPECIES, mae)),
@@ -471,19 +544,27 @@ def train_from_manifest(cfg: TrainConfig | None = None) -> FTIRModel:
                 )
             _save_mae_plot(mae, epoch, reports_dir)
 
-        # Checkpoint best model
-        if val_loss < best_val_loss:
-            best_val_loss = val_loss
+        # Checkpoint best model (selection metric: mean validation log-MAE).
+        if val_log_mae_mean < best_val_log_mae_mean:
+            best_val_log_mae_mean = val_log_mae_mean
             torch.save(
                 {
                     "epoch": epoch,
                     "model_state_dict": model.state_dict(),
                     "val_loss": val_loss,
+                    "val_log_mae_mean": val_log_mae_mean,
+                    "zero_baseline_log_mae_mean": zero_baseline_mean_all,
+                    "species_beating_zero_baseline": species_beating_zero,
+                    "selection_metric": "val_log_mae_mean",
                     "model_version": MODEL_VERSION,
                     "target_species": TARGET_SPECIES,
                 },
                 best_ckpt,
             )
 
-    log.info("Best val loss: %.4f — checkpoint: %s", best_val_loss, best_ckpt)
+    log.info(
+        "Best val mean log-MAE: %.4f (selection metric) — checkpoint: %s",
+        best_val_log_mae_mean,
+        best_ckpt,
+    )
     return model
