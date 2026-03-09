@@ -229,23 +229,33 @@ def _train_epoch(
     criterion: nn.Module,
     device: torch.device,
     cfg: TrainConfig,
+    scaler: torch.cuda.amp.GradScaler,
 ) -> float:
     model.train()
     total_loss = 0.0
     n_batches = 0
+    
+    is_cuda = (device.type == "cuda")
+    autocast_device = "cuda" if is_cuda else "cpu"
+    
     for X_batch, y_batch in loader:
         X_batch = X_batch.to(device, non_blocking=True)
         y_batch = y_batch.to(device, non_blocking=True)
 
         optimizer.zero_grad(set_to_none=True)
-        pred = model(X_batch)
-        loss = criterion(pred, y_batch)
-        loss.backward()
+        
+        with torch.autocast(device_type=autocast_device, enabled=is_cuda):
+            pred = model(X_batch)
+            loss = criterion(pred, y_batch)
+            
+        scaler.scale(loss).backward()
 
         if cfg.grad_clip > 0:
+            scaler.unscale_(optimizer)
             nn.utils.clip_grad_norm_(model.parameters(), cfg.grad_clip)
 
-        optimizer.step()
+        scaler.step(optimizer)
+        scaler.update()
         scheduler.step()
 
         total_loss += loss.item()
@@ -376,11 +386,13 @@ def train_from_manifest(cfg: TrainConfig | None = None) -> FTIRModel:
 
     best_val_loss = float("inf")
     best_ckpt = checkpoint_dir / "best_model.pt"
+    
+    scaler = torch.cuda.amp.GradScaler(enabled=(device.type == "cuda"))
 
     # ---- Training loop ----
     for epoch in range(1, cfg.epochs + 1):
         train_loss = _train_epoch(
-            model, train_loader, optimizer, scheduler, criterion, device, cfg
+            model, train_loader, optimizer, scheduler, criterion, device, cfg, scaler
         )
         val_loss, mae = _eval_epoch(model, val_loader, criterion, device)
 
