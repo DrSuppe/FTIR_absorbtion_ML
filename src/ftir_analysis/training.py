@@ -82,6 +82,8 @@ class TrainConfig:
 
     # HuberLoss delta (in log-ppmv space)
     huber_delta: float = 1.0
+    active_label_weight: float = 2.0
+    inactive_label_weight: float = 1.0
 
 
 # ---------------------------------------------------------------------------
@@ -220,6 +222,32 @@ def _build_dataloader(
 # ---------------------------------------------------------------------------
 # Training loop
 # ---------------------------------------------------------------------------
+
+class WeightedHuberLoss(nn.Module):
+    """Huber loss with separate weights for active vs inactive label entries.
+
+    Targets are in log1p(ppmv) space where inactive species are exactly 0.
+    Without weighting, sparse labels can collapse training to near-zero outputs.
+    """
+
+    def __init__(
+        self,
+        *,
+        delta: float = 1.0,
+        active_label_weight: float = 2.0,
+        inactive_label_weight: float = 1.0,
+    ) -> None:
+        super().__init__()
+        self.huber = nn.HuberLoss(delta=delta, reduction="none")
+        self.active_label_weight = float(active_label_weight)
+        self.inactive_label_weight = float(inactive_label_weight)
+
+    def forward(self, pred: torch.Tensor, target: torch.Tensor) -> torch.Tensor:
+        element_loss = self.huber(pred, target)
+        active = target > 0
+        weights = torch.full_like(element_loss, self.inactive_label_weight)
+        weights = torch.where(active, self.active_label_weight, weights)
+        return (element_loss * weights).sum() / weights.sum().clamp_min(1e-8)
 
 def _train_epoch(
     model: FTIRModel,
@@ -392,7 +420,17 @@ def train_from_manifest(cfg: TrainConfig | None = None) -> FTIRModel:
         ),
     )
 
-    criterion = nn.HuberLoss(delta=cfg.huber_delta)
+    criterion = WeightedHuberLoss(
+        delta=cfg.huber_delta,
+        active_label_weight=cfg.active_label_weight,
+        inactive_label_weight=cfg.inactive_label_weight,
+    )
+    log.info(
+        "Loss: WeightedHuber(delta=%.2f, active_w=%.2f, inactive_w=%.2f)",
+        cfg.huber_delta,
+        cfg.active_label_weight,
+        cfg.inactive_label_weight,
+    )
 
     # ---- Paths ----
     checkpoint_dir = Path(cfg.checkpoint_dir or CHECKPOINT_DIR)

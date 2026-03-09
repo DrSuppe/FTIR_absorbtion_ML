@@ -35,6 +35,11 @@ def main() -> None:
     parser.add_argument("--weight-decay", type=float, default=1e-4)
     parser.add_argument("--warmup-epochs", type=float, default=3.0)
     parser.add_argument("--dropout", type=float, default=0.15)
+    parser.add_argument("--huber-delta", type=float, default=1.0)
+    parser.add_argument("--active-label-weight", type=float, default=2.0,
+                        help="Relative loss weight for non-zero target entries")
+    parser.add_argument("--inactive-label-weight", type=float, default=1.0,
+                        help="Relative loss weight for zero target entries")
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--val-split", type=float, default=0.20)
 
@@ -66,6 +71,9 @@ def main() -> None:
         weight_decay=args.weight_decay,
         warmup_epochs=args.warmup_epochs,
         dropout=args.dropout,
+        huber_delta=args.huber_delta,
+        active_label_weight=args.active_label_weight,
+        inactive_label_weight=args.inactive_label_weight,
         seed=args.seed,
         val_split_fraction=args.val_split,
         checkpoint_dir=args.checkpoint_dir,
