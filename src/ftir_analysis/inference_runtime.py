@@ -5,11 +5,17 @@ from __future__ import annotations
 from dataclasses import dataclass
 from pathlib import Path
 
+import numpy as np
 import pandas as pd
 import torch
 
+import logging
+
 from .checkpointing import CheckpointMetadataError, load_metadata, load_state_dict_or_raise, validate_metadata
-from .constants import CHECKPOINT_DIR, DEFAULT_TARGET_SPECIES
+from .constants import CHECKPOINT_DIR, DEFAULT_TARGET_SPECIES, MANIFEST_FILENAME, REFERENCE_ROOT
+
+log = logging.getLogger(__name__)
+from .features import InputTransformConfig, SpectralPriorExtractor, build_input_channels
 from .modeling import FTIRModel
 from .spectra import GRID_NPTS, SpectrumLoadError, load_on_grid
 from .utils import labels_from_log, resolve_device
@@ -56,7 +62,32 @@ def run_inference(cfg: InferenceConfig) -> Path:
         target_species = DEFAULT_TARGET_SPECIES
 
     device = resolve_device()
-    model = FTIRModel(n_species=len(target_species)).to(device)
+    if "input_transform" not in metadata:
+        log.warning(
+            "Checkpoint metadata has no 'input_transform' — using defaults. "
+            "This may produce incorrect results if the model was trained with different scales."
+        )
+    input_transform = InputTransformConfig(**metadata.get("input_transform", {}))
+    use_prior = bool(metadata.get("use_prior_features", False))
+    prior_extractor = None
+    if use_prior:
+        manifest_path = REFERENCE_ROOT / MANIFEST_FILENAME
+        if not manifest_path.exists():
+            raise CheckpointMetadataError(
+                f"Prior-enabled checkpoint requires manifest for template reconstruction: {manifest_path}"
+            )
+        manifest = pd.read_csv(manifest_path)
+        prior_extractor = SpectralPriorExtractor.fit_from_manifest(
+            manifest,
+            target_species=target_species,
+            splits=("train",),
+        )
+
+    model = FTIRModel(
+        n_species=len(target_species),
+        in_channels=3,
+        aux_features=(prior_extractor.n_features if prior_extractor is not None else 0),
+    ).to(device)
 
     load_state_dict_or_raise(model, checkpoint_path, map_location=device)
     model.eval()
@@ -66,8 +97,6 @@ def run_inference(cfg: InferenceConfig) -> Path:
         raise RuntimeError(f"No supported input files found in {data_dir}")
 
     rows: list[dict[str, object]] = []
-    hidden_state = None
-
     with torch.no_grad():
         for path in files:
             try:
@@ -80,8 +109,15 @@ def run_inference(cfg: InferenceConfig) -> Path:
                     f"Unexpected input length for {path}: {y_grid.shape[0]} (expected {GRID_NPTS})"
                 )
 
-            tensor_input = torch.tensor(y_grid, dtype=torch.float32, device=device).view(1, -1)
-            preds = model(tensor_input)
+            xb = build_input_channels(y_grid, input_transform)
+            aux = (
+                prior_extractor.transform(y_grid)
+                if prior_extractor is not None
+                else np.zeros((0,), dtype=np.float32)
+            )
+            tensor_input = torch.tensor(xb, dtype=torch.float32, device=device).unsqueeze(0)
+            aux_input = torch.tensor(aux, dtype=torch.float32, device=device).unsqueeze(0)
+            preds = model(tensor_input, aux=aux_input if aux_input.shape[-1] > 0 else None)
             ppmv = labels_from_log(preds.squeeze(0)).cpu().numpy()
 
             row = {"File": path.name}

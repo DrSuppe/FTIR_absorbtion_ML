@@ -55,16 +55,16 @@ class ResBlock1D(nn.Module):
 
 
 class SpectralCNN(nn.Module):
-    """5-block residual CNN backbone that maps (B, 1, NPTS) → (B, C, NPTS//16).
+    """5-block residual CNN backbone that maps (B, C_in, NPTS) → (B, C, NPTS//16).
 
-    Channel progression: 1 → 32 → 64 → 128 → 256 → 256
+    Channel progression: C_in → 32 → 64 → 128 → 256 → 256
     Each block (except last) halves the temporal dimension via stride-2 conv.
     """
 
-    def __init__(self, dropout: float = 0.1) -> None:
+    def __init__(self, in_channels: int = 1, dropout: float = 0.1) -> None:
         super().__init__()
         self.stem = nn.Sequential(
-            nn.Conv1d(1, 32, kernel_size=15, padding=7, bias=False),
+            nn.Conv1d(in_channels, 32, kernel_size=15, padding=7, bias=False),
             nn.BatchNorm1d(32),
             nn.ReLU(inplace=True),
         )
@@ -129,16 +129,16 @@ class TransformerBlock(nn.Module):
 # ---------------------------------------------------------------------------
 
 class FTIRModel(nn.Module):
-    """FTIR ML Solver v3 — 11-species multi-gas concentration regressor.
+    """FTIR multi-gas concentration regressor with engineered inputs.
 
     Architecture:
-        Input  (B, NPTS)       raw absorbance spectrum
-        └── unsqueeze → (B, 1, NPTS)
+        Input  (B, C, NPTS)    engineered spectral channels
         ├── SpectralCNN         5 ResBlocks → (B, 256, T)
-        ├── SelfAttention1D     8 heads     → (B, T, 256)
-        ├── GRU                 hidden=512  → h: (1, B, 512)
-        ├── Transformer (x2)    d=512,4h    → (B, 512)
-        └── Linear head                    → (B, n_species)
+        ├── SelfAttention1D     8 heads     → (B, T, 512)
+        ├── GRU                 hidden=512  → (B, T, 1024)
+        ├── Pool + MLP refine               → (B, 1024)
+        ├── Optional aux branch             → (B, 128)
+        └── Linear head                     → (B, n_species)
 
     Output in log1p(ppmv) space — invert with torch.expm1.
     """
@@ -146,14 +146,16 @@ class FTIRModel(nn.Module):
     def __init__(
         self,
         n_species: int = 11,
+        in_channels: int = 3,
+        aux_features: int = 0,
         dropout: float = 0.15,
-        ema_alpha: float = 0.1,
     ) -> None:
         super().__init__()
         self.n_species = n_species
-        self.ema_alpha = ema_alpha
+        self.in_channels = int(in_channels)
+        self.aux_features = int(aux_features)
 
-        self.cnn = SpectralCNN(dropout=dropout)
+        self.cnn = SpectralCNN(in_channels=self.in_channels, dropout=dropout)
         cnn_ch = self.cnn.out_channels  # 256
 
         # Project CNN output to GRU input
@@ -166,25 +168,38 @@ class FTIRModel(nn.Module):
         self.gru = nn.GRU(512, 512, num_layers=2, batch_first=True,
                           bidirectional=True, dropout=dropout)
 
-        # Second-stage Transformer encoder (works on flattened GRU output)
-        # We do a global average pool first → single token then 2 Tx blocks
-        self.tx_norm = nn.LayerNorm(1024)
-        self.tx_blocks = nn.Sequential(
-            TransformerBlock(1024, n_heads=4, ffn_dim=2048, dropout=dropout),
-            TransformerBlock(1024, n_heads=4, ffn_dim=2048, dropout=dropout),
+        # Post-pool refinement MLP (replaces former single-token Transformer)
+        self.refine = nn.Sequential(
+            nn.LayerNorm(1024),
+            nn.Linear(1024, 2048),
+            nn.GELU(),
+            nn.Dropout(dropout),
+            nn.Linear(2048, 1024),
+            nn.Dropout(dropout),
         )
+        self.refine_norm = nn.LayerNorm(1024)
+
+        self.aux_proj: nn.Module
+        head_input_dim = 1024
+        if self.aux_features > 0:
+            self.aux_proj = nn.Sequential(
+                nn.LayerNorm(self.aux_features),
+                nn.Linear(self.aux_features, 128),
+                nn.GELU(),
+                nn.Dropout(dropout),
+            )
+            head_input_dim += 128
+        else:
+            self.aux_proj = nn.Identity()
 
         # Output head
         self.head = nn.Sequential(
-            nn.LayerNorm(1024),
-            nn.Linear(1024, 256),
+            nn.LayerNorm(head_input_dim),
+            nn.Linear(head_input_dim, 256),
             nn.GELU(),
             nn.Dropout(dropout),
             nn.Linear(256, n_species),
         )
-
-        # EMA hidden state buffer (used during inference)
-        self._ema_h: Optional[torch.Tensor] = None
 
         self._init_weights()
 
@@ -200,28 +215,26 @@ class FTIRModel(nn.Module):
                 nn.init.ones_(m.weight)
                 nn.init.zeros_(m.bias)
 
-    def reset_ema(self) -> None:
-        """Reset EMA hidden buffer (call at start of each new sample sequence)."""
-        self._ema_h = None
-
     def forward(
         self,
         x: torch.Tensor,
-        use_ema: bool = False,
+        aux: torch.Tensor | None = None,
     ) -> torch.Tensor:
         """
         Parameters
         ----------
-        x : (B, NPTS) float32
-        use_ema : bool
-            If True, maintain an EMA hidden state across calls (inference only).
+        x : (B, C, NPTS) float32
+        aux : (B, F) float32, optional
 
         Returns
         -------
         out : (B, n_species) float32, log1p(ppmv)
         """
+        if x.ndim != 3:
+            raise ValueError(f"Expected x with shape (B, C, NPTS), got {tuple(x.shape)}")
+
         # 1. CNN backbone
-        h = self.cnn(x.unsqueeze(1))      # (B, 256, T)
+        h = self.cnn(x)                    # (B, 256, T)
         h = h.permute(0, 2, 1)            # (B, T, 256)
         h = self.proj(h)                   # (B, T, 512)
 
@@ -229,30 +242,19 @@ class FTIRModel(nn.Module):
         h = self.attn(h)                   # (B, T, 512)
 
         # 3. GRU
-        h, h_n = self.gru(h)              # h: (B, T, 1024), h_n: (4, B, 512)
+        h, _ = self.gru(h)                # h: (B, T, 1024)
 
-        # EMA on last hidden state (bidirectional → concat dirs for last layer)
-        if use_ema and not self.training:
-            last_h = torch.cat([h_n[-2], h_n[-1]], dim=-1)  # (B, 1024)
-            if self._ema_h is None:
-                self._ema_h = last_h.detach()
-            else:
-                self._ema_h = (
-                    self.ema_alpha * last_h.detach()
-                    + (1 - self.ema_alpha) * self._ema_h
-                )
-
-        # 4. Global average pool over temporal dim → single token
+        # 4. Global average pool + residual MLP refinement
         h_pool = h.mean(dim=1)             # (B, 1024)
-        h_pool = h_pool.unsqueeze(1)       # (B, 1, 1024) for Tx
+        h_pool = self.refine_norm(h_pool + self.refine(h_pool))  # (B, 1024)
 
-        # 5. Second-stage Transformer
-        h_pool = self.tx_norm(h_pool)
-        h_pool = self.tx_blocks(h_pool)    # (B, 1, 1024)
-        h_pool = h_pool.squeeze(1)         # (B, 1024)
+        if self.aux_features > 0:
+            if aux is None:
+                raise ValueError("Model expects auxiliary prior features but aux=None was passed")
+            h_pool = torch.cat([h_pool, self.aux_proj(aux)], dim=-1)
 
-        # 6. Output head
-        return self.head(h_pool)           # (B, n_species)
+        # 5. Output head
+        return F.softplus(self.head(h_pool))  # (B, n_species)
 
 
 def count_parameters(model: nn.Module) -> int:

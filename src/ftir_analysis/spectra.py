@@ -9,10 +9,9 @@ from typing import Tuple
 
 import numpy as np
 
-from .constants import SATURATION_AU, WAVENUMBER_MIN, WAVENUMBER_MAX, WAVENUMBER_STEP
+from .constants import GRID as _GRID_F64, GRID_NPTS, SATURATION_AU, WAVENUMBER_MIN, WAVENUMBER_MAX, WAVENUMBER_STEP
 
-GRID = np.arange(WAVENUMBER_MIN, WAVENUMBER_MAX, WAVENUMBER_STEP, dtype=np.float32)
-GRID_NPTS = len(GRID)
+GRID = _GRID_F64.astype(np.float32)
 
 
 class SpectrumLoadError(RuntimeError):

@@ -1,4 +1,4 @@
-"""FTIR ML Solver v3 — Training pipeline.
+"""FTIR ML Solver v4 — Training pipeline.
 
 Trains on a combined dataset of:
   1. Synthetic multi-gas spectra (Beer-Lambert combination of real reference spectra)
@@ -10,6 +10,7 @@ Labels are in log1p(ppmv) space; outputs are inverted with expm1 for reporting.
 from __future__ import annotations
 
 import dataclasses
+import json
 import logging
 import math
 import subprocess
@@ -25,6 +26,7 @@ from torch.optim import AdamW
 from torch.optim.lr_scheduler import LambdaLR
 from torch.utils.data import ConcatDataset, DataLoader, WeightedRandomSampler
 
+from .checkpointing import build_checkpoint_metadata, save_checkpoint
 from .constants import (
     CHECKPOINT_DIR,
     DEFAULT_TARGET_SPECIES,
@@ -40,12 +42,19 @@ from .datasets import (
     ReferenceSpectraDataset,
     load_synthetic_aux_arrays,
 )
+from .features import InputTransformConfig, SpectralPriorExtractor, fit_input_transform
 from .modeling import FTIRModel, count_parameters
 from .utils import labels_from_log, resolve_device, seed_everything, set_mpl_config_if_needed
 
 log = logging.getLogger(__name__)
 
 TARGET_SPECIES = DEFAULT_TARGET_SPECIES
+MAJOR_SPECIES = ("H2O", "CO2", "CO", "NO", "NO2", "NH3")
+TRACE_SPECIES = ("CH4", "N2O", "C2H4", "HCN", "HNCO")
+SPECIES_GROUPS: dict[str, tuple[str, ...]] = {
+    "major": MAJOR_SPECIES,
+    "trace": TRACE_SPECIES,
+}
 
 
 # ---------------------------------------------------------------------------
@@ -55,21 +64,28 @@ TARGET_SPECIES = DEFAULT_TARGET_SPECIES
 @dataclasses.dataclass
 class TrainConfig:
     # Data
-    n_synthetic: int = 10_000
+    n_synthetic: int = 20_000
     synthetic_npz: Optional[str] = None        # override path
     manifest_path: Optional[str] = None        # override manifest
     reference_weight: float = 0.2              # fraction of each batch from real spectra
+    synthetic_sampling_mode: str = "hybrid_v4"
+    synthetic_augmentation_profile: str = "mild"
+    hybrid_trace_fraction: float = 0.15
+    min_active_species: int = 1
+    max_active_species: int = 4
+    use_prior_features: bool = False
+    saturation_epsilon: float = 1e-3
 
     # Model
     n_species: int = len(TARGET_SPECIES)       # 11
     dropout: float = 0.15
 
     # Optimiser
-    epochs: int = 50
+    epochs: int = 16
     batch_size: int = 64
     lr: float = 3e-4
     weight_decay: float = 1e-4
-    warmup_epochs: float = 3.0                 # linear warmup duration
+    warmup_epochs: float = 2.0                 # linear warmup duration
     grad_clip: float = 1.0
 
     # Misc
@@ -82,8 +98,35 @@ class TrainConfig:
 
     # HuberLoss delta (in log-ppmv space)
     huber_delta: float = 1.0
-    active_label_weight: float = 2.0
-    inactive_label_weight: float = 1.0
+    active_label_weight: float = 4.0
+    inactive_label_weight: float = 0.5
+
+
+@dataclasses.dataclass
+class PreparedDatasets:
+    train_ds: ConcatDataset | ArraySpectrumDataset
+    val_ds: ConcatDataset | ArraySpectrumDataset
+    n_ref_train: int
+    synth_val_ds: ArraySpectrumDataset
+    ref_val_ds: ReferenceSpectraDataset | None
+    n_synth_train: int
+    input_transform: InputTransformConfig
+    prior_extractor: SpectralPriorExtractor | None
+
+
+@dataclasses.dataclass(frozen=True)
+class EpochSummary:
+    epoch: int
+    val_loss: float
+    val_log_mae_mean: float
+    synth_val_log_mae_mean: float
+    ref_val_log_mae_mean: float | None
+    zero_baseline_log_mae_mean: float
+    zero_baseline_ref_log_mae_mean: float | None
+    species_beating_zero_baseline: int
+    selection_metric: str
+    selection_metric_value: float
+    group_log_mae_mean: dict[str, dict[str, float] | None]
 
 
 # ---------------------------------------------------------------------------
@@ -102,16 +145,117 @@ def _cosine_with_warmup_fn(
     return 0.5 * (1.0 + math.cos(math.pi * progress))
 
 
+def _hybrid_trace_fraction_tag(trace_fraction: float) -> str:
+    pct = int(round(float(trace_fraction) * 100))
+    return f"tf{pct:03d}"
+
+
+def _group_metric_means(values: np.ndarray | None) -> dict[str, float] | None:
+    if values is None:
+        return None
+    grouped: dict[str, float] = {}
+    for group_name, species_names in SPECIES_GROUPS.items():
+        indices = [TARGET_SPECIES.index(species) for species in species_names if species in TARGET_SPECIES]
+        grouped[group_name] = float(np.mean(values[indices])) if indices else float("nan")
+    return grouped
+
+
+def _format_group_metrics(values: dict[str, float] | None) -> str:
+    if values is None:
+        return "n/a"
+    return "  ".join(f"{name}={metric:.3f}" for name, metric in values.items())
+
+
+def _build_epoch_summary(
+    *,
+    epoch: int,
+    val_loss: float,
+    val_log_mae: np.ndarray,
+    synth_log_mae: np.ndarray,
+    ref_log_mae: np.ndarray | None,
+    zero_baseline_mean_all: float,
+    zero_baseline_mean_ref: float | None,
+    species_beating_zero: int,
+) -> EpochSummary:
+    val_log_mae_mean = float(val_log_mae.mean())
+    synth_log_mae_mean = float(synth_log_mae.mean())
+    ref_log_mae_mean = float(ref_log_mae.mean()) if ref_log_mae is not None else None
+    selection_metric = "ref_val_log_mae_mean" if ref_log_mae_mean is not None else "val_log_mae_mean"
+    selection_metric_value = ref_log_mae_mean if ref_log_mae_mean is not None else val_log_mae_mean
+    return EpochSummary(
+        epoch=epoch,
+        val_loss=float(val_loss),
+        val_log_mae_mean=val_log_mae_mean,
+        synth_val_log_mae_mean=synth_log_mae_mean,
+        ref_val_log_mae_mean=ref_log_mae_mean,
+        zero_baseline_log_mae_mean=float(zero_baseline_mean_all),
+        zero_baseline_ref_log_mae_mean=(
+            float(zero_baseline_mean_ref) if zero_baseline_mean_ref is not None else None
+        ),
+        species_beating_zero_baseline=int(species_beating_zero),
+        selection_metric=selection_metric,
+        selection_metric_value=float(selection_metric_value),
+        group_log_mae_mean={
+            "all": _group_metric_means(val_log_mae),
+            "synth": _group_metric_means(synth_log_mae),
+            "ref": _group_metric_means(ref_log_mae),
+        },
+    )
+
+
+def _epoch_summary_payload(summary: EpochSummary) -> dict[str, object]:
+    return {
+        "epoch": summary.epoch,
+        "val_loss": summary.val_loss,
+        "val_log_mae_mean": summary.val_log_mae_mean,
+        "synth_val_log_mae_mean": summary.synth_val_log_mae_mean,
+        "ref_val_log_mae_mean": summary.ref_val_log_mae_mean,
+        "zero_baseline_log_mae_mean": summary.zero_baseline_log_mae_mean,
+        "zero_baseline_ref_log_mae_mean": summary.zero_baseline_ref_log_mae_mean,
+        "species_beating_zero_baseline": summary.species_beating_zero_baseline,
+        "selection_metric": summary.selection_metric,
+        "selection_metric_value": summary.selection_metric_value,
+        "group_log_mae_mean": summary.group_log_mae_mean,
+    }
+
+
+def _log_best_epoch(label: str, summary: EpochSummary | None) -> None:
+    if summary is None:
+        return
+    ref_txt = (
+        f"{summary.ref_val_log_mae_mean:.4f}"
+        if summary.ref_val_log_mae_mean is not None
+        else "n/a"
+    )
+    log.info(
+        "%s epoch %d: ref=%s mixed=%.4f synth=%.4f groups(all)=%s groups(ref)=%s beat_zero=%d/%d",
+        label,
+        summary.epoch,
+        ref_txt,
+        summary.val_log_mae_mean,
+        summary.synth_val_log_mae_mean,
+        _format_group_metrics(summary.group_log_mae_mean["all"]),
+        _format_group_metrics(summary.group_log_mae_mean["ref"]),
+        summary.species_beating_zero_baseline,
+        len(TARGET_SPECIES),
+    )
+
+
 # ---------------------------------------------------------------------------
 # Data preparation
 # ---------------------------------------------------------------------------
 
 def _ensure_synthetic(cfg: TrainConfig) -> Path:
     """Return path to synthetic .npz, generating it if necessary."""
+    hybrid_tag = (
+        f"_{_hybrid_trace_fraction_tag(cfg.hybrid_trace_fraction)}"
+        if cfg.synthetic_sampling_mode == "hybrid_v4"
+        else ""
+    )
     npz_path = (
         Path(cfg.synthetic_npz)
         if cfg.synthetic_npz
-        else Path(SYNTHETIC_DIR) / "spectra.npz"
+        else Path(SYNTHETIC_DIR) / f"spectra_{cfg.synthetic_sampling_mode}{hybrid_tag}_{cfg.synthetic_augmentation_profile}.npz"
     )
     regen = False
     if not npz_path.exists():
@@ -137,6 +281,11 @@ def _ensure_synthetic(cfg: TrainConfig) -> Path:
             sys.executable, str(generator),
             "--n-samples", str(cfg.n_synthetic),
             "--seed", str(cfg.seed),
+            "--sampling-mode", cfg.synthetic_sampling_mode,
+            "--augmentation-profile", cfg.synthetic_augmentation_profile,
+            "--min-active-species", str(cfg.min_active_species),
+            "--max-active-species", str(cfg.max_active_species),
+            "--hybrid-trace-fraction", str(cfg.hybrid_trace_fraction),
             "--out", str(npz_path),
         ]
         log.info("Running: %s", " ".join(cmd))
@@ -145,8 +294,8 @@ def _ensure_synthetic(cfg: TrainConfig) -> Path:
     return npz_path
 
 
-def _build_datasets(cfg: TrainConfig):
-    """Return (train_ds, val_ds, n_ref_train, synth_val_ds, ref_val_ds)."""
+def _build_datasets(cfg: TrainConfig) -> PreparedDatasets:
+    """Build datasets plus the preprocessing objects they require."""
     # ---- Synthetic data ----
     npz_path = _ensure_synthetic(cfg)
     loaded = load_synthetic_aux_arrays(npz_path)
@@ -162,9 +311,6 @@ def _build_datasets(cfg: TrainConfig):
     val_idx = idx[:n_val]
     train_idx = idx[n_val:]
 
-    synth_train = ArraySpectrumDataset(X_all[train_idx], y_all[train_idx])
-    synth_val = ArraySpectrumDataset(X_all[val_idx], y_all[val_idx])
-
     # ---- Reference spectra ----
     manifest_path = (
         Path(cfg.manifest_path)
@@ -172,13 +318,60 @@ def _build_datasets(cfg: TrainConfig):
         else Path(REFERENCE_ROOT) / MANIFEST_FILENAME
     )
     n_ref_train = 0
+    ref_train_raw: ReferenceSpectraDataset | None = None
+    ref_val_raw: ReferenceSpectraDataset | None = None
     ref_val: ReferenceSpectraDataset | None = None
+    manifest: pd.DataFrame | None = None
     if manifest_path.exists():
         manifest = pd.read_csv(manifest_path)
-        ref_train = ReferenceSpectraDataset(manifest, splits=("train", "val"))
-        ref_val = ReferenceSpectraDataset(manifest, splits=("test",))
-        n_ref_train = len(ref_train)
-        log.info("Reference spectra: %d train, %d test", n_ref_train, len(ref_val))
+        # Load reference spectra once (no transforms yet).
+        ref_train_raw = ReferenceSpectraDataset(manifest, splits=("train",), log_transform=False)
+        ref_val_raw = ReferenceSpectraDataset(manifest, splits=("val",), log_transform=False)
+        n_ref_train = len(ref_train_raw)
+        log.info("Reference spectra: %d train, %d val", n_ref_train, len(ref_val_raw))
+    else:
+        log.warning("Manifest not found at %s — using synthetic only.", manifest_path)
+
+    train_raw_spectra: list[np.ndarray] = [np.asarray(spec, dtype=np.float32) for spec in X_all[train_idx]]
+    if ref_train_raw is not None:
+        train_raw_spectra.extend(np.asarray(spec, dtype=np.float32) for spec in ref_train_raw._X)
+    input_transform = fit_input_transform(
+        train_raw_spectra,
+        saturation_epsilon=cfg.saturation_epsilon,
+    )
+
+    prior_extractor = (
+        SpectralPriorExtractor.fit_from_manifest(manifest, target_species=TARGET_SPECIES, splits=("train",))
+        if cfg.use_prior_features and manifest is not None
+        else None
+    )
+
+    synth_train = ArraySpectrumDataset(
+        X_all[train_idx],
+        y_all[train_idx],
+        input_transform=input_transform,
+        prior_extractor=prior_extractor,
+    )
+    synth_val = ArraySpectrumDataset(
+        X_all[val_idx],
+        y_all[val_idx],
+        input_transform=input_transform,
+        prior_extractor=prior_extractor,
+    )
+
+    if manifest is not None and ref_train_raw is not None:
+        # Reuse already-loaded spectra — just apply transforms.
+        ref_train = ref_train_raw.with_transforms(
+            input_transform=input_transform,
+            prior_extractor=prior_extractor,
+            log_transform=True,
+        )
+        ref_val = ref_val_raw.with_transforms(
+            input_transform=input_transform,
+            prior_extractor=prior_extractor,
+            log_transform=True,
+        )
+        log.info("Reference spectra (with transforms): %d train, %d val", len(ref_train), len(ref_val))
 
         if n_ref_train > 0:
             train_ds = ConcatDataset([synth_train, ref_train])
@@ -190,12 +383,19 @@ def _build_datasets(cfg: TrainConfig):
         else:
             val_ds = synth_val
     else:
-        log.warning("Manifest not found at %s — using synthetic only.", manifest_path)
         train_ds = synth_train
         val_ds = synth_val
-        n_ref_train = 0
 
-    return train_ds, val_ds, n_ref_train, synth_val, ref_val
+    return PreparedDatasets(
+        train_ds=train_ds,
+        val_ds=val_ds,
+        n_ref_train=n_ref_train,
+        synth_val_ds=synth_val,
+        ref_val_ds=ref_val,
+        n_synth_train=len(train_idx),
+        input_transform=input_transform,
+        prior_extractor=prior_extractor,
+    )
 
 
 def _build_dataloader(
@@ -258,7 +458,7 @@ def _train_epoch(
     criterion: nn.Module,
     device: torch.device,
     cfg: TrainConfig,
-    scaler: torch.cuda.amp.GradScaler,
+    scaler: torch.amp.GradScaler,
 ) -> float:
     model.train()
     total_loss = 0.0
@@ -267,14 +467,15 @@ def _train_epoch(
     is_cuda = (device.type == "cuda")
     autocast_device = "cuda" if is_cuda else "cpu"
     
-    for X_batch, y_batch in loader:
+    for X_batch, aux_batch, y_batch in loader:
         X_batch = X_batch.to(device, non_blocking=True)
+        aux_batch = aux_batch.to(device, non_blocking=True)
         y_batch = y_batch.to(device, non_blocking=True)
 
         optimizer.zero_grad(set_to_none=True)
         
         with torch.autocast(device_type=autocast_device, enabled=is_cuda):
-            pred = model(X_batch)
+            pred = model(X_batch, aux=aux_batch if aux_batch.shape[-1] > 0 else None)
             loss = criterion(pred, y_batch)
             
         scaler.scale(loss).backward()
@@ -309,10 +510,11 @@ def _eval_epoch(
     all_pred_log: list[np.ndarray] = []
     all_true_log: list[np.ndarray] = []
 
-    for X_batch, y_batch in loader:
+    for X_batch, aux_batch, y_batch in loader:
         X_batch = X_batch.to(device)
+        aux_batch = aux_batch.to(device)
         y_batch = y_batch.to(device)
-        pred = model(X_batch)
+        pred = model(X_batch, aux=aux_batch if aux_batch.shape[-1] > 0 else None)
         loss = criterion(pred, y_batch)
         total_loss += loss.item()
         n_batches += 1
@@ -321,8 +523,8 @@ def _eval_epoch(
         all_pred_log.append(pred.cpu().numpy())
         all_true_log.append(y_batch.cpu().numpy())
 
-        # Back-transform to ppmv for physical MAE
-        all_pred.append(labels_from_log(pred).cpu().numpy())
+        # Back-transform to ppmv for physical MAE (clip negatives to match inference)
+        all_pred.append(np.clip(labels_from_log(pred).cpu().numpy(), 0.0, None))
         all_true.append(labels_from_log(y_batch).cpu().numpy())
 
     pred_arr = np.concatenate(all_pred, axis=0)       # (N, 11) ppmv
@@ -371,7 +573,7 @@ def _save_mae_plot(mae: np.ndarray, epoch: int, reports_dir: Path) -> None:
 def _zero_baseline_log_mae(loader: DataLoader) -> np.ndarray:
     """Per-species log-MAE for constant zero prediction on a loader."""
     all_true_log: list[np.ndarray] = []
-    for _, y_batch in loader:
+    for _, _, y_batch in loader:
         all_true_log.append(y_batch.numpy())
     true_log_arr = np.concatenate(all_true_log, axis=0)
     return np.abs(true_log_arr).mean(axis=0)
@@ -391,13 +593,28 @@ def train_from_manifest(cfg: TrainConfig | None = None) -> FTIRModel:
     log.info("Training on device: %s", device)
 
     # ---- Datasets ----
-    train_ds, val_ds, n_ref_train, synth_val_ds, ref_val_ds = _build_datasets(cfg)
-    n_synth_train = len(train_ds) - n_ref_train
+    prepared = _build_datasets(cfg)
+    train_ds = prepared.train_ds
+    val_ds = prepared.val_ds
+    n_ref_train = prepared.n_ref_train
+    synth_val_ds = prepared.synth_val_ds
+    ref_val_ds = prepared.ref_val_ds
+    n_synth_train = prepared.n_synth_train
 
     log.info(
         "Dataset sizes: train=%d (synth=%d ref=%d), val=%d",
         len(train_ds), n_synth_train, n_ref_train, len(val_ds),
     )
+    log.info(
+        "Input transform: raw_scale=%.3f derivative_scale=%.6f saturation_eps=%.6f",
+        prepared.input_transform.raw_scale,
+        prepared.input_transform.derivative_scale,
+        prepared.input_transform.saturation_epsilon,
+    )
+    if prepared.prior_extractor is not None:
+        log.info("Light prior features enabled: n_features=%d", prepared.prior_extractor.n_features)
+    else:
+        log.info("Light prior features disabled")
 
     train_loader = _build_dataloader(
         train_ds,
@@ -417,9 +634,14 @@ def train_from_manifest(cfg: TrainConfig | None = None) -> FTIRModel:
     )
 
     # ---- Model ----
-    model = FTIRModel(n_species=cfg.n_species, dropout=cfg.dropout).to(device)
+    model = FTIRModel(
+        n_species=cfg.n_species,
+        in_channels=3,
+        aux_features=(prepared.prior_extractor.n_features if prepared.prior_extractor is not None else 0),
+        dropout=cfg.dropout,
+    ).to(device)
     log.info(
-        "Model v3: %d parameters (~%.1fM)",
+        "Model v4: %d parameters (~%.1fM)",
         count_parameters(model),
         count_parameters(model) / 1e6,
     )
@@ -478,9 +700,13 @@ def train_from_manifest(cfg: TrainConfig | None = None) -> FTIRModel:
         ref_baseline_txt,
     )
 
-    best_val_log_mae_mean = float("inf")
+    best_selection_metric = float("inf")
     best_ckpt = checkpoint_dir / "best_model.pt"
-    
+    best_ref_metric = float("inf")
+    best_mixed_metric = float("inf")
+    best_ref_summary: EpochSummary | None = None
+    best_mixed_summary: EpochSummary | None = None
+
     scaler = torch.amp.GradScaler("cuda", enabled=(device.type == "cuda"))
 
     # ---- Training loop ----
@@ -494,38 +720,57 @@ def train_from_manifest(cfg: TrainConfig | None = None) -> FTIRModel:
         if ref_val_loader is not None:
             _, _, ref_log_mae, _ = _eval_epoch(model, ref_val_loader, criterion, device)
 
-        val_log_mae_mean = float(log_mae.mean())
-        synth_log_mae_mean = float(synth_log_mae.mean())
-        ref_log_mae_mean = float(ref_log_mae.mean()) if ref_log_mae is not None else None
+        summary = _build_epoch_summary(
+            epoch=epoch,
+            val_loss=val_loss,
+            val_log_mae=log_mae,
+            synth_log_mae=synth_log_mae,
+            ref_log_mae=ref_log_mae,
+            zero_baseline_mean_all=zero_baseline_mean_all,
+            zero_baseline_mean_ref=zero_baseline_mean_ref,
+            species_beating_zero=int((log_mae < zero_baseline_log_mae_all).sum()),
+        )
 
-        delta_vs_zero_all = zero_baseline_mean_all - val_log_mae_mean
-        delta_vs_zero_synth = zero_baseline_mean_synth - synth_log_mae_mean
+        delta_vs_zero_all = zero_baseline_mean_all - summary.val_log_mae_mean
+        delta_vs_zero_synth = zero_baseline_mean_synth - summary.synth_val_log_mae_mean
         delta_vs_zero_ref = (
-            (zero_baseline_mean_ref - ref_log_mae_mean)
-            if ref_log_mae_mean is not None and zero_baseline_mean_ref is not None
+            (zero_baseline_mean_ref - summary.ref_val_log_mae_mean)
+            if summary.ref_val_log_mae_mean is not None and zero_baseline_mean_ref is not None
             else None
         )
-        species_beating_zero = int((log_mae < zero_baseline_log_mae_all).sum())
 
         ref_split_txt = (
-            f"{ref_log_mae_mean:.3f} (Δvs0={delta_vs_zero_ref:+.3f})"
-            if ref_log_mae_mean is not None and delta_vs_zero_ref is not None
+            f"{summary.ref_val_log_mae_mean:.3f} (Δvs0={delta_vs_zero_ref:+.3f})"
+            if summary.ref_val_log_mae_mean is not None and delta_vs_zero_ref is not None
             else "n/a"
         )
         current_lr = optimizer.param_groups[0]["lr"]
         log.info(
-            "Epoch %3d/%d  train=%.4f  val_weighted=%.4f  val_log_mean=%.4f  lr=%.2e",
-            epoch, cfg.epochs, train_loss, val_loss, val_log_mae_mean, current_lr,
+            "Epoch %3d/%d  train=%.4f  val_weighted=%.4f  val_log_mean=%.4f  selection=%s:%.4f  lr=%.2e",
+            epoch,
+            cfg.epochs,
+            train_loss,
+            val_loss,
+            summary.val_log_mae_mean,
+            summary.selection_metric,
+            summary.selection_metric_value,
+            current_lr,
         )
         log.info(
             "Val log-MAE split: all=%.3f (Δvs0=%+.3f, beat=%d/%d)  synth=%.3f (Δvs0=%+.3f)  ref=%s",
-            val_log_mae_mean,
+            summary.val_log_mae_mean,
             delta_vs_zero_all,
-            species_beating_zero,
+            summary.species_beating_zero_baseline,
             len(TARGET_SPECIES),
-            synth_log_mae_mean,
+            summary.synth_val_log_mae_mean,
             delta_vs_zero_synth,
             ref_split_txt,
+        )
+        log.info(
+            "Val group log-MAE: all=%s  synth=%s  ref=%s",
+            _format_group_metrics(summary.group_log_mae_mean["all"]),
+            _format_group_metrics(summary.group_log_mae_mean["synth"]),
+            _format_group_metrics(summary.group_log_mae_mean["ref"]),
         )
 
         if epoch % cfg.log_every_n_epochs == 0 or epoch == cfg.epochs:
@@ -544,27 +789,55 @@ def train_from_manifest(cfg: TrainConfig | None = None) -> FTIRModel:
                 )
             _save_mae_plot(mae, epoch, reports_dir)
 
-        # Checkpoint best model (selection metric: mean validation log-MAE).
-        if val_log_mae_mean < best_val_log_mae_mean:
-            best_val_log_mae_mean = val_log_mae_mean
-            torch.save(
+        if summary.ref_val_log_mae_mean is not None and summary.ref_val_log_mae_mean < best_ref_metric:
+            best_ref_metric = summary.ref_val_log_mae_mean
+            best_ref_summary = summary
+
+        if summary.val_log_mae_mean < best_mixed_metric:
+            best_mixed_metric = summary.val_log_mae_mean
+            best_mixed_summary = summary
+
+        if summary.selection_metric_value < best_selection_metric:
+            best_selection_metric = summary.selection_metric_value
+            metadata = build_checkpoint_metadata(
+                TARGET_SPECIES,
+                model_version=MODEL_VERSION,
+                notes="FTIR v4 reference-first training checkpoint",
+            )
+            metadata.update(
                 {
                     "epoch": epoch,
-                    "model_state_dict": model.state_dict(),
-                    "val_loss": val_loss,
-                    "val_log_mae_mean": val_log_mae_mean,
-                    "zero_baseline_log_mae_mean": zero_baseline_mean_all,
-                    "species_beating_zero_baseline": species_beating_zero,
-                    "selection_metric": "val_log_mae_mean",
-                    "model_version": MODEL_VERSION,
-                    "target_species": TARGET_SPECIES,
-                },
-                best_ckpt,
+                    **_epoch_summary_payload(summary),
+                    "species_groups": {name: list(species) for name, species in SPECIES_GROUPS.items()},
+                    "input_transform": prepared.input_transform.as_dict(),
+                    "input_channels": ["absorbance", "derivative", "saturation_mask"],
+                    "use_prior_features": prepared.prior_extractor is not None,
+                    "prior_feature_config": (
+                        prepared.prior_extractor.describe() if prepared.prior_extractor is not None else None
+                    ),
+                    "selection_metric": summary.selection_metric,
+                }
             )
+            save_checkpoint(best_ckpt, model.state_dict(), metadata)
 
+    summary_payload = {
+        "selection_metric": (
+            "ref_val_log_mae_mean" if ref_val_ds is not None and len(ref_val_ds) > 0 else "val_log_mae_mean"
+        ),
+        "best_checkpoint": str(best_ckpt),
+        "species_groups": {name: list(species) for name, species in SPECIES_GROUPS.items()},
+        "best_ref_epoch": _epoch_summary_payload(best_ref_summary) if best_ref_summary is not None else None,
+        "best_mixed_epoch": _epoch_summary_payload(best_mixed_summary) if best_mixed_summary is not None else None,
+    }
+    summary_path = reports_dir / "training_summary.json"
+    summary_path.write_text(json.dumps(summary_payload, indent=2), encoding="utf-8")
+    _log_best_epoch("Best reference", best_ref_summary)
+    _log_best_epoch("Best mixed", best_mixed_summary)
+    log.info("Saved training summary → %s", summary_path)
     log.info(
-        "Best val mean log-MAE: %.4f (selection metric) — checkpoint: %s",
-        best_val_log_mae_mean,
+        "Best %s: %.4f — checkpoint: %s",
+        "ref_val_log_mae_mean" if ref_val_ds is not None and len(ref_val_ds) > 0 else "val_log_mae_mean",
+        best_selection_metric,
         best_ckpt,
     )
     return model

@@ -17,6 +17,7 @@ import torch
 from torch.utils.data import Dataset
 
 from .constants import DEFAULT_TARGET_SPECIES, REFERENCE_ROOT
+from .features import InputTransformConfig, SpectralPriorExtractor, build_input_channels
 from .spectra import SpectrumLoadError, interpolate_to_grid, load_spectrum
 
 log = logging.getLogger(__name__)
@@ -46,6 +47,21 @@ def validate_target_species(user_species: Sequence[str]) -> None:
         )
 
 
+def manifest_target_species(
+    manifest: pd.DataFrame,
+    *,
+    include_sparse: bool = False,
+) -> list[str]:
+    """Return target species present in the manifest, preserving model order."""
+    df = manifest.copy()
+    if "species" not in df.columns:
+        return list(TARGET_SPECIES)
+    if not include_sparse and "is_sparse_class" in df.columns:
+        df = df[~df["is_sparse_class"]]
+    available = set(df["species"].tolist())
+    return [species for species in TARGET_SPECIES if species in available]
+
+
 # ---------------------------------------------------------------------------
 # Synthetic dataset (from pre-generated .npz)
 # ---------------------------------------------------------------------------
@@ -58,12 +74,16 @@ class ArraySpectrumDataset(Dataset):
         X: np.ndarray,
         y: np.ndarray,
         log_transform: bool = True,
+        input_transform: InputTransformConfig | None = None,
+        prior_extractor: SpectralPriorExtractor | None = None,
     ) -> None:
         assert X.shape[0] == y.shape[0]
         assert y.shape[1] == len(TARGET_SPECIES), (
             f"Label dim {y.shape[1]} != {len(TARGET_SPECIES)} target species"
         )
         self.X = X  # Keep as native numpy float16 array to save RAM
+        self.input_transform = input_transform
+        self.prior_extractor = prior_extractor
         if log_transform:
             self.y = torch.log1p(torch.from_numpy(y.astype(np.float32)).clamp(min=0.0))
         else:
@@ -73,8 +93,22 @@ class ArraySpectrumDataset(Dataset):
         return len(self.X)
 
     def __getitem__(self, idx: int):
-        # Cast to float32 tensor only upon batch loading to minimize peak memory
-        return torch.tensor(self.X[idx], dtype=torch.float32), self.y[idx]
+        raw = np.asarray(self.X[idx], dtype=np.float32)
+        if self.input_transform is not None:
+            x = build_input_channels(raw, self.input_transform)
+        else:
+            x = raw
+
+        if self.prior_extractor is not None:
+            aux = self.prior_extractor.transform(raw)
+        else:
+            aux = np.zeros((0,), dtype=np.float32)
+
+        return (
+            torch.tensor(x, dtype=torch.float32),
+            torch.tensor(aux, dtype=torch.float32),
+            self.y[idx],
+        )
 
 
 def load_synthetic_aux_arrays(
@@ -126,8 +160,12 @@ class ReferenceSpectraDataset(Dataset):
         splits: Sequence[str] = ("train",),
         log_transform: bool = True,
         min_concentration_ppmv: float = 0.0,
+        input_transform: InputTransformConfig | None = None,
+        prior_extractor: SpectralPriorExtractor | None = None,
     ) -> None:
         self.log_transform = log_transform
+        self.input_transform = input_transform
+        self.prior_extractor = prior_extractor
 
         # Filter to requested splits and loadable rows
         df = manifest[manifest["split"].isin(splits)].copy()
@@ -155,7 +193,7 @@ class ReferenceSpectraDataset(Dataset):
             try:
                 x_raw, y_raw = load_spectrum(p)
                 arr = interpolate_to_grid(x_raw, y_raw)
-            except (SpectrumLoadError, Exception) as e:
+            except Exception as e:
                 log.debug("Skip %s: %s", row["source_path"], e)
                 skip += 1
                 continue
@@ -175,15 +213,45 @@ class ReferenceSpectraDataset(Dataset):
             skip,
         )
 
+    def with_transforms(
+        self,
+        input_transform: InputTransformConfig | None = None,
+        prior_extractor: SpectralPriorExtractor | None = None,
+        log_transform: bool = True,
+    ) -> "ReferenceSpectraDataset":
+        """Return a new dataset sharing loaded spectra but with new transforms.
+
+        Avoids reloading .spc files from disk when only the transforms change.
+        """
+        clone = object.__new__(ReferenceSpectraDataset)
+        clone.log_transform = log_transform
+        clone.input_transform = input_transform
+        clone.prior_extractor = prior_extractor
+        clone._records = self._records
+        clone._X = self._X
+        clone._y = self._y
+        return clone
+
     def __len__(self) -> int:
         return len(self._X)
 
     def __getitem__(self, idx: int):
-        x = torch.from_numpy(self._X[idx])
+        raw = np.asarray(self._X[idx], dtype=np.float32)
+        if self.input_transform is not None:
+            x_arr = build_input_channels(raw, self.input_transform)
+        else:
+            x_arr = raw
+        if self.prior_extractor is not None:
+            aux_arr = self.prior_extractor.transform(raw)
+        else:
+            aux_arr = np.zeros((0,), dtype=np.float32)
+
+        x = torch.from_numpy(x_arr)
+        aux = torch.from_numpy(aux_arr)
         y = torch.from_numpy(self._y[idx])
         if self.log_transform:
             y = torch.log1p(y.clamp(min=0.0))
-        return x, y
+        return x, aux, y
 
 
 # ---------------------------------------------------------------------------

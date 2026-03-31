@@ -11,7 +11,10 @@ WAVENUMBER_MAX = 5000.0
 WAVENUMBER_STEP = 0.25
 SATURATION_AU = 8.0
 
-GRID_NPTS = int((WAVENUMBER_MAX - WAVENUMBER_MIN) / WAVENUMBER_STEP)
+GRID_NPTS = round((WAVENUMBER_MAX - WAVENUMBER_MIN) / WAVENUMBER_STEP)
+# Authoritative grid — import this instead of recomputing with np.arange.
+import numpy as _np
+GRID = _np.linspace(WAVENUMBER_MIN, WAVENUMBER_MAX, GRID_NPTS, endpoint=False, dtype=_np.float64)
 
 # 11-gas target order (model output head).
 DEFAULT_TARGET_SPECIES = ["H2O", "CO2", "CO", "NO", "NO2", "NH3", "CH4", "N2O", "C2H4", "HCN", "HNCO"]
@@ -40,7 +43,7 @@ MANIFEST_COLUMNS = [
 SUPPORTED_SOURCE_FORMATS = {"spc", "csv", "txt"}
 
 # Checkpoint metadata
-MODEL_VERSION = "ftir_solver_v3_0"
+MODEL_VERSION = "ftir_solver_v4_0"
 LABEL_TRANSFORM = "log1p_ppmv"
 METADATA_SUFFIX = ".meta.json"
 

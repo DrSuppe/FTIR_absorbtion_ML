@@ -6,8 +6,7 @@ import argparse
 from pathlib import Path
 
 from .auditing import audit_manifest
-from .checkpointing import build_checkpoint_metadata, save_checkpoint
-from .constants import CHECKPOINT_DIR, DEFAULT_TARGET_SPECIES, MANIFEST_FILENAME, REFERENCE_ROOT
+from .constants import CHECKPOINT_DIR, MANIFEST_FILENAME, REFERENCE_ROOT
 from .evaluate import evaluate_manifest
 from .inference_runtime import make_inference_config, run_inference
 from .manifesting import build_manifest
@@ -38,14 +37,25 @@ def build_parser() -> argparse.ArgumentParser:
 
     p_train = sub.add_parser("train", help="Train FTIR model from manifest")
     p_train.add_argument("--manifest", type=Path, default=REFERENCE_ROOT / MANIFEST_FILENAME)
-    p_train.add_argument("--target-species", type=str, default=None)
-    p_train.add_argument("--epochs", type=int, default=50)
+    p_train.add_argument("--n-synthetic", type=int, default=20_000)
+    p_train.add_argument("--synthetic-npz", type=str, default=None)
+    p_train.add_argument("--epochs", type=int, default=16)
     p_train.add_argument("--batch-size", type=int, default=64)
     p_train.add_argument("--lr", type=float, default=3e-4)
     p_train.add_argument("--weight-decay", type=float, default=1e-4)
+    p_train.add_argument("--reference-weight", type=float, default=0.2)
+    p_train.add_argument("--dropout", type=float, default=0.15)
+    p_train.add_argument("--active-label-weight", type=float, default=4.0)
+    p_train.add_argument("--inactive-label-weight", type=float, default=0.5)
+    p_train.add_argument("--synthetic-sampling-mode", type=str, default="hybrid_v4")
+    p_train.add_argument("--synthetic-augmentation-profile", type=str, default="mild")
+    p_train.add_argument("--hybrid-trace-fraction", type=float, default=0.15)
+    p_train.add_argument("--min-active-species", type=int, default=1)
+    p_train.add_argument("--max-active-species", type=int, default=4)
     p_train.add_argument("--seed", type=int, default=42)
-    p_train.add_argument("--run-name", type=str, default="ftir_solver_primary")
-    p_train.add_argument("--use-synthetic-aux", action="store_true")
+    p_train.add_argument("--use-prior-features", action="store_true")
+    p_train.add_argument("--checkpoint-dir", type=Path, default=None)
+    p_train.add_argument("--reports-dir", type=Path, default=None)
 
     p_infer = sub.add_parser("infer", help="Run inference over folder of spectra")
     p_infer.add_argument("--data-dir", type=Path, default=Path("example_data"))
@@ -85,19 +95,30 @@ def main(argv: list[str] | None = None) -> int:
 
     if args.command == "train":
         cfg = TrainConfig(
+            synthetic_npz=args.synthetic_npz,
+            manifest_path=str(args.manifest),
+            n_synthetic=args.n_synthetic,
             epochs=args.epochs,
             batch_size=args.batch_size,
             lr=args.lr,
             weight_decay=args.weight_decay,
+            reference_weight=args.reference_weight,
+            dropout=args.dropout,
+            active_label_weight=args.active_label_weight,
+            inactive_label_weight=args.inactive_label_weight,
+            synthetic_sampling_mode=args.synthetic_sampling_mode,
+            synthetic_augmentation_profile=args.synthetic_augmentation_profile,
+            hybrid_trace_fraction=args.hybrid_trace_fraction,
+            min_active_species=args.min_active_species,
+            max_active_species=args.max_active_species,
             seed=args.seed,
-            run_name=args.run_name,
-            use_synthetic_aux=args.use_synthetic_aux,
+            use_prior_features=args.use_prior_features,
+            checkpoint_dir=str(args.checkpoint_dir) if args.checkpoint_dir else None,
+            reports_dir=str(args.reports_dir) if args.reports_dir else None,
         )
-        target_species = _parse_species_list(args.target_species)
-        report = train_from_manifest(args.manifest, target_species=target_species, cfg=cfg)
-        print(f"Run name: {report['run_name']}")
-        print(f"Best checkpoint: {report['checkpoint_best']}")
-        print(f"Final checkpoint: {report['checkpoint_final']}")
+        train_from_manifest(cfg)
+        checkpoint_dir = args.checkpoint_dir or CHECKPOINT_DIR
+        print(f"Best checkpoint: {checkpoint_dir / 'best_model.pt'}")
         return 0
 
     if args.command == "infer":

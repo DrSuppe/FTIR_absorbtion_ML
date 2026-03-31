@@ -3,9 +3,34 @@ from pathlib import Path
 
 import pandas as pd
 import pytest
+import torch
 
+from ftir_analysis.checkpointing import build_checkpoint_metadata, save_checkpoint
 from ftir_analysis.constants import PROJECT_ROOT
 from ftir_analysis.inference_runtime import InferenceConfig, run_inference
+from ftir_analysis.modeling import FTIRModel
+
+
+def _write_v4_checkpoint(path: Path) -> None:
+    target_species = [
+        "H2O", "CO2", "CO", "NO", "NO2", "NH3", "CH4", "N2O", "C2H4", "HCN", "HNCO"
+    ]
+    model = FTIRModel(n_species=11, in_channels=3, aux_features=0)
+    metadata = build_checkpoint_metadata(target_species)
+    metadata.update(
+        {
+            "input_transform": {
+                "raw_scale": 8.0,
+                "derivative_scale": 1.0,
+                "saturation_epsilon": 1e-3,
+            },
+            "input_channels": ["absorbance", "derivative", "saturation_mask"],
+            "use_prior_features": False,
+            "prior_feature_config": None,
+            "selection_metric": "ref_val_log_mae_mean",
+        }
+    )
+    save_checkpoint(path, model.state_dict(), metadata)
 
 
 def test_inference_outputs_ppmv_csv(tmp_path: Path) -> None:
@@ -15,9 +40,11 @@ def test_inference_outputs_ppmv_csv(tmp_path: Path) -> None:
     shutil.copy2(src_spc, work_dir / src_spc.name)
 
     out_csv = tmp_path / "pred.csv"
+    ckpt_path = tmp_path / "v4_best.pt"
+    _write_v4_checkpoint(ckpt_path)
     cfg = InferenceConfig(
         data_dir=work_dir,
-        checkpoint_path=PROJECT_ROOT / "outputs" / "checkpoints" / "ftir_solver_best.pth",
+        checkpoint_path=ckpt_path,
         output_csv=out_csv,
     )
 
@@ -41,7 +68,7 @@ def test_incompatible_checkpoint_fails_fast(tmp_path: Path) -> None:
 
     cfg = InferenceConfig(
         data_dir=work_dir,
-        checkpoint_path=PROJECT_ROOT / "checkpoints" / "ftir_solver_v1.pth",
+        checkpoint_path=PROJECT_ROOT / "outputs" / "checkpoints" / "ftir_solver_v1.pth",
         output_csv=tmp_path / "pred.csv",
     )
 

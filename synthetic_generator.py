@@ -16,6 +16,7 @@ import json
 import logging
 import sys
 from pathlib import Path
+from typing import Sequence
 
 import numpy as np
 
@@ -31,6 +32,8 @@ if str(_PROJECT_ROOT) not in sys.path:
 
 from ftir_analysis.constants import (  # noqa: E402
     DEFAULT_TARGET_SPECIES,
+    GRID,
+    GRID_NPTS,
     INTERFERENCE_SPECIES,
     REFERENCE_ROOT,
     SATURATION_AU,
@@ -43,14 +46,9 @@ from ftir_analysis.manifesting import build_manifest  # noqa: E402
 from ftir_analysis.spectra import interpolate_to_grid, load_spectrum  # noqa: E402
 
 log = logging.getLogger(__name__)
-
-# ---------------------------------------------------------------------------
-# Constants
-# ---------------------------------------------------------------------------
-GRID = np.arange(WAVENUMBER_MIN, WAVENUMBER_MAX, WAVENUMBER_STEP, dtype=np.float64)
-GRID_NPTS = len(GRID)
 TARGET_SPECIES = DEFAULT_TARGET_SPECIES
 DEFAULT_MAJOR_SPECIES = ["H2O", "CO2", "CO", "NO", "NO2", "NH3"]
+DEFAULT_TRACE_SPECIES = ["CH4", "N2O", "C2H4", "HCN", "HNCO"]
 ALL_SPECIES = TARGET_SPECIES + [s for s in INTERFERENCE_SPECIES if s not in TARGET_SPECIES]
 
 
@@ -190,46 +188,58 @@ class SPCLibrary:
 # Augmentation pipeline
 # ---------------------------------------------------------------------------
 
-def augment(spectrum: np.ndarray, rng: np.random.Generator) -> np.ndarray:
+def augment(
+    spectrum: np.ndarray,
+    rng: np.random.Generator,
+    *,
+    profile: str = "mild",
+) -> np.ndarray:
     """Apply physics-inspired augmentations in-place (returns new array)."""
     s = spectrum.copy()
 
-    # 1. Wavenumber axis shift ±0.5 cm⁻¹
-    shift = rng.uniform(-0.5, 0.5)
-    if abs(shift) > 1e-4:
-        shifted_grid = GRID + shift
-        s = np.interp(GRID, shifted_grid, s, left=0.0, right=0.0)
+    profile = profile.lower().strip()
+    if profile not in {"mild", "strong"}:
+        raise ValueError(f"Unsupported augmentation profile: {profile}")
 
-    # 2. Regional gain jitter (8 equal sub-bands, each ×N(1, 0.03))
-    n_bands = 8
-    band_size = GRID_NPTS // n_bands
-    for b in range(n_bands):
-        start = b * band_size
-        end = (b + 1) * band_size if b < n_bands - 1 else GRID_NPTS
-        gain = rng.normal(1.0, 0.03)
-        s[start:end] *= max(gain, 0.0)
+    if profile == "strong":
+        shift = rng.uniform(-0.5, 0.5)
+        if abs(shift) > 1e-4:
+            shifted_grid = GRID + shift
+            s = np.interp(GRID, shifted_grid, s, left=0.0, right=0.0)
 
-    # 3. Asymmetric 3rd-order baseline polynomial
+        n_bands = 8
+        band_size = GRID_NPTS // n_bands
+        for b in range(n_bands):
+            start = b * band_size
+            end = (b + 1) * band_size if b < n_bands - 1 else GRID_NPTS
+            gain = rng.normal(1.0, 0.03)
+            s[start:end] *= max(gain, 0.0)
+
     x_norm = np.linspace(-1.0, 1.0, GRID_NPTS)
-    # Coefficients: allow slight tilt and curvature, keep low (< 0.3 AU typical)
-    a0 = rng.uniform(-0.05, 0.05)
-    a1 = rng.uniform(-0.10, 0.10)
-    a2 = rng.uniform(-0.05, 0.05)
-    a3 = rng.uniform(-0.02, 0.02)
+    if profile == "strong":
+        a0 = rng.uniform(-0.05, 0.05)
+        a1 = rng.uniform(-0.10, 0.10)
+        a2 = rng.uniform(-0.05, 0.05)
+        a3 = rng.uniform(-0.02, 0.02)
+        noise_sigma = 0.001
+    else:
+        a0 = rng.uniform(-0.01, 0.01)
+        a1 = rng.uniform(-0.02, 0.02)
+        a2 = rng.uniform(-0.01, 0.01)
+        a3 = rng.uniform(-0.005, 0.005)
+        noise_sigma = 2e-4
     baseline = a0 + a1 * x_norm + a2 * x_norm**2 + a3 * x_norm**3
     s = s + baseline
 
-    # 4. Gaussian detector noise σ = 0.001 AU
-    s = s + rng.normal(0.0, 0.001, size=GRID_NPTS)
+    s = s + rng.normal(0.0, noise_sigma, size=GRID_NPTS)
 
-    # 5. Spectral block dropout (zero out 1–3 random blocks of 50–200 pts)
-    n_blocks = rng.integers(1, 4)
-    for _ in range(n_blocks):
-        width = rng.integers(50, 201)
-        start = rng.integers(0, max(1, GRID_NPTS - width))
-        s[start : start + width] = 0.0
+    if profile == "strong":
+        n_blocks = rng.integers(1, 4)
+        for _ in range(n_blocks):
+            width = rng.integers(50, 201)
+            start = rng.integers(0, max(1, GRID_NPTS - width))
+            s[start : start + width] = 0.0
 
-    # 6. Saturation clipping
     s = np.clip(s, -0.1, SATURATION_AU)
 
     return s.astype(np.float32)
@@ -340,6 +350,8 @@ def _build_sample_from_concentrations(
     lib: SPCLibrary,
     rng: np.random.Generator,
     chosen_concs: dict[str, float],
+    *,
+    augment_profile: str = "mild",
 ) -> tuple[np.ndarray, np.ndarray] | None:
     """Build one spectrum from preselected species concentrations."""
     if not chosen_concs:
@@ -358,7 +370,7 @@ def _build_sample_from_concentrations(
         return None
 
     spectrum = np.clip(spectrum, 0.0, SATURATION_AU)
-    spectrum = augment(spectrum, rng)
+    spectrum = augment(spectrum, rng, profile=augment_profile)
     y = _target_species_concentrations(chosen_concs)
     return spectrum.astype(np.float32), y
 
@@ -615,6 +627,9 @@ def build_one_sample(
     min_species: int = 1,
     max_species: int = 5,
     interference_prob: float = 0.3,
+    augment_profile: str = "mild",
+    mandatory_target_species: Sequence[str] | None = None,
+    target_weights: dict[str, float] | None = None,
 ) -> tuple[np.ndarray, np.ndarray] | None:
     """Build one synthetic mixture spectrum and its label vector.
 
@@ -633,7 +648,19 @@ def build_one_sample(
 
     # Pick 1–max_species target species
     n_target = rng.integers(min_species, min(max_species, len(target_avail)) + 1)
-    chosen_target = list(rng.choice(target_avail, size=n_target, replace=False))
+    required = [sp for sp in (mandatory_target_species or []) if sp in target_avail]
+    required = list(dict.fromkeys(required))
+    chosen_target = required[:n_target]
+
+    remaining = n_target - len(chosen_target)
+    if remaining > 0:
+        pool = [sp for sp in target_avail if sp not in chosen_target]
+        if target_weights is None:
+            extra = list(rng.choice(pool, size=remaining, replace=False))
+        else:
+            weights = [float(target_weights.get(sp, 1.0)) for sp in pool]
+            extra = _weighted_choice_without_replacement(rng, pool, weights, remaining)
+        chosen_target.extend(extra)
 
     # Optionally add 0–2 interference species
     chosen_interf: list[str] = []
@@ -656,7 +683,76 @@ def build_one_sample(
         else:
             chosen_concs[sp] = float(c_min)
 
-    return _build_sample_from_concentrations(lib, rng, chosen_concs)
+    return _build_sample_from_concentrations(lib, rng, chosen_concs, augment_profile=augment_profile)
+
+
+class HybridTraceSampler:
+    """Mostly default mixtures with a controlled trace-species booster subset."""
+
+    def __init__(
+        self,
+        *,
+        lib: SPCLibrary,
+        rng: np.random.Generator,
+        n_samples: int,
+        trace_species: Sequence[str],
+        trace_fraction: float = 0.15,
+        min_active_species: int = 1,
+        max_active_species: int = 4,
+        augment_profile: str = "mild",
+    ) -> None:
+        self.lib = lib
+        self.rng = rng
+        self.n_samples = max(1, int(n_samples))
+        self.trace_species = [sp for sp in trace_species if sp in lib.available_species]
+        self.trace_fraction = float(np.clip(trace_fraction, 0.0, 1.0))
+        self.min_active_species = max(1, int(min_active_species))
+        self.max_active_species = max(self.min_active_species, int(max_active_species))
+        self.augment_profile = augment_profile
+
+        n_trace = int(round(self.n_samples * self.trace_fraction))
+        n_trace = min(max(n_trace, 0), self.n_samples)
+        flags = np.zeros(self.n_samples, dtype=bool)
+        flags[:n_trace] = True
+        self.rng.shuffle(flags)
+        self._trace_flags = flags
+        self._trace_counts = {sp: 0 for sp in self.trace_species}
+
+    def sample(self, sample_idx: int) -> tuple[np.ndarray, np.ndarray] | None:
+        if self._trace_flags[sample_idx] and self.trace_species:
+            trace_sp = str(self.rng.choice(self.trace_species))
+            self._trace_counts[trace_sp] += 1
+            return build_one_sample(
+                self.lib,
+                self.rng,
+                min_species=self.min_active_species,
+                max_species=self.max_active_species,
+                interference_prob=0.20,
+                augment_profile=self.augment_profile,
+                mandatory_target_species=[trace_sp],
+            )
+
+        return build_one_sample(
+            self.lib,
+            self.rng,
+            min_species=self.min_active_species,
+            max_species=self.max_active_species,
+            interference_prob=0.20,
+            augment_profile=self.augment_profile,
+        )
+
+    def diagnostics(self) -> dict[str, object]:
+        trace_total = int(self._trace_flags.sum())
+        return {
+            "stage_counts": {
+                "default": int(self.n_samples - trace_total),
+                "trace_boost": trace_total,
+            },
+            "trace_species_counts": {sp: int(v) for sp, v in self._trace_counts.items()},
+            "trace_fraction": float(trace_total / max(self.n_samples, 1)),
+            "min_active_species": int(self.min_active_species),
+            "max_active_species": int(self.max_active_species),
+        }
 
 
 # ---------------------------------------------------------------------------
@@ -671,12 +767,14 @@ def generate(
     reference_root: Path = REFERENCE_ROOT,
     manifest_path: Path | None = None,
     sampling_mode: str = "default",
+    augmentation_profile: str = "mild",
     curriculum_stage1_frac: float = 0.70,
     major_species: list[str] | None = None,
     stage1_cap_policy: str = "p95",
     lhs_frac: float = 0.30,
-    min_active_species: int = 2,
-    max_active_species: int = 6,
+    hybrid_trace_fraction: float = 0.15,
+    min_active_species: int = 1,
+    max_active_species: int = 4,
     diagnostics_json: Path | None = None,
     verbose: bool = True,
 ) -> tuple[np.ndarray, np.ndarray]:
@@ -704,15 +802,18 @@ def generate(
         log.info("Building SPC manifest …")
         manifest = build_manifest(reference_root=reference_root, output_path=manifest_path)
 
-    lib = SPCLibrary(manifest, train_only=False)  # use all for generation
+    lib = SPCLibrary(manifest, train_only=True)  # only train/val to avoid test-set leakage
 
     rng = np.random.default_rng(seed)
     stage1_cap_policy = stage1_cap_policy.lower().strip()
     if stage1_cap_policy not in {"p90", "p95", "max"}:
         raise ValueError(f"Invalid stage1_cap_policy={stage1_cap_policy}; use p90|p95|max")
     sampling_mode = sampling_mode.lower().strip()
-    if sampling_mode not in {"default", "curriculum_v2"}:
-        raise ValueError(f"Invalid sampling_mode={sampling_mode}; use default|curriculum_v2")
+    augmentation_profile = augmentation_profile.lower().strip()
+    if augmentation_profile not in {"mild", "strong"}:
+        raise ValueError(f"Invalid augmentation_profile={augmentation_profile}; use mild|strong")
+    if sampling_mode not in {"default", "curriculum_v2", "hybrid_v4"}:
+        raise ValueError(f"Invalid sampling_mode={sampling_mode}; use default|curriculum_v2|hybrid_v4")
 
     major_species_cfg = major_species or DEFAULT_MAJOR_SPECIES
     major_species_cfg = [s for s in major_species_cfg if s in TARGET_SPECIES]
@@ -724,7 +825,7 @@ def generate(
     X = np.zeros((n_samples, GRID_NPTS), dtype=np.float16)
     y = np.zeros((n_samples, len(TARGET_SPECIES)), dtype=np.float32)
 
-    sampler: CurriculumSamplerV2 | None = None
+    sampler: CurriculumSamplerV2 | HybridTraceSampler | None = None
     if sampling_mode == "curriculum_v2":
         sampler = CurriculumSamplerV2(
             lib=lib,
@@ -738,15 +839,34 @@ def generate(
             max_active_species=max_active_species,
         )
         log.info(
-            "Sampling mode: curriculum_v2 (stage1=%d, stage2=%d, cap=%s, active=%d-%d)",
+            "Sampling mode: curriculum_v2 (stage1=%d, stage2=%d, cap=%s, active=%d-%d, aug=%s)",
             sampler.stage1_n,
             sampler.stage2_n,
             stage1_cap_policy,
             min_active_species,
             max_active_species,
+            augmentation_profile,
+        )
+    elif sampling_mode == "hybrid_v4":
+        sampler = HybridTraceSampler(
+            lib=lib,
+            rng=rng,
+            n_samples=n_samples,
+            trace_species=DEFAULT_TRACE_SPECIES,
+            trace_fraction=hybrid_trace_fraction,
+            min_active_species=min_active_species,
+            max_active_species=max_active_species,
+            augment_profile=augmentation_profile,
+        )
+        log.info(
+            "Sampling mode: hybrid_v4 (trace_frac=%.2f, active=%d-%d, aug=%s)",
+            hybrid_trace_fraction,
+            min_active_species,
+            max_active_species,
+            augmentation_profile,
         )
     else:
-        log.info("Sampling mode: default")
+        log.info("Sampling mode: default (active=%d-%d, aug=%s)", min_active_species, max_active_species, augmentation_profile)
 
     log_interval = max(1, n_samples // 20)
     successful = 0
@@ -755,9 +875,23 @@ def generate(
     for i in range(n_samples):
         if sampling_mode == "curriculum_v2" and sampler is not None:
             chosen = sampler.sample(i)
-            result = _build_sample_from_concentrations(lib, rng, chosen)
+            result = _build_sample_from_concentrations(
+                lib,
+                rng,
+                chosen,
+                augment_profile=augmentation_profile,
+            )
+        elif sampling_mode == "hybrid_v4" and sampler is not None:
+            result = sampler.sample(i)
         else:
-            result = build_one_sample(lib, rng)
+            result = build_one_sample(
+                lib,
+                rng,
+                min_species=min_active_species,
+                max_species=max_active_species,
+                interference_prob=0.20,
+                augment_profile=augmentation_profile,
+            )
         if result is None:
             failures += 1
             continue
@@ -771,7 +905,14 @@ def generate(
 
     X = X[:successful]
     y = y[:successful]
-    log.info("Generation complete: X=%s (float16)  y=%s", X.shape, y.shape)
+    failure_rate = failures / max(n_samples, 1)
+    if failure_rate > 0.10:
+        log.warning(
+            "High failure rate during generation: %d / %d (%.1f%%). "
+            "Check that the SPC library has sufficient reference spectra.",
+            failures, n_samples, failure_rate * 100,
+        )
+    log.info("Generation complete: X=%s (float16)  y=%s  (%d failures)", X.shape, y.shape, failures)
 
     stats = _species_stats_from_library(lib)
     extra_diag = sampler.diagnostics() if sampler is not None else None
@@ -793,10 +934,12 @@ def generate(
         diagnostics_json.parent.mkdir(parents=True, exist_ok=True)
         payload = {
             "sampling_mode": sampling_mode,
+            "augmentation_profile": augmentation_profile,
             "n_requested": int(n_samples),
             "n_generated": int(successful),
             "seed": int(seed),
             "stage1_cap_policy": stage1_cap_policy,
+            "hybrid_trace_fraction": float(hybrid_trace_fraction),
             "major_species": major_species_cfg,
             "diagnostics": diag,
         }
@@ -818,8 +961,15 @@ def _cli() -> None:
         "--sampling-mode",
         type=str,
         default="default",
-        choices=["default", "curriculum_v2"],
+        choices=["default", "curriculum_v2", "hybrid_v4"],
         help="Sampling strategy for synthetic concentration vectors.",
+    )
+    parser.add_argument(
+        "--augmentation-profile",
+        type=str,
+        default="mild",
+        choices=["mild", "strong"],
+        help="Synthetic augmentation strength profile.",
     )
     parser.add_argument(
         "--curriculum-stage1-frac",
@@ -846,8 +996,14 @@ def _cli() -> None:
         default=0.30,
         help="Relative stage-2 (LHS) weight in curriculum_v2.",
     )
-    parser.add_argument("--min-active-species", type=int, default=2)
-    parser.add_argument("--max-active-species", type=int, default=6)
+    parser.add_argument(
+        "--hybrid-trace-fraction",
+        type=float,
+        default=0.15,
+        help="Fraction of hybrid_v4 samples that force a trace-species inclusion.",
+    )
+    parser.add_argument("--min-active-species", type=int, default=1)
+    parser.add_argument("--max-active-species", type=int, default=4)
     parser.add_argument(
         "--diagnostics-json",
         type=str,
@@ -866,10 +1022,12 @@ def _cli() -> None:
         out_path=out,
         reference_root=Path(args.reference_root),
         sampling_mode=args.sampling_mode,
+        augmentation_profile=args.augmentation_profile,
         curriculum_stage1_frac=args.curriculum_stage1_frac,
         major_species=major_species,
         stage1_cap_policy=args.stage1_cap_policy,
         lhs_frac=args.lhs_frac,
+        hybrid_trace_fraction=args.hybrid_trace_fraction,
         min_active_species=args.min_active_species,
         max_active_species=args.max_active_species,
         diagnostics_json=diag_out,

@@ -4,6 +4,7 @@ __all__ = [
     "constants",
     "spectra",
     "modeling",
+    "features",
     "checkpointing",
     "manifesting",
     "training",

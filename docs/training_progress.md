@@ -1,5 +1,25 @@
 # Training Progress Log
 
+## 2026-03-30 — Reference-First Sweep Protocol
+
+### Current policy
+- Held-out reference log-MAE is the primary checkpoint selection metric whenever a reference validation split exists.
+- Mixed validation log-MAE (`synthetic + reference`) is now a guardrail and secondary comparison metric.
+- Trainer reports now summarize:
+  - best-reference epoch
+  - best-mixed epoch
+  - grouped major/trace mean log-MAE for `all`, `synth`, and `ref`
+
+### Sweep direction
+- Keep the FTIR v3 architecture fixed.
+- Center the next sweep on `hybrid_v4`, not `curriculum_v2`.
+- Tune:
+  - prior features on/off
+  - `hybrid_v4` trace fraction (`0.15` control vs `0.10` lighter trace emphasis)
+
+### Guardrail
+- Reject a run that gains only marginally on held-out reference while materially regressing the major-species group (`H2O, CO2, CO, NO, NO2, NH3`).
+
 ## 2026-03-09 — Colab T4 Mixed-Validation Recovery
 
 ### Context
@@ -15,7 +35,8 @@
   - delta vs zero baseline and species-count beating baseline
 - Changed checkpoint selection metric:
   - from `val_loss`
-  - to `val_log_mae_mean`
+  - initially to `val_log_mae_mean`
+  - later updated to `ref_val_log_mae_mean` when held-out reference validation is present
 - Updated notebook for A/B runs with separate output dirs:
   - `outputs/checkpoints/run_a`, `outputs/reports/run_a`
   - `outputs/checkpoints/run_b`, `outputs/reports/run_b`
@@ -51,8 +72,9 @@
   - species beating zero baseline: `0/11`
 
 #### Outcome
-- Winner by plan rule: **Run A** (lower mean val log-MAE than Run B).
-- However, both A and B are still worse than the zero baseline.
+- Under the older mixed-validation rule, **Run A** won.
+- Under the current reference-first rule, these runs should be treated as diagnostic history only, not as the live winner protocol.
+- Both A and B remained worse than the zero baseline on mixed validation.
 
 ### Interpretation
 - Increasing active-label pressure moved predictions, but did not improve mixed-val generalization.
@@ -64,10 +86,7 @@
 - Cell 7 now downloads the winner checkpoint from `run_a`/`run_b` automatically.
 
 ### Next Suggested Direction
-- Keep architecture fixed.
-- Next iteration should target data/target distribution handling:
-  - concentration range capping for extreme tails, or
-  - stratified synthetic sampling by concentration bins.
+- Archived. Superseded by the 2026-03-30 reference-first `hybrid_v4` sweep above.
 
 ## 2026-03-09 — Synthetic Data V2 Implementation
 
@@ -105,4 +124,4 @@
 
 ### Status
 - Implementation complete and committed.
-- Next action: run Colab A/B with the new generator and compare to zero-baseline gate (`val_log_mae_mean < 1.676`).
+- `curriculum_v2` remains available for ablation, but it is no longer the default next step.
