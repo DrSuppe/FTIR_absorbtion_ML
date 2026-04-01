@@ -243,11 +243,9 @@ def augment(
     rng: np.random.Generator,
     *,
     profile: str = "mild",
-    temperature_c: float = 25.0,
 ) -> np.ndarray:
     """Apply physics-inspired augmentations in-place (returns new array)."""
     s = spectrum.copy()
-    s = _temperature_perturbation(s, rng, temperature_c=temperature_c)
 
     profile = profile.lower().strip()
     if profile not in {"mild", "strong"}:
@@ -434,9 +432,8 @@ def _build_sample_from_concentrations(
     if valid_species == 0:
         return None
 
-    temperature = _sample_temperature(rng)
     spectrum = np.clip(spectrum, 0.0, None)  # floor only; augment applies smooth saturation
-    spectrum = augment(spectrum, rng, profile=augment_profile, temperature_c=temperature)
+    spectrum = augment(spectrum, rng, profile=augment_profile)
     y = _target_species_concentrations(chosen_concs)
     return spectrum.astype(np.float32), y
 
