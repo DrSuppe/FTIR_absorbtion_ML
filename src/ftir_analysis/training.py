@@ -44,7 +44,7 @@ from .datasets import (
 )
 from .features import InputTransformConfig, SpectralPriorExtractor, fit_input_transform
 from .modeling import FTIRModel, count_parameters
-from .utils import labels_from_log, resolve_device, seed_everything, set_mpl_config_if_needed
+from .utils import LabelNormalizer, labels_from_log, resolve_device, seed_everything, set_mpl_config_if_needed
 
 log = logging.getLogger(__name__)
 
@@ -65,7 +65,8 @@ SPECIES_GROUPS: dict[str, tuple[str, ...]] = {
 class TrainConfig:
     # Data
     n_synthetic: int = 20_000
-    synthetic_npz: Optional[str] = None        # override path
+    synthetic_npz: Optional[str] = None        # override path for train NPZ
+    val_synthetic_npz: Optional[str] = None    # override path for independent val NPZ
     manifest_path: Optional[str] = None        # override manifest
     reference_weight: float = 0.2              # fraction of each batch from real spectra
     synthetic_sampling_mode: str = "hybrid_v4"
@@ -112,6 +113,7 @@ class PreparedDatasets:
     n_synth_train: int
     input_transform: InputTransformConfig
     prior_extractor: SpectralPriorExtractor | None
+    label_normalizer: LabelNormalizer
 
 
 @dataclasses.dataclass(frozen=True)
@@ -245,31 +247,49 @@ def _log_best_epoch(label: str, summary: EpochSummary | None) -> None:
 # Data preparation
 # ---------------------------------------------------------------------------
 
-def _ensure_synthetic(cfg: TrainConfig) -> Path:
-    """Return path to synthetic .npz, generating it if necessary."""
-    hybrid_tag = (
-        f"_{_hybrid_trace_fraction_tag(cfg.hybrid_trace_fraction)}"
-        if cfg.synthetic_sampling_mode == "hybrid_v4"
-        else ""
-    )
-    npz_path = (
-        Path(cfg.synthetic_npz)
-        if cfg.synthetic_npz
-        else Path(SYNTHETIC_DIR) / f"spectra_{cfg.synthetic_sampling_mode}{hybrid_tag}_{cfg.synthetic_augmentation_profile}.npz"
-    )
+def _ensure_synthetic(
+    cfg: TrainConfig,
+    *,
+    seed: int | None = None,
+    n_samples: int | None = None,
+    out_path: Path | None = None,
+) -> Path:
+    """Return path to synthetic .npz, generating it if necessary.
+
+    Optional overrides allow generating a second independent val set:
+      seed     — RNG seed (defaults to cfg.seed)
+      n_samples — how many samples (defaults to cfg.n_synthetic)
+      out_path  — explicit output path (overrides the auto-derived name)
+    """
+    effective_seed = seed if seed is not None else cfg.seed
+    effective_n = n_samples if n_samples is not None else cfg.n_synthetic
+
+    if out_path is not None:
+        npz_path = out_path
+    else:
+        hybrid_tag = (
+            f"_{_hybrid_trace_fraction_tag(cfg.hybrid_trace_fraction)}"
+            if cfg.synthetic_sampling_mode == "hybrid_v4"
+            else ""
+        )
+        npz_path = (
+            Path(cfg.synthetic_npz)
+            if cfg.synthetic_npz and seed is None
+            else Path(SYNTHETIC_DIR) / f"spectra_{cfg.synthetic_sampling_mode}{hybrid_tag}_{cfg.synthetic_augmentation_profile}.npz"
+        )
+
     regen = False
     if not npz_path.exists():
-        log.info("Synthetic data not found — generating %d samples …", cfg.n_synthetic)
+        log.info("Synthetic data not found — generating %d samples …", effective_n)
         regen = True
     else:
-        # Check if the .npz has the expected number of samples
         try:
             data = np.load(npz_path, allow_pickle=False)
             n_existing = data["X"].shape[0]
-            if n_existing < cfg.n_synthetic:
+            if n_existing < effective_n:
                 log.info(
                     "Existing synthetic file has %d samples (need %d) — regenerating.",
-                    n_existing, cfg.n_synthetic,
+                    n_existing, effective_n,
                 )
                 regen = True
         except Exception:
@@ -279,8 +299,8 @@ def _ensure_synthetic(cfg: TrainConfig) -> Path:
         generator = PROJECT_ROOT / "synthetic_generator.py"
         cmd = [
             sys.executable, str(generator),
-            "--n-samples", str(cfg.n_synthetic),
-            "--seed", str(cfg.seed),
+            "--n-samples", str(effective_n),
+            "--seed", str(effective_seed),
             "--sampling-mode", cfg.synthetic_sampling_mode,
             "--augmentation-profile", cfg.synthetic_augmentation_profile,
             "--min-active-species", str(cfg.min_active_species),
@@ -296,20 +316,37 @@ def _ensure_synthetic(cfg: TrainConfig) -> Path:
 
 def _build_datasets(cfg: TrainConfig) -> PreparedDatasets:
     """Build datasets plus the preprocessing objects they require."""
-    # ---- Synthetic data ----
-    npz_path = _ensure_synthetic(cfg)
-    loaded = load_synthetic_aux_arrays(npz_path)
+    # ---- Synthetic train data ----
+    train_npz = _ensure_synthetic(cfg)
+    loaded = load_synthetic_aux_arrays(train_npz)
     if loaded is None:
-        raise RuntimeError("Could not load synthetic data — check generation logs.")
-    X_all, y_all = loaded
+        raise RuntimeError("Could not load synthetic training data — check generation logs.")
+    X_train, y_train = loaded
 
-    # 80/20 train/val split on synthetic data
-    rng = np.random.default_rng(cfg.seed)
-    n = len(X_all)
-    idx = rng.permutation(n)
-    n_val = max(1, int(n * cfg.val_split_fraction))
-    val_idx = idx[:n_val]
-    train_idx = idx[n_val:]
+    # ---- Independent synthetic val set (different seed → different distribution sample) ----
+    val_n = max(1, int(len(X_train) * cfg.val_split_fraction))
+    if cfg.val_synthetic_npz:
+        val_npz_path = Path(cfg.val_synthetic_npz)
+    else:
+        hybrid_tag = (
+            f"_{_hybrid_trace_fraction_tag(cfg.hybrid_trace_fraction)}"
+            if cfg.synthetic_sampling_mode == "hybrid_v4"
+            else ""
+        )
+        val_npz_path = (
+            Path(SYNTHETIC_DIR)
+            / f"spectra_{cfg.synthetic_sampling_mode}{hybrid_tag}_{cfg.synthetic_augmentation_profile}_val.npz"
+        )
+    val_npz = _ensure_synthetic(
+        cfg,
+        seed=cfg.seed + 1,
+        n_samples=val_n,
+        out_path=val_npz_path,
+    )
+    val_loaded = load_synthetic_aux_arrays(val_npz)
+    if val_loaded is None:
+        raise RuntimeError("Could not load synthetic validation data — check generation logs.")
+    X_val, y_val = val_loaded
 
     # ---- Reference spectra ----
     manifest_path = (
@@ -332,7 +369,8 @@ def _build_datasets(cfg: TrainConfig) -> PreparedDatasets:
     else:
         log.warning("Manifest not found at %s — using synthetic only.", manifest_path)
 
-    train_raw_spectra: list[np.ndarray] = [np.asarray(spec, dtype=np.float32) for spec in X_all[train_idx]]
+    # ---- Fit preprocessing from train spectra only ----
+    train_raw_spectra: list[np.ndarray] = [np.asarray(spec, dtype=np.float32) for spec in X_train]
     if ref_train_raw is not None:
         train_raw_spectra.extend(np.asarray(spec, dtype=np.float32) for spec in ref_train_raw._X)
     input_transform = fit_input_transform(
@@ -346,15 +384,26 @@ def _build_datasets(cfg: TrainConfig) -> PreparedDatasets:
         else None
     )
 
+    # ---- Fit LabelNormalizer from synthetic train labels ----
+    # Use log-transformed labels (what the datasets will yield at __getitem__).
+    y_train_log = np.log1p(np.clip(y_train.astype(np.float32), 0.0, None))
+    label_normalizer = LabelNormalizer.fit(y_train_log)
+    log.info(
+        "LabelNormalizer fitted: means(log)=[%s]  stds(log)=[%s]  species_weights=[%s]",
+        " ".join(f"{v:.3f}" for v in label_normalizer.means),
+        " ".join(f"{v:.3f}" for v in label_normalizer.stds),
+        " ".join(f"{v:.3f}" for v in label_normalizer.species_weights),
+    )
+
     synth_train = ArraySpectrumDataset(
-        X_all[train_idx],
-        y_all[train_idx],
+        X_train,
+        y_train,
         input_transform=input_transform,
         prior_extractor=prior_extractor,
     )
     synth_val = ArraySpectrumDataset(
-        X_all[val_idx],
-        y_all[val_idx],
+        X_val,
+        y_val,
         input_transform=input_transform,
         prior_extractor=prior_extractor,
     )
@@ -392,9 +441,10 @@ def _build_datasets(cfg: TrainConfig) -> PreparedDatasets:
         n_ref_train=n_ref_train,
         synth_val_ds=synth_val,
         ref_val_ds=ref_val,
-        n_synth_train=len(train_idx),
+        n_synth_train=len(X_train),
         input_transform=input_transform,
         prior_extractor=prior_extractor,
+        label_normalizer=label_normalizer,
     )
 
 
@@ -425,10 +475,14 @@ def _build_dataloader(
 # ---------------------------------------------------------------------------
 
 class WeightedHuberLoss(nn.Module):
-    """Huber loss with separate weights for active vs inactive label entries.
+    """Huber loss with per-species and active/inactive weighting.
 
-    Targets are in log1p(ppmv) space where inactive species are exactly 0.
-    Without weighting, sparse labels can collapse training to near-zero outputs.
+    active_mask must be passed at call time — it is computed from the original
+    (pre-normalisation) labels so it correctly identifies zero/nonzero entries
+    regardless of how normalisation shifts the values.
+
+    species_weights: (n_species,) float tensor, registered as a buffer so it
+    moves to the correct device automatically. Derived from LabelNormalizer.
     """
 
     def __init__(
@@ -437,17 +491,27 @@ class WeightedHuberLoss(nn.Module):
         delta: float = 1.0,
         active_label_weight: float = 2.0,
         inactive_label_weight: float = 1.0,
+        species_weights: torch.Tensor | None = None,
     ) -> None:
         super().__init__()
         self.huber = nn.HuberLoss(delta=delta, reduction="none")
         self.active_label_weight = float(active_label_weight)
         self.inactive_label_weight = float(inactive_label_weight)
+        if species_weights is not None:
+            self.register_buffer("species_weights", species_weights.float())
+        else:
+            self.species_weights: torch.Tensor | None = None  # type: ignore[assignment]
 
-    def forward(self, pred: torch.Tensor, target: torch.Tensor) -> torch.Tensor:
+    def forward(
+        self,
+        pred: torch.Tensor,
+        target: torch.Tensor,
+        active_mask: torch.Tensor,
+    ) -> torch.Tensor:
         element_loss = self.huber(pred, target)
-        active = target > 0
-        weights = torch.full_like(element_loss, self.inactive_label_weight)
-        weights = torch.where(active, self.active_label_weight, weights)
+        weights = torch.where(active_mask, self.active_label_weight, self.inactive_label_weight)
+        if self.species_weights is not None:
+            weights = weights * self.species_weights.to(weights.device)
         return (element_loss * weights).sum() / weights.sum().clamp_min(1e-8)
 
 def _train_epoch(
@@ -459,25 +523,30 @@ def _train_epoch(
     device: torch.device,
     cfg: TrainConfig,
     scaler: torch.amp.GradScaler,
+    label_normalizer: LabelNormalizer,
 ) -> float:
     model.train()
     total_loss = 0.0
     n_batches = 0
-    
+
     is_cuda = (device.type == "cuda")
     autocast_device = "cuda" if is_cuda else "cpu"
-    
+
     for X_batch, aux_batch, y_batch in loader:
         X_batch = X_batch.to(device, non_blocking=True)
         aux_batch = aux_batch.to(device, non_blocking=True)
         y_batch = y_batch.to(device, non_blocking=True)
 
+        # Compute active mask before normalisation (y_batch still in log1p space)
+        active_mask = y_batch > 0
+        y_batch_norm = label_normalizer.normalize(y_batch)
+
         optimizer.zero_grad(set_to_none=True)
-        
+
         with torch.autocast(device_type=autocast_device, enabled=is_cuda):
             pred = model(X_batch, aux=aux_batch if aux_batch.shape[-1] > 0 else None)
-            loss = criterion(pred, y_batch)
-            
+            loss = criterion(pred, y_batch_norm, active_mask=active_mask)
+
         scaler.scale(loss).backward()
 
         if cfg.grad_clip > 0:
@@ -500,6 +569,7 @@ def _eval_epoch(
     loader: DataLoader,
     criterion: nn.Module,
     device: torch.device,
+    label_normalizer: LabelNormalizer,
 ) -> tuple[float, np.ndarray, np.ndarray, dict[str, float]]:
     """Returns (mean_huber_loss, per_species_mae_ppmv, per_species_mae_log, raw_stats)."""
     model.eval()
@@ -514,26 +584,33 @@ def _eval_epoch(
         X_batch = X_batch.to(device)
         aux_batch = aux_batch.to(device)
         y_batch = y_batch.to(device)
-        pred = model(X_batch, aux=aux_batch if aux_batch.shape[-1] > 0 else None)
-        loss = criterion(pred, y_batch)
+
+        active_mask = y_batch > 0
+        y_batch_norm = label_normalizer.normalize(y_batch)
+
+        pred_norm = model(X_batch, aux=aux_batch if aux_batch.shape[-1] > 0 else None)
+        loss = criterion(pred_norm, y_batch_norm, active_mask=active_mask)
         total_loss += loss.item()
         n_batches += 1
 
-        # Keep raw log-space inputs for log-MAE and stats
-        all_pred_log.append(pred.cpu().numpy())
-        all_true_log.append(y_batch.cpu().numpy())
+        # Denormalise back to log1p(ppmv) for interpretable metrics
+        pred_log = label_normalizer.denormalize(pred_norm)   # (B, 11) log1p(ppmv)
+        true_log = y_batch                                    # (B, 11) log1p(ppmv)
 
-        # Back-transform to ppmv for physical MAE (clip negatives to match inference)
-        all_pred.append(np.clip(labels_from_log(pred).cpu().numpy(), 0.0, None))
-        all_true.append(labels_from_log(y_batch).cpu().numpy())
+        all_pred_log.append(pred_log.cpu().numpy())
+        all_true_log.append(true_log.cpu().numpy())
 
-    pred_arr = np.concatenate(all_pred, axis=0)       # (N, 11) ppmv
-    true_arr = np.concatenate(all_true, axis=0)       # (N, 11) ppmv
-    pred_log_arr = np.concatenate(all_pred_log, axis=0) # (N, 11) log1p(ppmv)
-    true_log_arr = np.concatenate(all_true_log, axis=0) # (N, 11) log1p(ppmv)
+        # Back-transform to ppmv (clip negatives to match inference)
+        all_pred.append(np.clip(labels_from_log(pred_log).cpu().numpy(), 0.0, None))
+        all_true.append(labels_from_log(true_log).cpu().numpy())
 
-    per_species_mae = np.abs(pred_arr - true_arr).mean(axis=0)          # (11,) ppmv
-    per_species_log_mae = np.abs(pred_log_arr - true_log_arr).mean(axis=0) # (11,) log
+    pred_arr = np.concatenate(all_pred, axis=0)          # (N, 11) ppmv
+    true_arr = np.concatenate(all_true, axis=0)          # (N, 11) ppmv
+    pred_log_arr = np.concatenate(all_pred_log, axis=0)  # (N, 11) log1p(ppmv)
+    true_log_arr = np.concatenate(all_true_log, axis=0)  # (N, 11) log1p(ppmv)
+
+    per_species_mae = np.abs(pred_arr - true_arr).mean(axis=0)
+    per_species_log_mae = np.abs(pred_log_arr - true_log_arr).mean(axis=0)
 
     raw_stats = {
         "min": float(pred_log_arr.min()),
@@ -571,7 +648,11 @@ def _save_mae_plot(mae: np.ndarray, epoch: int, reports_dir: Path) -> None:
 
 
 def _zero_baseline_log_mae(loader: DataLoader) -> np.ndarray:
-    """Per-species log-MAE for constant zero prediction on a loader."""
+    """Per-species log-MAE for constant zero prediction.
+
+    Labels from the DataLoader are in raw log1p(ppmv) space (not normalised),
+    so zero-prediction baseline is just abs(true_log).
+    """
     all_true_log: list[np.ndarray] = []
     for _, _, y_batch in loader:
         all_true_log.append(y_batch.numpy())
@@ -659,16 +740,20 @@ def train_from_manifest(cfg: TrainConfig | None = None) -> FTIRModel:
         ),
     )
 
+    label_normalizer = prepared.label_normalizer
+    species_weights_t = torch.tensor(label_normalizer.species_weights, dtype=torch.float32)
     criterion = WeightedHuberLoss(
         delta=cfg.huber_delta,
         active_label_weight=cfg.active_label_weight,
         inactive_label_weight=cfg.inactive_label_weight,
-    )
+        species_weights=species_weights_t,
+    ).to(device)
     log.info(
-        "Loss: WeightedHuber(delta=%.2f, active_w=%.2f, inactive_w=%.2f)",
+        "Loss: WeightedHuber(delta=%.2f, active_w=%.2f, inactive_w=%.2f, species_w=[%s])",
         cfg.huber_delta,
         cfg.active_label_weight,
         cfg.inactive_label_weight,
+        " ".join(f"{v:.3f}" for v in label_normalizer.species_weights),
     )
 
     # ---- Paths ----
@@ -712,13 +797,20 @@ def train_from_manifest(cfg: TrainConfig | None = None) -> FTIRModel:
     # ---- Training loop ----
     for epoch in range(1, cfg.epochs + 1):
         train_loss = _train_epoch(
-            model, train_loader, optimizer, scheduler, criterion, device, cfg, scaler
+            model, train_loader, optimizer, scheduler, criterion, device, cfg, scaler,
+            label_normalizer,
         )
-        val_loss, mae, log_mae, raw_stats = _eval_epoch(model, val_loader, criterion, device)
-        _, _, synth_log_mae, _ = _eval_epoch(model, synth_val_loader, criterion, device)
+        val_loss, mae, log_mae, raw_stats = _eval_epoch(
+            model, val_loader, criterion, device, label_normalizer,
+        )
+        _, _, synth_log_mae, _ = _eval_epoch(
+            model, synth_val_loader, criterion, device, label_normalizer,
+        )
         ref_log_mae = None
         if ref_val_loader is not None:
-            _, _, ref_log_mae, _ = _eval_epoch(model, ref_val_loader, criterion, device)
+            _, _, ref_log_mae, _ = _eval_epoch(
+                model, ref_val_loader, criterion, device, label_normalizer,
+            )
 
         summary = _build_epoch_summary(
             epoch=epoch,
@@ -815,6 +907,7 @@ def train_from_manifest(cfg: TrainConfig | None = None) -> FTIRModel:
                     "prior_feature_config": (
                         prepared.prior_extractor.describe() if prepared.prior_extractor is not None else None
                     ),
+                    "label_normalizer": prepared.label_normalizer.as_dict(),
                     "selection_metric": summary.selection_metric,
                 }
             )

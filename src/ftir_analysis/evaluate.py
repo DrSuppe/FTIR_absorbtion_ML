@@ -15,7 +15,7 @@ from .constants import DEFAULT_TARGET_SPECIES, REPORTS_DIR
 from .datasets import ReferenceSpectraDataset, manifest_target_species
 from .features import InputTransformConfig, SpectralPriorExtractor, build_input_channels
 from .modeling import FTIRModel
-from .utils import labels_from_log, resolve_device, set_mpl_config_if_needed, write_json
+from .utils import LabelNormalizer, labels_from_log, resolve_device, set_mpl_config_if_needed, write_json
 
 
 def _metrics(y_true: np.ndarray, y_pred: np.ndarray) -> dict[str, np.ndarray]:
@@ -45,6 +45,7 @@ def _predict_model(
     device: torch.device,
     input_transform: InputTransformConfig,
     prior_extractor: SpectralPriorExtractor | None,
+    label_normalizer: LabelNormalizer | None = None,
     batch_size: int = 64,
 ) -> np.ndarray:
     model.eval()
@@ -61,7 +62,12 @@ def _predict_model(
             )
             xb_t = torch.tensor(xb, dtype=torch.float32, device=device)
             aux_t = torch.tensor(aux_np, dtype=torch.float32, device=device)
-            pred_log = model(xb_t, aux=aux_t if aux_t.shape[-1] > 0 else None)
+            pred_norm = model(xb_t, aux=aux_t if aux_t.shape[-1] > 0 else None)
+            pred_log = (
+                label_normalizer.denormalize(pred_norm)
+                if label_normalizer is not None
+                else pred_norm
+            )
             pred = labels_from_log(pred_log).cpu().numpy()
             out.append(pred)
     return np.concatenate(out, axis=0) if out else np.zeros((0, len(DEFAULT_TARGET_SPECIES)), dtype=np.float32)
@@ -109,6 +115,8 @@ def evaluate_manifest(
         validate_metadata(meta, expected_target_species=target_species)
 
         input_transform = InputTransformConfig(**meta.get("input_transform", {}))
+        norm_cfg = meta.get("label_normalizer")
+        label_normalizer = LabelNormalizer.from_dict(norm_cfg) if norm_cfg is not None else None
         use_prior = bool(meta.get("use_prior_features", False))
         prior_extractor = (
             SpectralPriorExtractor.fit_from_manifest(
@@ -135,6 +143,7 @@ def evaluate_manifest(
                 device=device,
                 input_transform=input_transform,
                 prior_extractor=prior_extractor,
+                label_normalizer=label_normalizer,
             )
             if x_val.size
             else np.zeros_like(y_val)
@@ -146,6 +155,7 @@ def evaluate_manifest(
                 device=device,
                 input_transform=input_transform,
                 prior_extractor=prior_extractor,
+                label_normalizer=label_normalizer,
             )
             if x_test.size
             else np.zeros_like(y_test)

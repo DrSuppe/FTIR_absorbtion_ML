@@ -18,7 +18,7 @@ log = logging.getLogger(__name__)
 from .features import InputTransformConfig, SpectralPriorExtractor, build_input_channels
 from .modeling import FTIRModel
 from .spectra import GRID_NPTS, SpectrumLoadError, load_on_grid
-from .utils import labels_from_log, resolve_device
+from .utils import LabelNormalizer, labels_from_log, resolve_device
 
 
 @dataclass
@@ -68,6 +68,16 @@ def run_inference(cfg: InferenceConfig) -> Path:
             "This may produce incorrect results if the model was trained with different scales."
         )
     input_transform = InputTransformConfig(**metadata.get("input_transform", {}))
+
+    norm_cfg = metadata.get("label_normalizer")
+    label_normalizer: LabelNormalizer | None = (
+        LabelNormalizer.from_dict(norm_cfg) if norm_cfg is not None else None
+    )
+    if label_normalizer is None:
+        log.warning(
+            "Checkpoint has no label_normalizer metadata — outputs will NOT be denormalised. "
+            "This checkpoint was likely generated before v4.1."
+        )
     use_prior = bool(metadata.get("use_prior_features", False))
     prior_extractor = None
     if use_prior:
@@ -117,8 +127,13 @@ def run_inference(cfg: InferenceConfig) -> Path:
             )
             tensor_input = torch.tensor(xb, dtype=torch.float32, device=device).unsqueeze(0)
             aux_input = torch.tensor(aux, dtype=torch.float32, device=device).unsqueeze(0)
-            preds = model(tensor_input, aux=aux_input if aux_input.shape[-1] > 0 else None)
-            ppmv = labels_from_log(preds.squeeze(0)).cpu().numpy()
+            preds_norm = model(tensor_input, aux=aux_input if aux_input.shape[-1] > 0 else None)
+            preds_log = (
+                label_normalizer.denormalize(preds_norm)
+                if label_normalizer is not None
+                else preds_norm
+            )
+            ppmv = labels_from_log(preds_log.squeeze(0)).cpu().numpy()
 
             row = {"File": path.name}
             for i, species in enumerate(target_species):

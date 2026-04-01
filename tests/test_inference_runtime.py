@@ -5,17 +5,27 @@ import pandas as pd
 import pytest
 import torch
 
+import numpy as np
+
 from ftir_analysis.checkpointing import build_checkpoint_metadata, save_checkpoint
-from ftir_analysis.constants import PROJECT_ROOT
+from ftir_analysis.constants import DEFAULT_TARGET_SPECIES, PROJECT_ROOT
 from ftir_analysis.inference_runtime import InferenceConfig, run_inference
 from ftir_analysis.modeling import FTIRModel
+from ftir_analysis.utils import LabelNormalizer
 
 
 def _write_v4_checkpoint(path: Path) -> None:
-    target_species = [
-        "H2O", "CO2", "CO", "NO", "NO2", "NH3", "CH4", "N2O", "C2H4", "HCN", "HNCO"
-    ]
-    model = FTIRModel(n_species=11, in_channels=3, aux_features=0)
+    target_species = DEFAULT_TARGET_SPECIES
+    n = len(target_species)
+    model = FTIRModel(n_species=n, in_channels=3, aux_features=0)
+
+    # Minimal valid LabelNormalizer: identity transform with uniform weights
+    label_normalizer = LabelNormalizer(
+        means=np.zeros(n, dtype=np.float32),
+        stds=np.ones(n, dtype=np.float32),
+        species_weights=np.ones(n, dtype=np.float32),
+    )
+
     metadata = build_checkpoint_metadata(target_species)
     metadata.update(
         {
@@ -28,6 +38,7 @@ def _write_v4_checkpoint(path: Path) -> None:
             "use_prior_features": False,
             "prior_feature_config": None,
             "selection_metric": "ref_val_log_mae_mean",
+            "label_normalizer": label_normalizer.as_dict(),
         }
     )
     save_checkpoint(path, model.state_dict(), metadata)

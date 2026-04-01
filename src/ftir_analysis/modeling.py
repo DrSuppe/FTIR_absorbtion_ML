@@ -1,12 +1,9 @@
 """Enhanced FTIR model architecture.
 
-Key changes vs v2:
-  - SpectralCNN: 5 ResBlocks (was 3), channels 32→64→128→256→256
-  - SelfAttention1D: 8 heads (was 4)
-  - GRU hidden dim: 512 (was 256)
-  - Second Transformer stage (2-layer, d=512, 4 heads) after GRU
-  - EMA hidden state buffer for stable inference
-  - Output head: 11 species (was 7)
+Key changes vs v4.0:
+  - BatchNorm1d → GroupNorm(8, C) throughout CNN (stable with mixed synthetic/reference batches)
+  - Output head uses linear activation (model outputs in normalised label space)
+  - Per-species label normalisation handled externally by LabelNormalizer
 """
 
 from __future__ import annotations
@@ -16,7 +13,6 @@ from typing import Optional
 
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
 
 
 # ---------------------------------------------------------------------------
@@ -33,12 +29,13 @@ class ResBlock1D(nn.Module):
         kernel_size: int = 7,
         stride: int = 1,
         dropout: float = 0.1,
+        num_groups: int = 8,
     ) -> None:
         super().__init__()
         pad = kernel_size // 2
-        self.norm1 = nn.BatchNorm1d(in_ch)
+        self.norm1 = nn.GroupNorm(min(num_groups, in_ch), in_ch)
         self.conv1 = nn.Conv1d(in_ch, out_ch, kernel_size, stride=stride, padding=pad, bias=False)
-        self.norm2 = nn.BatchNorm1d(out_ch)
+        self.norm2 = nn.GroupNorm(min(num_groups, out_ch), out_ch)
         self.conv2 = nn.Conv1d(out_ch, out_ch, kernel_size, padding=pad, bias=False)
         self.drop = nn.Dropout(dropout)
 
@@ -65,7 +62,7 @@ class SpectralCNN(nn.Module):
         super().__init__()
         self.stem = nn.Sequential(
             nn.Conv1d(in_channels, 32, kernel_size=15, padding=7, bias=False),
-            nn.BatchNorm1d(32),
+            nn.GroupNorm(8, 32),
             nn.ReLU(inplace=True),
         )
         self.blocks = nn.Sequential(
@@ -211,7 +208,7 @@ class FTIRModel(nn.Module):
                     nn.init.zeros_(m.bias)
             elif isinstance(m, nn.Conv1d):
                 nn.init.kaiming_normal_(m.weight, nonlinearity="relu")
-            elif isinstance(m, (nn.BatchNorm1d, nn.LayerNorm)):
+            elif isinstance(m, (nn.GroupNorm, nn.LayerNorm)):
                 nn.init.ones_(m.weight)
                 nn.init.zeros_(m.bias)
 
@@ -253,8 +250,9 @@ class FTIRModel(nn.Module):
                 raise ValueError("Model expects auxiliary prior features but aux=None was passed")
             h_pool = torch.cat([h_pool, self.aux_proj(aux)], dim=-1)
 
-        # 5. Output head
-        return F.softplus(self.head(h_pool))  # (B, n_species)
+        # 5. Output head — linear activation; outputs are in normalised label space.
+        # Non-negativity is enforced after denormalisation at inference/eval time.
+        return self.head(h_pool)  # (B, n_species)
 
 
 def count_parameters(model: nn.Module) -> int:

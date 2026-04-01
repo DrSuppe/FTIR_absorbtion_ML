@@ -43,8 +43,9 @@ MANIFEST_COLUMNS = [
 SUPPORTED_SOURCE_FORMATS = {"spc", "csv", "txt"}
 
 # Checkpoint metadata
-MODEL_VERSION = "ftir_solver_v4_0"
-LABEL_TRANSFORM = "log1p_ppmv"
+MODEL_VERSION = "ftir_solver_v4_1"
+LABEL_TRANSFORM = "log1p_ppmv_normalized"   # v4.1+: per-species normalisation applied
+SCHEMA_VERSION = 2                           # bumped when metadata structure changes
 METADATA_SUFFIX = ".meta.json"
 
 # Paths

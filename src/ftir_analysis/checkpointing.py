@@ -12,6 +12,7 @@ from .constants import (
     LABEL_TRANSFORM,
     METADATA_SUFFIX,
     MODEL_VERSION,
+    SCHEMA_VERSION,
     WAVENUMBER_MAX,
     WAVENUMBER_MIN,
     WAVENUMBER_STEP,
@@ -44,7 +45,7 @@ def build_checkpoint_metadata(
 ) -> dict[str, Any]:
     """Create standard checkpoint metadata payload."""
     return {
-        "schema_version": 1,
+        "schema_version": SCHEMA_VERSION,
         "model_version": model_version,
         "target_species": list(target_species),
         "target_species_hash": hash_target_species(target_species),
@@ -96,6 +97,7 @@ def validate_metadata(
         "grid_max",
         "grid_step",
         "label_transform",
+        "label_normalizer",
     }
     missing = sorted(required - set(metadata.keys()))
     if missing:
