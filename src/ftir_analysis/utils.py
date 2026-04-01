@@ -103,8 +103,9 @@ class LabelNormalizer:
     different concentration ranges (e.g. H2O ~10000 ppmv vs HCN ~5 ppmv).
 
     Inactive labels (zero in log space) are excluded from stats computation and
-    are mapped to a fixed sentinel value of 0.0 after normalization so they remain
-    distinguishable from active labels.
+    are mapped to -mean/std after normalization. This is the unique value that
+    denormalizes back to 0, and it sits far below the active N(0,1) distribution
+    (typically -10 to -20σ), giving the model a clear gradient to learn presence/absence.
 
     Also computes per-species loss weights: species with lower typical concentrations
     receive higher weight (1 / log1p(median_active_ppmv)) so trace species are not
@@ -147,11 +148,22 @@ class LabelNormalizer:
         return cls(means=means, stds=stds, species_weights=species_weights)
 
     def normalize(self, y: torch.Tensor) -> torch.Tensor:
-        """Map log1p(ppmv) labels → normalised space. Inactive zeros stay at 0."""
+        """Map log1p(ppmv) labels → normalised space.
+
+        Inactive (zero) entries are mapped to -mean/std — the unique value
+        that denormalizes back to 0. This keeps inactive species clearly
+        separated from active species (which land in ~N(0,1)), giving the
+        model a distinguishable gradient for presence/absence.
+
+        Previously inactive entries were mapped to 0.0, which collides with
+        the active-at-median distribution and caused the model to learn a
+        trivial solution (predict everything at the mean).
+        """
         means_t = torch.tensor(self.means, dtype=y.dtype, device=y.device)
         stds_t = torch.tensor(self.stds, dtype=y.dtype, device=y.device)
         active = y > 0
-        y_norm = torch.where(active, (y - means_t) / stds_t, torch.zeros_like(y))
+        inactive_sentinel = -means_t / stds_t          # denorm of this → 0
+        y_norm = torch.where(active, (y - means_t) / stds_t, inactive_sentinel)
         return y_norm
 
     def denormalize(self, y_norm: torch.Tensor) -> torch.Tensor:
