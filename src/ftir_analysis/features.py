@@ -41,6 +41,16 @@ class SpectralWindow:
         return {"start": int(self.start), "end": int(self.end)}
 
 
+def smooth_saturate(spectrum: np.ndarray, *, ceiling: float = SATURATION_AU) -> np.ndarray:
+    """Smooth saturation: S * tanh(y / S).
+
+    Unlike hard clipping, this preserves gradient information near the ceiling
+    and avoids discontinuities that the model cannot learn through.
+    """
+    s = np.asarray(spectrum, dtype=np.float32)
+    return (ceiling * np.tanh(s / ceiling)).astype(np.float32)
+
+
 def saturation_mask(spectrum: np.ndarray, *, epsilon: float = 1e-3) -> np.ndarray:
     """Return a binary mask for saturated points."""
     return (np.asarray(spectrum) >= (SATURATION_AU - epsilon)).astype(np.float32)
@@ -82,8 +92,9 @@ def build_input_channels(
 ) -> np.ndarray:
     """Build normalized `[raw, derivative, saturation_mask]` channels."""
     raw = np.asarray(spectrum, dtype=np.float32)
-    deriv = derivative_on_grid(raw) / cfg.derivative_scale
     sat = saturation_mask(raw, epsilon=cfg.saturation_epsilon)
+    raw = smooth_saturate(raw, ceiling=cfg.raw_scale)
+    deriv = derivative_on_grid(raw) / cfg.derivative_scale
     raw = raw / max(cfg.raw_scale, 1e-6)
     return np.stack([raw, deriv, sat], axis=0).astype(np.float32)
 

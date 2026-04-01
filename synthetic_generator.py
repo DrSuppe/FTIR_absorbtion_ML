@@ -42,6 +42,7 @@ from ftir_analysis.constants import (  # noqa: E402
     WAVENUMBER_MIN,
     WAVENUMBER_STEP,
 )
+from ftir_analysis.features import smooth_saturate  # noqa: E402
 from ftir_analysis.manifesting import build_manifest  # noqa: E402
 from ftir_analysis.spectra import interpolate_to_grid, load_spectrum  # noqa: E402
 
@@ -86,7 +87,7 @@ class SPCLibrary:
             try:
                 x, y = load_spectrum(p)
                 arr = interpolate_to_grid(x, y)
-                arr = np.clip(arr, 0.0, SATURATION_AU).astype(np.float64)
+                arr = np.clip(arr, 0.0, None).astype(np.float64)
             except Exception as exc:
                 log.debug("Skipping %s: %s", p.name, exc)
                 skip += 1
@@ -188,14 +189,65 @@ class SPCLibrary:
 # Augmentation pipeline
 # ---------------------------------------------------------------------------
 
+def _temperature_perturbation(
+    spectrum: np.ndarray,
+    rng: np.random.Generator,
+    *,
+    temperature_c: float = 25.0,
+    reference_temp_c: float = 25.0,
+) -> np.ndarray:
+    """Apply temperature-dependent spectral perturbation.
+
+    Real FTIR absorption cross-sections change with temperature due to
+    rotational-vibrational population shifts (Boltzmann distribution).
+    This approximates the effect as:
+      1. A global intensity scaling proportional to ΔT (hotter → weaker absorption
+         for most species in the mid-IR, roughly -0.2%/°C).
+      2. A line-broadening effect simulated by Gaussian convolution whose width
+         scales with |ΔT|.
+      3. Small random band-specific perturbations that mimic the fact that
+         different vibrational modes have different temperature sensitivities.
+
+    The reference spectra in the SPC library are typically recorded at ~25°C.
+    """
+    dt = temperature_c - reference_temp_c
+    if abs(dt) < 0.5:
+        return spectrum.copy()
+
+    s = spectrum.copy()
+
+    # 1. Global intensity scaling (~-0.2%/°C with ±0.05%/°C jitter)
+    coeff = -0.002 + rng.normal(0.0, 0.0005)
+    s *= (1.0 + coeff * dt)
+
+    # 2. Line broadening — convolve with a narrow Gaussian whose σ scales with |ΔT|
+    sigma_pts = max(1.0, 0.15 * abs(dt))  # in grid points (~0.25 cm⁻¹ each)
+    if sigma_pts > 1.0:
+        from scipy.ndimage import gaussian_filter1d
+        s = gaussian_filter1d(s, sigma=sigma_pts).astype(np.float32)
+
+    # 3. Band-specific perturbation (4 random bands with ΔT-proportional gain shifts)
+    n_bands = 4
+    band_size = len(s) // n_bands
+    for b in range(n_bands):
+        start = b * band_size
+        end = (b + 1) * band_size if b < n_bands - 1 else len(s)
+        band_shift = rng.normal(0.0, 0.001 * abs(dt))
+        s[start:end] *= (1.0 + band_shift)
+
+    return s.astype(np.float32)
+
+
 def augment(
     spectrum: np.ndarray,
     rng: np.random.Generator,
     *,
     profile: str = "mild",
+    temperature_c: float = 25.0,
 ) -> np.ndarray:
     """Apply physics-inspired augmentations in-place (returns new array)."""
     s = spectrum.copy()
+    s = _temperature_perturbation(s, rng, temperature_c=temperature_c)
 
     profile = profile.lower().strip()
     if profile not in {"mild", "strong"}:
@@ -240,7 +292,8 @@ def augment(
             start = rng.integers(0, max(1, GRID_NPTS - width))
             s[start : start + width] = 0.0
 
-    s = np.clip(s, -0.1, SATURATION_AU)
+    s = np.clip(s, -0.1, None)  # floor only; ceiling via smooth saturation
+    s = smooth_saturate(s, ceiling=SATURATION_AU)
 
     return s.astype(np.float32)
 
@@ -346,6 +399,18 @@ def _sample_log_concentration(
     return float(np.exp(rng.uniform(l0, l1)))
 
 
+def _sample_temperature(rng: np.random.Generator) -> float:
+    """Sample a measurement temperature from a realistic distribution.
+
+    FTIR measurements in emission testing typically span 15-200°C,
+    with most near 25°C (lab) or 50-150°C (exhaust stack).
+    We use a mixture: 60% near-ambient, 40% elevated.
+    """
+    if rng.random() < 0.6:
+        return float(rng.normal(25.0, 10.0))   # lab-ambient range
+    return float(rng.uniform(40.0, 200.0))      # elevated exhaust range
+
+
 def _build_sample_from_concentrations(
     lib: SPCLibrary,
     rng: np.random.Generator,
@@ -369,8 +434,9 @@ def _build_sample_from_concentrations(
     if valid_species == 0:
         return None
 
-    spectrum = np.clip(spectrum, 0.0, SATURATION_AU)
-    spectrum = augment(spectrum, rng, profile=augment_profile)
+    temperature = _sample_temperature(rng)
+    spectrum = np.clip(spectrum, 0.0, None)  # floor only; augment applies smooth saturation
+    spectrum = augment(spectrum, rng, profile=augment_profile, temperature_c=temperature)
     y = _target_species_concentrations(chosen_concs)
     return spectrum.astype(np.float32), y
 

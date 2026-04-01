@@ -26,6 +26,7 @@ class InferenceConfig:
     data_dir: Path
     checkpoint_path: Path = CHECKPOINT_DIR / "ftir_solver_best.pth"
     output_csv: Path | None = None
+    mc_dropout_samples: int = 0  # 0 = disabled; >0 = MC Dropout with N forward passes
 
 
 def _list_input_files(data_dir: Path) -> list[Path]:
@@ -106,6 +107,10 @@ def run_inference(cfg: InferenceConfig) -> Path:
     if not files:
         raise RuntimeError(f"No supported input files found in {data_dir}")
 
+    use_mc = cfg.mc_dropout_samples > 0
+    if use_mc:
+        log.info("MC Dropout enabled: %d forward passes per sample", cfg.mc_dropout_samples)
+
     rows: list[dict[str, object]] = []
     with torch.no_grad():
         for path in files:
@@ -127,17 +132,41 @@ def run_inference(cfg: InferenceConfig) -> Path:
             )
             tensor_input = torch.tensor(xb, dtype=torch.float32, device=device).unsqueeze(0)
             aux_input = torch.tensor(aux, dtype=torch.float32, device=device).unsqueeze(0)
-            preds_norm = model(tensor_input, aux=aux_input if aux_input.shape[-1] > 0 else None)
-            preds_log = (
-                label_normalizer.denormalize(preds_norm)
-                if label_normalizer is not None
-                else preds_norm
-            )
+            aux_kwarg = aux_input if aux_input.shape[-1] > 0 else None
+
+            if use_mc:
+                preds_norm_mean, preds_norm_std = model.predict_with_uncertainty(
+                    tensor_input, aux=aux_kwarg, n_samples=cfg.mc_dropout_samples,
+                )
+                preds_log = (
+                    label_normalizer.denormalize(preds_norm_mean)
+                    if label_normalizer is not None
+                    else preds_norm_mean
+                )
+                # Propagate uncertainty through denormalization (linear, so std scales by stds)
+                if label_normalizer is not None:
+                    stds_t = torch.tensor(
+                        label_normalizer.stds, dtype=preds_norm_std.dtype, device=preds_norm_std.device,
+                    )
+                    uncertainty_log = (preds_norm_std * stds_t).squeeze(0).cpu().numpy()
+                else:
+                    uncertainty_log = preds_norm_std.squeeze(0).cpu().numpy()
+            else:
+                preds_norm = model(tensor_input, aux=aux_kwarg)
+                preds_log = (
+                    label_normalizer.denormalize(preds_norm)
+                    if label_normalizer is not None
+                    else preds_norm
+                )
+                uncertainty_log = None
+
             ppmv = labels_from_log(preds_log.squeeze(0)).cpu().numpy()
 
             row = {"File": path.name}
             for i, species in enumerate(target_species):
                 row[f"{species}_ppmv"] = float(max(0.0, ppmv[i]))
+                if uncertainty_log is not None:
+                    row[f"{species}_uncertainty_log"] = float(uncertainty_log[i])
             rows.append(row)
 
     out_csv = cfg.output_csv or (data_dir / "ml_solver_results.csv")
@@ -150,10 +179,12 @@ def make_inference_config(
     data_dir: str | Path,
     checkpoint_path: str | Path | None = None,
     output_csv: str | Path | None = None,
+    mc_dropout_samples: int = 0,
 ) -> InferenceConfig:
     """Helper for wrapper scripts and CLI."""
     return InferenceConfig(
         data_dir=Path(data_dir),
         checkpoint_path=Path(checkpoint_path) if checkpoint_path else CHECKPOINT_DIR / "ftir_solver_best.pth",
         output_csv=Path(output_csv) if output_csv else None,
+        mc_dropout_samples=mc_dropout_samples,
     )

@@ -13,6 +13,7 @@ from typing import Optional
 
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
 
 
 # ---------------------------------------------------------------------------
@@ -253,6 +254,38 @@ class FTIRModel(nn.Module):
         # 5. Output head — linear activation; outputs are in normalised label space.
         # Non-negativity is enforced after denormalisation at inference/eval time.
         return self.head(h_pool)  # (B, n_species)
+
+
+    def predict_with_uncertainty(
+        self,
+        x: torch.Tensor,
+        aux: torch.Tensor | None = None,
+        *,
+        n_samples: int = 20,
+    ) -> tuple[torch.Tensor, torch.Tensor]:
+        """MC Dropout: run *n_samples* forward passes with dropout active.
+
+        Returns
+        -------
+        mean : (B, n_species)  mean prediction across MC samples
+        std  : (B, n_species)  per-species predictive std (uncertainty)
+        """
+        was_training = self.training
+        self.train()  # enable dropout
+
+        preds: list[torch.Tensor] = []
+        with torch.no_grad():
+            for _ in range(n_samples):
+                preds.append(self.forward(x, aux=aux))
+
+        stacked = torch.stack(preds, dim=0)  # (n_samples, B, n_species)
+        mean = stacked.mean(dim=0)
+        std = stacked.std(dim=0)
+
+        if not was_training:
+            self.eval()
+
+        return mean, std
 
 
 def count_parameters(model: nn.Module) -> int:
