@@ -188,55 +188,10 @@ class SPCLibrary:
 # ---------------------------------------------------------------------------
 # Augmentation pipeline
 # ---------------------------------------------------------------------------
-
-def _temperature_perturbation(
-    spectrum: np.ndarray,
-    rng: np.random.Generator,
-    *,
-    temperature_c: float = 25.0,
-    reference_temp_c: float = 25.0,
-) -> np.ndarray:
-    """Apply temperature-dependent spectral perturbation.
-
-    Real FTIR absorption cross-sections change with temperature due to
-    rotational-vibrational population shifts (Boltzmann distribution).
-    This approximates the effect as:
-      1. A global intensity scaling proportional to ΔT (hotter → weaker absorption
-         for most species in the mid-IR, roughly -0.2%/°C).
-      2. A line-broadening effect simulated by Gaussian convolution whose width
-         scales with |ΔT|.
-      3. Small random band-specific perturbations that mimic the fact that
-         different vibrational modes have different temperature sensitivities.
-
-    The reference spectra in the SPC library are typically recorded at ~25°C.
-    """
-    dt = temperature_c - reference_temp_c
-    if abs(dt) < 0.5:
-        return spectrum.copy()
-
-    s = spectrum.copy()
-
-    # 1. Global intensity scaling (~-0.2%/°C with ±0.05%/°C jitter)
-    coeff = -0.002 + rng.normal(0.0, 0.0005)
-    s *= (1.0 + coeff * dt)
-
-    # 2. Line broadening — convolve with a narrow Gaussian whose σ scales with |ΔT|
-    sigma_pts = max(1.0, 0.15 * abs(dt))  # in grid points (~0.25 cm⁻¹ each)
-    if sigma_pts > 1.0:
-        from scipy.ndimage import gaussian_filter1d
-        s = gaussian_filter1d(s, sigma=sigma_pts).astype(np.float32)
-
-    # 3. Band-specific perturbation (4 random bands with ΔT-proportional gain shifts)
-    n_bands = 4
-    band_size = len(s) // n_bands
-    for b in range(n_bands):
-        start = b * band_size
-        end = (b + 1) * band_size if b < n_bands - 1 else len(s)
-        band_shift = rng.normal(0.0, 0.001 * abs(dt))
-        s[start:end] *= (1.0 + band_shift)
-
-    return s.astype(np.float32)
-
+# Note: temperature augmentation is intentionally absent. The measurement cell
+# operates at fixed T = 191 °C and P = 1 atm for all spectra (reference and
+# sample), so ε_i(ν̃) are fixed constants and no temperature-induced spectral
+# shift can occur in deployment.
 
 def augment(
     spectrum: np.ndarray,
@@ -396,17 +351,6 @@ def _sample_log_concentration(
         l1 = l0 + seg
     return float(np.exp(rng.uniform(l0, l1)))
 
-
-def _sample_temperature(rng: np.random.Generator) -> float:
-    """Sample a measurement temperature from a realistic distribution.
-
-    FTIR measurements in emission testing typically span 15-200°C,
-    with most near 25°C (lab) or 50-150°C (exhaust stack).
-    We use a mixture: 60% near-ambient, 40% elevated.
-    """
-    if rng.random() < 0.6:
-        return float(rng.normal(25.0, 10.0))   # lab-ambient range
-    return float(rng.uniform(40.0, 200.0))      # elevated exhaust range
 
 
 def _build_sample_from_concentrations(
