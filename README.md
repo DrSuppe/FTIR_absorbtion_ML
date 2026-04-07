@@ -174,6 +174,78 @@ FTIR_absorbtion_ML/
 └── pyproject.toml
 ```
 
+## Scientific Basis and Justification
+
+### 1. Why a linear combination of reference spectra equals the spectrum of the real mixture
+
+This is a direct consequence of the **Beer-Lambert law of additivity**, which holds exactly under the fixed measurement conditions of this system (T = 191 °C, P = 1 atm, no chemical reactions in the cell).
+
+For a single species $i$ at concentration $c_i$ in a cell of path length $\ell$:
+
+$$A_i(\tilde{\nu}) = \varepsilon_i(\tilde{\nu}) \cdot c_i \cdot \ell$$
+
+where $\varepsilon_i(\tilde{\nu})$ [L mol⁻¹ cm⁻¹] is the **molar absorptivity** — a molecular property that depends only on species identity, temperature, and pressure. Because T and P are fixed and identical for all measurements, $\varepsilon_i(\tilde{\nu})$ is a **fixed constant array** for each species.
+
+For a mixture of $N$ non-reacting species, the transmitted intensity is:
+
+$$I(\tilde{\nu}) = I_0(\tilde{\nu}) \cdot \exp\!\left(-\ell \sum_{i=1}^{N} \varepsilon_i(\tilde{\nu}) \cdot c_i\right)$$
+
+Taking $-\log_{10}$ gives the **total absorbance**:
+
+$$A_{\text{mix}}(\tilde{\nu}) = \sum_{i=1}^{N} \varepsilon_i(\tilde{\nu}) \cdot c_i \cdot \ell = \sum_{i=1}^{N} A_i(\tilde{\nu})$$
+
+Since $A_i \propto c_i$ (linear), a reference spectrum $A_i^{\text{ref}}(\tilde{\nu})$ measured at $c_i^{\text{ref}}$ scales exactly:
+
+$$A_i(\tilde{\nu})\big|_{c_i} = \frac{c_i}{c_i^{\text{ref}}} \cdot A_i^{\text{ref}}(\tilde{\nu})$$
+
+Combining:
+
+$$\boxed{A_{\text{mix}}(\tilde{\nu}) = \sum_{i=1}^{N} \frac{c_i}{c_i^{\text{ref}}} \cdot A_i^{\text{ref}}(\tilde{\nu})}$$
+
+The synthetic data generation in `synthetic_generator.py` implements this exactly. The **Beer-Lambert interpolation** between two bracketing references is also exact: for $c \in [c_{\text{lo}}, c_{\text{hi}}]$, the weight $t = (c - c_{\text{lo}})/(c_{\text{hi}} - c_{\text{lo}})$ gives $A = (1-t)A_{\text{lo}} + tA_{\text{hi}}$, which is algebraically identical to $A = \varepsilon \cdot c \cdot \ell$.
+
+**Conditions under which this holds exactly in this system:**
+- T = 191 °C and P = 1 atm are fixed for all measurements (reference and sample) — no temperature or pressure shift in line positions or intensities
+- No chemical reactions between species in the measurement cell
+- Linear detector response (violations are handled by the smooth-saturation channel)
+- The 11 target species do not react with each other under these conditions
+
+**Important implication:** because T and P are fixed, the molar absorptivities $\varepsilon_i(\tilde{\nu})$ are fixed constants. Temperature augmentation in the synthetic generator is **not physically motivated** for this specific setup and should be disabled or removed to avoid training the model to expect spectral shifts that will never occur in deployment.
+
+---
+
+### 2. Advantages of ML over a classical least-squares optimizer
+
+The classical approach is **Non-Negative Least Squares (NNLS)**: given the reference matrix $\mathbf{R} \in \mathbb{R}^{W \times N}$ (W = 16800 wavenumber points, N = 11 species), solve $\min_{\mathbf{c} \geq 0} \|\mathbf{A}_{\text{mix}} - \mathbf{R}\mathbf{c}\|_2^2$.
+
+| Aspect | Classical NNLS | This ML model |
+|---|---|---|
+| **Spectral overlap** | Sensitive — columns of **R** are correlated (CO/CO₂/N₂O share regions); small overlap errors inflate concentration estimates directly | Learns nonlinear representations that disentangle overlapping species |
+| **Baseline and drift** | Any additive baseline component corrupts $\hat{c}$ directly | Trained with baseline augmentation; derivative channel is baseline-insensitive by construction |
+| **Detector saturation** | Saturated pixels violate Beer-Lambert; must be masked manually, and masking discards information | Smooth-saturation channel signals the detector ceiling; model is trained on saturated examples |
+| **Uncertainty** | Propagates only photon noise analytically; no account for model error or spectral drift | MC Dropout gives empirical uncertainty per species per measurement |
+| **Trace species at low SNR** | Conditioning number of **R** worsens when one species dominates; trace species estimates become numerically unstable | `hybrid_v4` sampling explicitly trains on trace-species scenarios; per-species weighted loss equalizes gradient signal |
+| **Inference speed** | $O(WN)$ linear algebra, very fast | Single forward pass, also fast (~ms per spectrum) |
+
+The core argument: NNLS is the **optimal solution when Beer-Lambert holds perfectly** and the noise is Gaussian. In practice, baseline drift, partially saturated pixels, and instrument line-function variations all break this optimality. The ML model is trained to be robust to these deviations through data augmentation, at the cost of requiring synthetic training data.
+
+---
+
+### 3. Drawbacks and mitigations
+
+| Drawback | Root cause | Mitigation in this codebase |
+|---|---|---|
+| **Requires retraining per instrument** | Reference spectra encode the instrument line function, path length, and cell geometry | Architecture is generic; retrain with new `.spc` reference files |
+| **Fails outside training concentration range** | Neural networks extrapolate poorly beyond training support | Log-uniform concentration sampling covers the full reference range; MC Dropout uncertainty increases out-of-distribution |
+| **No guarantee of physical constraints during training** | Loss is unconstrained | Non-negativity enforced post-hoc; `inactive_label_weight=0.5` suppresses false detections |
+| **Unknown interferents** | A species not in the training set will have its signal distributed across the 11 outputs | No mitigation; monitor residuals $(A_{\text{meas}} - A_{\text{reconstructed}})$ in deployment |
+| **Data-hungry** | NNLS needs only the reference matrix; this model needs 20k+ spectra | Synthetic generator makes this cost-free; `--n-synthetic` is the main quality lever |
+| **Black-box decisions** | Nonlinear model is not interpretable in terms of spectral assignments | Training data is physically grounded in Beer-Lambert; residual analysis on real measurements remains valid |
+
+The most important operational risk: **the model will be confidently wrong when presented with conditions not covered by training** (new interferents, out-of-range concentrations, or instrument drift). The MC Dropout uncertainty output (`predict_with_uncertainty`) is the primary tool for detecting this at runtime.
+
+---
+
 ## License
 
 MIT
